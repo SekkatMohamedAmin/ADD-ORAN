@@ -1,0 +1,213 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(cuid())
+  phone        String        @unique
+  passwordHash String
+  role         String        @default("PARTICIPANT") // "PARTICIPANT" | "ADMIN"
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  participants Participant[]
+  sessions     Session[]
+  auditLogs    AuditLog[]
+  paymentsRecorded Payment[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([token])
+  @@index([userId])
+}
+
+model Season {
+  id            String         @id @default(cuid())
+  code          String         @unique // e.g. "2026"
+  label         String         // e.g. "Saison 2026"
+  isActive      Boolean        @default(true)
+  startDate     DateTime?
+  endDate       DateTime?
+  registrations Registration[]
+  payments      Payment[]
+  createdAt     DateTime       @default(now())
+}
+
+model Participant {
+  id                    String                  @id @default(cuid())
+  userId                String
+  user                  User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName             String
+  lastName              String
+  dateOfBirth           DateTime
+  placeOfBirth          String
+  phone                 String
+  email                 String?
+  whatsapp              String?
+  address               String?
+  bloodType             String?                 // A+, A-, B+, B-, AB+, AB-, O+, O-, Unknown
+  isMinor               Boolean                 @default(false)
+  rfidCardId            String?
+  membershipCardNumber  String?
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  registrations         Registration[]
+  documents             Document[]
+  parentalAuthorizations ParentalAuthorization[]
+
+  @@index([userId])
+  @@index([phone])
+  @@index([lastName, firstName])
+}
+
+model Discipline {
+  id                     String                   @id @default(cuid())
+  slug                   String                   @unique // "parkour" | "escalade-montagne" | "trail"
+  nameFr                 String
+  nameAr                 String
+  nameEn                 String
+  descriptionFr          String?
+  descriptionAr          String?
+  descriptionEn          String?
+  isActive               Boolean                  @default(true)
+  registrationDisciplines RegistrationDiscipline[]
+}
+
+model Registration {
+  id                       String                   @id @default(cuid())
+  reference                String                   @unique // e.g. ADD-2026-000001
+  seasonId                 String
+  season                   Season                   @relation(fields: [seasonId], references: [id])
+  participantId            String
+  participant              Participant              @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  status                   String                   @default("SUBMITTED") // DRAFT, SUBMITTED, UNDER_REVIEW, NEEDS_CORRECTION, ACCEPTED, REJECTED, PAYMENT_PENDING, PAID, ACTIVE, ARCHIVED
+  correctionReason         String?
+  correctionFields         String?                  // JSON array string of keys (e.g. ["PHOTO", "MEDICAL_CERTIFICATE"])
+  engagementAccepted       Boolean                  @default(false)
+  engagementAcceptedAt     DateTime?
+  engagementVersion        String?                  @default("v1.0-2026")
+  duplicateWarningDismissed Boolean                 @default(false)
+  isMarkedDuplicate        Boolean                  @default(false)
+  duplicateNotes           String?
+  submittedAt              DateTime                 @default(now())
+  reviewedAt               DateTime?
+  reviewedBy               String?
+  createdAt                DateTime                 @default(now())
+  updatedAt                DateTime                 @updatedAt
+  disciplines              RegistrationDiscipline[]
+  documents                Document[]
+  parentalAuthorization   ParentalAuthorization?
+  payments                 Payment[]
+  auditLogs                AuditLog[]
+
+  @@index([seasonId])
+  @@index([participantId])
+  @@index([status])
+  @@index([reference])
+}
+
+model RegistrationDiscipline {
+  id             String       @id @default(cuid())
+  registrationId String
+  registration   Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+  disciplineId   String
+  discipline     Discipline   @relation(fields: [disciplineId], references: [id])
+
+  @@unique([registrationId, disciplineId])
+}
+
+model Document {
+  id               String        @id @default(cuid())
+  participantId    String
+  participant      Participant   @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  registrationId   String?
+  registration     Registration? @relation(fields: [registrationId], references: [id], onDelete: SetNull)
+  type             String        // "PHOTO", "NATIONAL_ID", "MEDICAL_CERTIFICATE", "PARENT_NATIONAL_ID"
+  storagePath      String
+  originalFilename String
+  mimeType         String
+  fileSize         Int
+  status           String        @default("PENDING") // PENDING, VALID, INVALID
+  rejectionReason  String?
+  issuedAt         DateTime?
+  expiresAt        DateTime?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([participantId])
+  @@index([registrationId])
+  @@index([type])
+}
+
+model ParentalAuthorization {
+  id                   String       @id @default(cuid())
+  participantId        String
+  participant          Participant  @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  registrationId       String       @unique
+  registration         Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+  guardianName         String?
+  declarationAccepted  Boolean      @default(false)
+  acceptedAt           DateTime?
+  authorizationVersion String       @default("v1.0-2026")
+  ipAddress            String?
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+
+  @@index([participantId])
+}
+
+model Payment {
+  id             String       @id @default(cuid())
+  receiptNumber  String       @unique // e.g. ADD-PAY-2026-000001
+  registrationId String
+  registration   Registration @relation(fields: [registrationId], references: [id])
+  seasonId       String
+  season         Season       @relation(fields: [seasonId], references: [id])
+  amount         Float
+  paymentMethod  String       @default("CASH") // CASH
+  paymentPurpose String       // e.g. "Cotisation annuelle & assurance + 1er mois"
+  status         String       @default("PAID") // PAID, REVERSED
+  recordedById   String?
+  recordedBy     User?        @relation(fields: [recordedById], references: [id])
+  paidAt         DateTime     @default(now())
+  notes          String?
+  createdAt      DateTime     @default(now())
+
+  @@index([registrationId])
+  @@index([seasonId])
+  @@index([receiptNumber])
+}
+
+model AuditLog {
+  id             String        @id @default(cuid())
+  action         String
+  userId         String?
+  user           User?         @relation(fields: [userId], references: [id])
+  registrationId String?
+  registration   Registration? @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+  details        String?
+  ipAddress      String?
+  createdAt      DateTime      @default(now())
+
+  @@index([registrationId])
+  @@index([userId])
+  @@index([action])
+}
+
+model SequentialCounter {
+  id        String   @id @default(cuid())
+  key       String   @unique // e.g. "REG_2026", "PAY_2026"
+  lastValue Int      @default(0)
+  updatedAt DateTime @updatedAt
+}
