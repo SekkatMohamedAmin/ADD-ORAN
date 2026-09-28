@@ -40,16 +40,16 @@ export function RevealImage({
     const mobile = isMobile();
 
     const ctx = gsap.context(() => {
-      if (reduced || mobile) {
+      if (reduced) {
         gsap.set(wrapperRef.current, { scale: 1, opacity: 1, x: 0, y: 0 });
         return;
       }
 
-      // 1. Cinematic scale-in reveal on scroll entry (scale 1.08 -> 1, opacity 0 -> 1)
+      // 1. Cinematic scale-in reveal on scroll entry (scale 1.04-1.08 -> 1, opacity 0 -> 1)
       gsap.fromTo(
         wrapperRef.current,
         {
-          scale: 1.08,
+          scale: mobile ? 1.04 : 1.08,
           opacity: 0,
         },
         {

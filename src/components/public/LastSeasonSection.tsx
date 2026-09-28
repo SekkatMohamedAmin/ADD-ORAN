@@ -39,7 +39,7 @@ export function LastSeasonSection() {
     const mobile = isMobile();
 
     const ctx = gsap.context(() => {
-      if (reduced || mobile) {
+      if (reduced) {
         if (photoCol1Ref.current) gsap.set(photoCol1Ref.current, { opacity: 1, y: 0 });
         if (photoCol2Ref.current) gsap.set(photoCol2Ref.current, { opacity: 1, y: 0 });
         if (photoCol3Ref.current) gsap.set(photoCol3Ref.current, { opacity: 1, y: 0 });

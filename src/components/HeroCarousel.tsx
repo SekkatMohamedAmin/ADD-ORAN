@@ -96,42 +96,34 @@ export function HeroCarousel() {
     const ctx = gsap.context(() => {
       if (reduced) return;
 
-      // Phase 1: Supporting badge enters gently at 0.2s (immediate on mobile)
+      // Phase 1: Supporting badge enters gently at 0.2s
       if (badgeRef.current) {
-        if (mobile) {
-          gsap.set(badgeRef.current, { opacity: 1, y: 0 });
-        } else {
-          gsap.fromTo(
-            badgeRef.current,
-            { opacity: 0, y: -10 },
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.6,
-              delay: 0.2,
-              ease: MOTION_PRESETS.easeEditorial,
-            }
-          );
-        }
+        gsap.fromTo(
+          badgeRef.current,
+          { opacity: 0, y: mobile ? -6 : -10 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: mobile ? 0.5 : 0.6,
+            delay: 0.15,
+            ease: MOTION_PRESETS.easeEditorial,
+          }
+        );
       }
 
-      // Phase 5: Action CTA buttons appear smoothly at 0.7s (immediate on mobile)
+      // Phase 5: Action CTA buttons appear smoothly at 0.65s
       if (ctaGroupRef.current) {
-        if (mobile) {
-          gsap.set(ctaGroupRef.current, { opacity: 1, y: 0 });
-        } else {
-          gsap.fromTo(
-            ctaGroupRef.current,
-            { opacity: 0, y: 30 },
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.7,
-              delay: 0.65,
-              ease: MOTION_PRESETS.easeEditorial,
-            }
-          );
-        }
+        gsap.fromTo(
+          ctaGroupRef.current,
+          { opacity: 0, y: mobile ? 18 : 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: mobile ? 0.55 : 0.7,
+            delay: mobile ? 0.45 : 0.65,
+            ease: MOTION_PRESETS.easeEditorial,
+          }
+        );
       }
 
       // Hero Scroll Parallax (Rule 9 & 13: depth between text and background image)

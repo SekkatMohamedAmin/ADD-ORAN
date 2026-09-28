@@ -43,7 +43,7 @@ export function HeroKineticTitle({
       const line1Chars = containerRef.current?.querySelectorAll(".hero-char-l1");
       const line2Chars = containerRef.current?.querySelectorAll(".hero-char-l2");
 
-      if (reduced || mobile) {
+      if (reduced) {
         if (line1Chars) gsap.set(line1Chars, { y: 0, opacity: 1, x: 0 });
         if (line2Chars) gsap.set(line2Chars, { y: 0, opacity: 1, x: 0 });
         return;

@@ -53,7 +53,7 @@ export function KineticHeading({
     const mobile = isMobile();
 
     const ctx = gsap.context(() => {
-      if (reduced || mobile) {
+      if (reduced) {
         gsap.set([line1Ref.current, line2Ref.current], { opacity: 1, y: 0, x: 0, rotation: 0 });
         return;
       }
