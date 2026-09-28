@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image, { ImageProps } from "next/image";
 
 interface LazyImageProps extends Omit<ImageProps, "onLoad"> {
@@ -16,6 +16,15 @@ export function LazyImage({
   ...props
 }: LazyImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  // Fallback: If image is already cached or completed before React hydration,
+  // mark as loaded immediately so it never stays in an intermediate state.
+  useEffect(() => {
+    if (imgRef.current && (imgRef.current.complete || imgRef.current.naturalWidth > 0)) {
+      setIsLoaded(true);
+    }
+  }, [src]);
 
   // When `fill` is used, the wrapper must span the full parent area
   // so the absolutely-positioned Image inside can render at full size.
@@ -26,15 +35,16 @@ export function LazyImage({
   return (
     <div className={`overflow-hidden bg-[#0A0A0D] ${fillStyles} ${wrapperClassName}`}>
       <Image
+        ref={imgRef}
         src={src}
         alt={alt}
         fill={fill}
-        className={`transition-all duration-1000 ease-out ${
-          isLoaded
-            ? "opacity-100 scale-100 blur-0"
-            : "opacity-0 scale-[1.03] blur-sm"
+        unoptimized
+        className={`transition-opacity duration-500 ease-out ${
+          isLoaded ? "opacity-100" : "opacity-95"
         } ${className}`}
         onLoad={() => setIsLoaded(true)}
+        onError={() => setIsLoaded(true)} // Fail-safe: never hide image if error occurs
         {...props}
       />
     </div>

@@ -14,6 +14,7 @@ export type AuditAction =
   | "DUPLICATE_FLAGGED"
   | "DUPLICATE_RESOLVED"
   | "MEMBER_ARCHIVED"
+  | "MEMBER_ACTIVATED"
   | "PASSWORD_RESET";
 
 export interface LogAuditParams {

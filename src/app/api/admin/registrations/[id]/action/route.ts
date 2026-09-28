@@ -112,6 +112,16 @@ export async function POST(
         });
         break;
 
+      case "ACTIVATE":
+        updatedStatus = "ACTIVE";
+        await logAudit({
+          action: "MEMBER_ACTIVATED",
+          userId: admin.id,
+          registrationId: registration.id,
+          details: { reference: registration.reference },
+        });
+        break;
+
       case "MARK_DUPLICATE":
         isMarkedDuplicate = true;
         duplicateNotes = notes || "Signalé comme doublon potentiel par l'administrateur.";

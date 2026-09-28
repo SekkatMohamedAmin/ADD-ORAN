@@ -17,26 +17,35 @@ export function ScrollReveal({
   className = "",
   variant = "fade-up",
   delay = 0,
-  duration = 750,
-  threshold = 0.12,
+  duration = 650,
+  threshold = 0.05,
   once = true,
 }: ScrollRevealProps) {
   const [isVisible, setIsVisible] = useState(false);
   const domRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Respect user's motion preferences
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) {
-      setIsVisible(true);
-      return;
+    // Respect user's motion preferences or immediate mobile rendering
+    if (typeof window !== "undefined") {
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (prefersReducedMotion) {
+        setIsVisible(true);
+        return;
+      }
     }
+
+    // Safety fallback: Ensure content is ALWAYS visible on mobile/Safari
+    // even if IntersectionObserver is delayed or throttled by low power mode.
+    const safetyTimeout = setTimeout(() => {
+      setIsVisible(true);
+    }, 500);
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setIsVisible(true);
+            clearTimeout(safetyTimeout);
             if (once && domRef.current) {
               observer.unobserve(domRef.current);
             }
@@ -46,8 +55,8 @@ export function ScrollReveal({
         });
       },
       {
-        threshold,
-        rootMargin: "0px 0px -40px 0px",
+        threshold: typeof window !== "undefined" && window.innerWidth < 768 ? 0.01 : threshold,
+        rootMargin: "0px 0px 50px 0px", // Generous margin so it reveals slightly ahead on mobile
       }
     );
 
@@ -57,6 +66,7 @@ export function ScrollReveal({
     }
 
     return () => {
+      clearTimeout(safetyTimeout);
       if (currentRef) {
         observer.unobserve(currentRef);
       }
@@ -73,23 +83,23 @@ export function ScrollReveal({
         };
       case "scale-up":
         return {
-          hidden: "opacity-0 scale-95",
+          hidden: "opacity-0 scale-[0.98]",
           visible: "opacity-100 scale-100",
         };
       case "slide-left":
         return {
-          hidden: "opacity-0 -translate-x-12",
+          hidden: "opacity-0 -translate-x-6",
           visible: "opacity-100 translate-x-0",
         };
       case "slide-right":
         return {
-          hidden: "opacity-0 translate-x-12",
+          hidden: "opacity-0 translate-x-6",
           visible: "opacity-100 translate-x-0",
         };
       case "fade-up":
       default:
         return {
-          hidden: "opacity-0 translate-y-10",
+          hidden: "opacity-0 translate-y-6",
           visible: "opacity-100 translate-y-0",
         };
     }

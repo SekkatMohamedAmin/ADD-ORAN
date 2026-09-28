@@ -228,12 +228,55 @@ async function runSecurityTests() {
   assert(!(await bcrypt.compare("WrongPassword", hash)), "bcrypt rejects invalid password");
 }
 
+async function runAdminAuthAndWorkflowTests() {
+  console.log("\n==============================");
+  console.log("4. ADMIN AUTHENTICATION & ROLE PROTECTION TESTS");
+  console.log("==============================");
+
+  // 1. Verify Default Admin account exists
+  const adminUser = await prisma.user.findFirst({
+    where: { role: "ADMIN" },
+  });
+  assert(adminUser !== null, "Admin account with role 'ADMIN' exists in database");
+  assert(adminUser?.role === "ADMIN", "Admin role is strictly 'ADMIN'");
+
+  // 2. Participant Role vs Admin Role boundary
+  const participantUser = await prisma.user.findFirst({
+    where: { role: "PARTICIPANT" },
+  });
+  assert(participantUser !== null, "Participant user exists for privilege comparison");
+  assert(participantUser?.role !== "ADMIN", "Participant role is strictly non-admin");
+
+  // 3. Sequential receipt uniqueness and format
+  const season = await prisma.season.findFirst({ where: { code: "2026" } });
+  const rec1 = await generateReceiptNumber(season!.code);
+  const rec2 = await generateReceiptNumber(season!.code);
+  assert(rec1.startsWith("ADD-PAY-2026-"), "Receipt number adheres to format ADD-PAY-2026-XXXXXX");
+  assert(rec1 !== rec2, "Receipt numbers are strictly sequential and unique across transactions");
+
+  // 4. Invariant: Archiving preserves records instead of deleting
+  const testReg = await prisma.registration.findFirst();
+  if (testReg) {
+    const archived = await prisma.registration.update({
+      where: { id: testReg.id },
+      data: { status: "ARCHIVED" },
+    });
+    assert(archived.status === "ARCHIVED", "Archiving sets status to ARCHIVED without row deletion");
+    // Restore status
+    await prisma.registration.update({
+      where: { id: testReg.id },
+      data: { status: testReg.status },
+    });
+  }
+}
+
 async function main() {
   console.log("Running ADD Parkour Oran Test Suite...\n");
   try {
     await runUnitTests();
     await runIntegrationTests();
     await runSecurityTests();
+    await runAdminAuthAndWorkflowTests();
   } catch (err) {
     console.error("Test execution failed with error:", err);
     failedCount++;

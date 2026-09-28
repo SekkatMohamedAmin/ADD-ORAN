@@ -4,6 +4,88 @@ import { prisma } from "@/lib/prisma";
 import { generateReceiptNumber } from "@/lib/sequences";
 import { logAudit } from "@/lib/audit";
 
+export async function GET(request: NextRequest) {
+  try {
+    await requireAdmin();
+
+    const { searchParams } = new URL(request.url);
+    const search = searchParams.get("search")?.trim() || "";
+    const seasonCode = searchParams.get("season")?.trim() || "";
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
+    const limit = Math.min(50, Math.max(5, parseInt(searchParams.get("limit") || "15", 10)));
+    const skip = (page - 1) * limit;
+
+    const whereClause: any = {};
+
+    if (seasonCode) {
+      whereClause.season = { code: seasonCode };
+    }
+
+    if (search) {
+      whereClause.OR = [
+        { receiptNumber: { contains: search } },
+        { registration: { reference: { contains: search } } },
+        {
+          registration: {
+            participant: {
+              OR: [
+                { firstName: { contains: search } },
+                { lastName: { contains: search } },
+                { phone: { contains: search } },
+              ],
+            },
+          },
+        },
+      ];
+    }
+
+    const [totalCount, payments, totalSum, seasons] = await Promise.all([
+      prisma.payment.count({ where: whereClause }),
+      prisma.payment.findMany({
+        where: whereClause,
+        skip,
+        take: limit,
+        orderBy: { createdAt: "desc" },
+        include: {
+          season: true,
+          recordedBy: {
+            select: { phone: true, role: true },
+          },
+          registration: {
+            include: {
+              participant: true,
+            },
+          },
+        },
+      }),
+      prisma.payment.aggregate({
+        where: whereClause,
+        _sum: { amount: true },
+      }),
+      prisma.season.findMany({ orderBy: { code: "desc" } }),
+    ]);
+
+    return NextResponse.json({
+      success: true,
+      payments,
+      totalRevenue: totalSum._sum.amount || 0,
+      pagination: {
+        total: totalCount,
+        page,
+        limit,
+        totalPages: Math.ceil(totalCount / limit),
+      },
+      seasons,
+    });
+  } catch (error) {
+    console.error("Admin payments query error:", error);
+    if ((error as Error).message === "UNAUTHORIZED" || (error as Error).message === "FORBIDDEN") {
+      return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
+    }
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const admin = await requireAdmin();

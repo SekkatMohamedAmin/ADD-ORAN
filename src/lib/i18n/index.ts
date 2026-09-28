@@ -20,3 +20,5 @@ export function getDictionary(locale: Locale): TranslationDictionary {
 export function isRTL(locale: Locale): boolean {
   return locale === "ar";
 }
+
+export { useLanguage, LanguageProvider } from "@/components/i18n/LanguageProvider";

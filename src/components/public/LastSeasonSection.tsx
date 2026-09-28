@@ -1,12 +1,21 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import { SEASON_2025_2026 } from "@/lib/images";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { LazyImage } from "@/components/ui/LazyImage";
+import { KineticHeading } from "@/components/animations/KineticHeading";
+import { RevealImage } from "@/components/animations/RevealImage";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
 import { ArrowUpRight, X, ChevronLeft, ChevronRight, Camera } from "lucide-react";
+import {
+  gsap,
+  prefersReducedMotion,
+  isMobile,
+  useIsomorphicLayoutEffect,
+  MOTION_PRESETS,
+} from "@/lib/animations/gsap-init";
 
 export function LastSeasonSection() {
   const { t, isRtl } = useLanguage();
@@ -15,6 +24,82 @@ export function LastSeasonSection() {
 
   const season = SEASON_2025_2026;
   const gallery = season.gallery;
+
+  const sectionRef = useRef<HTMLElement>(null);
+  const collageRef = useRef<HTMLDivElement>(null);
+  const photoCol1Ref = useRef<HTMLDivElement>(null);
+  const photoCol2Ref = useRef<HTMLDivElement>(null);
+  const photoCol3Ref = useRef<HTMLDivElement>(null);
+
+  // Photo Collage Motion (Rules 15 & 16: tiny differences in movement for depth)
+  useIsomorphicLayoutEffect(() => {
+    if (!collageRef.current) return;
+
+    const reduced = prefersReducedMotion();
+    const mobile = isMobile();
+
+    const ctx = gsap.context(() => {
+      if (reduced || mobile) {
+        if (photoCol1Ref.current) gsap.set(photoCol1Ref.current, { opacity: 1, y: 0 });
+        if (photoCol2Ref.current) gsap.set(photoCol2Ref.current, { opacity: 1, y: 0 });
+        if (photoCol3Ref.current) gsap.set(photoCol3Ref.current, { opacity: 1, y: 0 });
+        return;
+      }
+
+      const trigger = {
+        trigger: collageRef.current,
+        start: "top 85%",
+        toggleActions: "play none none none",
+      };
+
+      if (photoCol1Ref.current) {
+        gsap.fromTo(
+          photoCol1Ref.current,
+          { opacity: 0, y: mobile ? 25 : 35 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.85,
+            delay: 0.1,
+            ease: MOTION_PRESETS.easeEditorial,
+            scrollTrigger: trigger,
+          }
+        );
+      }
+
+      if (photoCol2Ref.current) {
+        gsap.fromTo(
+          photoCol2Ref.current,
+          { opacity: 0, y: mobile ? 30 : 50 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.95,
+            delay: 0.18,
+            ease: MOTION_PRESETS.easeEditorial,
+            scrollTrigger: trigger,
+          }
+        );
+      }
+
+      if (photoCol3Ref.current) {
+        gsap.fromTo(
+          photoCol3Ref.current,
+          { opacity: 0, y: mobile ? 15 : 25 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.75,
+            delay: 0.28,
+            ease: MOTION_PRESETS.easeEditorial,
+            scrollTrigger: trigger,
+          }
+        );
+      }
+    }, collageRef);
+
+    return () => ctx.revert();
+  }, []);
 
   const openLightbox = (idx: number) => {
     setSelectedPhotoIdx(idx);
@@ -69,7 +154,11 @@ export function LastSeasonSection() {
   }, [albumOpen, selectedPhotoIdx, nextPhoto, prevPhoto, isRtl]);
 
   return (
-    <section id="last-season" className="relative py-28 sm:py-36 bg-[#0A0A0D] border-b border-white/10 overflow-hidden">
+    <section
+      ref={sectionRef}
+      id="last-season"
+      className="relative py-28 sm:py-36 bg-[#0A0A0D] border-b border-white/10 overflow-hidden"
+    >
       {/* Subtle background red accent glow */}
       <div 
         className="absolute top-1/4 -right-48 w-96 h-96 rounded-full bg-[#E52421]/5 blur-3xl pointer-events-none" 
@@ -80,18 +169,20 @@ export function LastSeasonSection() {
         {/* Header Block: Title + Year + Action CTA */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 sm:mb-20">
           <div>
-            <ScrollReveal variant="fade-up">
-              <div className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-widest text-[#FFD21F] mb-3">
-                <span className="w-2 h-2 rounded-full bg-[#E52421]" />
-                <span>{season.year}</span>
-              </div>
+            <div className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-widest text-[#FFD21F] mb-3">
+              <span className="w-2 h-2 rounded-full bg-[#E52421]" />
+              <span>{season.year}</span>
+            </div>
 
-              {/* Giant Typography Header */}
-              <h2 className="font-display text-6xl sm:text-8xl lg:text-9xl font-black uppercase text-[#F5F5F2] tracking-tight leading-[0.85]">
-                LAST <br />
-                <span className="text-[#E52421]">SEASON.</span>
-              </h2>
-            </ScrollReveal>
+            {/* Giant Kinetic Typography Header (Rule 15: LAST and SEASON. reveal separately) */}
+            <KineticHeading
+              line1="LAST"
+              line2="SEASON."
+              accentColor="#E52421"
+              personality="editorial"
+              scrub={true}
+              className="text-6xl sm:text-8xl lg:text-9xl mb-2"
+            />
 
             <ScrollReveal variant="fade-up" delay={100}>
               <p className="font-body text-base text-[#9E9EA8] mt-6 max-w-lg leading-relaxed">
@@ -104,11 +195,13 @@ export function LastSeasonSection() {
             <button
               type="button"
               onClick={() => setAlbumOpen(true)}
-              className="inline-flex items-center gap-3 px-8 py-4 rounded bg-white/5 hover:bg-[#E52421] text-[#F5F5F2] border border-white/10 hover:border-transparent font-display font-black text-sm uppercase tracking-wider transition-all duration-300 shadow-xl group"
+              className="inline-flex items-center gap-3 px-8 py-4 rounded bg-white/5 hover:bg-[#E52421] text-[#F5F5F2] border border-white/10 hover:border-transparent font-display font-black text-sm uppercase tracking-wider transition-all duration-300 shadow-xl hover:scale-[1.02] active:scale-95 group"
             >
               <Camera className="w-4 h-4 text-[#FFD21F] group-hover:text-[#F5F5F2] transition-colors" />
-              <span>{t.home.viewAlbum}</span>
-              <ArrowUpRight className={`w-4 h-4 text-[#FFD21F] group-hover:text-[#F5F5F2] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform ${isRtl ? "rtl-flip" : ""}`} />
+              <span className="group-hover:translate-x-0.5 transition-transform duration-200">
+                {t.home.viewAlbum}
+              </span>
+              <ArrowUpRight className={`w-4 h-4 text-[#FFD21F] group-hover:text-[#F5F5F2] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200 ${isRtl ? "rtl-flip" : ""}`} />
             </button>
           </ScrollReveal>
         </div>
@@ -118,7 +211,7 @@ export function LastSeasonSection() {
            ======================================================== */}
         <div className="space-y-8 sm:space-y-12">
           {/* 1. Large Hero Landscape Banner: Full Team & Medalists */}
-          <ScrollReveal variant="scale-up">
+          <RevealImage parallaxDirection="vertical" parallaxDistance={20}>
             <div 
               onClick={() => openLightbox(0)}
               className="group relative w-full h-[360px] sm:h-[500px] lg:h-[620px] rounded-3xl overflow-hidden cursor-pointer shadow-2xl border border-white/10"
@@ -149,41 +242,39 @@ export function LastSeasonSection() {
                 </span>
               </div>
             </div>
-          </ScrollReveal>
+          </RevealImage>
 
-          {/* 2. Editorial Collage: 3-Column Asymmetric Moments */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
+          {/* 2. Editorial Collage: 3-Column Asymmetric Moments (Rule 16: Motion depth) */}
+          <div ref={collageRef} className="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
             {/* Left Column: Portrait Vault Action */}
-            <div className="md:col-span-5">
-              <ScrollReveal variant="fade-up" delay={100}>
-                <div 
-                  onClick={() => openLightbox(3)} // ls-589: yellow shirt vault
-                  className="group relative w-full h-[460px] sm:h-[540px] rounded-2xl overflow-hidden cursor-pointer shadow-xl border border-white/10"
-                >
-                  <LazyImage
-                    src={season.highlights[1].src}
-                    alt={season.highlights[1].alt}
-                    fill
-                    className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
-                    sizes="(max-width: 768px) 100vw, 40vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0D]/80 via-transparent to-transparent pointer-events-none" />
-                  <div className="absolute bottom-5 left-5 right-5">
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-[#E52421] bg-black/60 px-2 py-0.5 rounded inline-block mb-1">
-                      PARKOUR ACADEMY
-                    </span>
-                    <p className="font-display font-bold text-sm uppercase text-[#F5F5F2]">
-                      {season.highlights[1].caption}
-                    </p>
-                  </div>
+            <div ref={photoCol1Ref} className="md:col-span-5 will-change-transform">
+              <div 
+                onClick={() => openLightbox(3)} // ls-589: yellow shirt vault
+                className="group relative w-full h-[460px] sm:h-[540px] rounded-2xl overflow-hidden cursor-pointer shadow-xl border border-white/10"
+              >
+                <LazyImage
+                  src={season.highlights[1].src}
+                  alt={season.highlights[1].alt}
+                  fill
+                  className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                  sizes="(max-width: 768px) 100vw, 40vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0D]/80 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute bottom-5 left-5 right-5">
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-[#E52421] bg-black/60 px-2 py-0.5 rounded inline-block mb-1">
+                    PARKOUR ACADEMY
+                  </span>
+                  <p className="font-display font-bold text-sm uppercase text-[#F5F5F2]">
+                    {season.highlights[1].caption}
+                  </p>
                 </div>
-              </ScrollReveal>
+              </div>
             </div>
 
             {/* Right Column: Stacked Moments (Landscape Coaches Selfie + Portrait Beam Vault) */}
             <div className="md:col-span-7 space-y-6 sm:space-y-8">
               {/* Top: Coaches Selfie & Medal (Landscape) */}
-              <ScrollReveal variant="fade-up" delay={150}>
+              <div ref={photoCol2Ref} className="will-change-transform">
                 <div 
                   onClick={() => openLightbox(1)} // ls-613
                   className="group relative w-full h-[280px] sm:h-[320px] rounded-2xl overflow-hidden cursor-pointer shadow-xl border border-white/10"
@@ -205,53 +296,49 @@ export function LastSeasonSection() {
                     </p>
                   </div>
                 </div>
-              </ScrollReveal>
+              </div>
 
               {/* Bottom: Split technical shots */}
-              <div className="grid grid-cols-2 gap-4 sm:gap-6">
+              <div ref={photoCol3Ref} className="grid grid-cols-2 gap-4 sm:gap-6 will-change-transform">
                 {/* Cat Pass Technique */}
-                <ScrollReveal variant="fade-up" delay={200}>
-                  <div 
-                    onClick={() => openLightbox(13)} // ls-599: Cat pass
-                    className="group relative w-full h-[200px] sm:h-[240px] rounded-xl overflow-hidden cursor-pointer shadow-lg border border-white/10"
-                  >
-                    <LazyImage
-                      src={season.highlights[3].src}
-                      alt={season.highlights[3].alt}
-                      fill
-                      className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
-                      sizes="(max-width: 768px) 50vw, 30vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0D]/80 via-transparent to-transparent pointer-events-none" />
-                    <div className="absolute bottom-3 left-3 right-3">
-                      <p className="font-display font-bold text-xs uppercase text-[#F5F5F2] line-clamp-1">
-                        Saut de Chat
-                      </p>
-                    </div>
+                <div 
+                  onClick={() => openLightbox(13)} // ls-599: Cat pass
+                  className="group relative w-full h-[200px] sm:h-[240px] rounded-xl overflow-hidden cursor-pointer shadow-lg border border-white/10"
+                >
+                  <LazyImage
+                    src={season.highlights[3].src}
+                    alt={season.highlights[3].alt}
+                    fill
+                    className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                    sizes="(max-width: 768px) 50vw, 30vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0D]/80 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute bottom-3 left-3 right-3">
+                    <p className="font-display font-bold text-xs uppercase text-[#F5F5F2] line-clamp-1">
+                      Saut de Chat
+                    </p>
                   </div>
-                </ScrollReveal>
+                </div>
 
                 {/* Head Coach Guidance */}
-                <ScrollReveal variant="fade-up" delay={250}>
-                  <div 
-                    onClick={() => openLightbox(23)} // ls-609: Coach & family
-                    className="group relative w-full h-[200px] sm:h-[240px] rounded-xl overflow-hidden cursor-pointer shadow-lg border border-white/10"
-                  >
-                    <LazyImage
-                      src={season.highlights[5].src}
-                      alt={season.highlights[5].alt}
-                      fill
-                      className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
-                      sizes="(max-width: 768px) 50vw, 30vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0D]/80 via-transparent to-transparent pointer-events-none" />
-                    <div className="absolute bottom-3 left-3 right-3">
-                      <p className="font-display font-bold text-xs uppercase text-[#F5F5F2] line-clamp-1">
-                        Encadrement & Familles
-                      </p>
-                    </div>
+                <div 
+                  onClick={() => openLightbox(23)} // ls-609: Coach & family
+                  className="group relative w-full h-[200px] sm:h-[240px] rounded-xl overflow-hidden cursor-pointer shadow-lg border border-white/10"
+                >
+                  <LazyImage
+                    src={season.highlights[5].src}
+                    alt={season.highlights[5].alt}
+                    fill
+                    className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                    sizes="(max-width: 768px) 50vw, 30vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0D]/80 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute bottom-3 left-3 right-3">
+                    <p className="font-display font-bold text-xs uppercase text-[#F5F5F2] line-clamp-1">
+                      Encadrement & Familles
+                    </p>
                   </div>
-                </ScrollReveal>
+                </div>
               </div>
             </div>
           </div>

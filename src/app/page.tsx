@@ -8,6 +8,9 @@ import { HeroCarousel } from "@/components/HeroCarousel";
 import { LastSeasonSection } from "@/components/public/LastSeasonSection";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { LazyImage } from "@/components/ui/LazyImage";
+import { KineticHeading } from "@/components/animations/KineticHeading";
+import { RevealImage } from "@/components/animations/RevealImage";
+import { AccentLine } from "@/components/animations/AccentLine";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
 import { ArrowUpRight } from "lucide-react";
 
@@ -19,32 +22,45 @@ export default function HomePage() {
       <Navbar />
 
       <main className="flex-1">
-        {/* 1. HERO CAROUSEL: HIGH-IMPACT POSTER SHOWCASE */}
+        {/* 1. HERO CAROUSEL: HIGH-IMPACT POSTER SHOWCASE WITH KINETIC TYPOGRAPHY */}
         <HeroCarousel />
 
-        {/* 2. DISCIPLINE COMPOSITIONS — THREE DISTINCT VISUAL WORLDS WITH LAZY SCROLL */}
+        {/* 2. DISCIPLINE COMPOSITIONS — THREE DISTINCT VISUAL WORLDS WITH PERSONALIZED MOTION */}
         <section id="disciplines" className="relative bg-[#0A0A0D] overflow-hidden">
           {/* ========================================================
-              DISCIPLINE 01: PARKOUR — URBAN FLIGHT
+              DISCIPLINE 01: PARKOUR — URBAN FLIGHT (DIAGONAL / LATERAL MOTION)
              ======================================================== */}
           <div className="relative border-b border-white/10 py-24 sm:py-32 px-4 sm:px-6 lg:px-8">
+            {/* Trajectory Accent Line (Rule 14: Parkour trajectory line draws across) */}
+            <AccentLine
+              orientation="diagonal"
+              color="#E52421"
+              className="top-12 -left-4 w-72 h-32 opacity-30 hidden sm:block"
+            />
+
             <div className="max-w-7xl mx-auto relative z-10">
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                 {/* Left: Oversized Typography & Short Narrative */}
                 <div className="lg:col-span-6">
-                  <ScrollReveal variant="fade-up">
-                    <div className="font-mono text-xs uppercase tracking-widest text-[#E52421] mb-3 flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-[#E52421]" />
-                      <span>{t.disciplines.parkour.name}</span>
-                    </div>
+                  <div className="font-mono text-xs uppercase tracking-widest text-[#E52421] mb-3 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#E52421]" />
+                    <span>{t.disciplines.parkour.name}</span>
+                  </div>
 
-                    {/* Artistic English Campaign Statement */}
-                    <h2 className="font-display text-6xl sm:text-8xl lg:text-9xl font-black uppercase text-[#F5F5F2] tracking-tight leading-[0.85] mb-6">
-                      MOVE <br />
-                      <span className="text-[#E52421]">DIFFERENT.</span>
-                    </h2>
+                  {/* Kinetic English Campaign Statement with Lateral Personality */}
+                  <div className="mb-6">
+                    <KineticHeading
+                      line1="MOVE"
+                      line2="DIFFERENT."
+                      accentColor="#E52421"
+                      personality="lateral"
+                      scrub={true}
+                      className="text-6xl sm:text-8xl lg:text-9xl"
+                    />
+                  </div>
 
-                    {/* Localized Functional Description */}
+                  {/* Localized Functional Description */}
+                  <ScrollReveal variant="fade-up" delay={100}>
                     <p className="font-body text-base text-[#9E9EA8] mb-8 max-w-md leading-relaxed">
                       {t.disciplines.parkour.desc}
                     </p>
@@ -52,73 +68,86 @@ export default function HomePage() {
                     <div className="flex items-center gap-4">
                       <Link
                         href="/register"
-                        className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded bg-[#E52421] hover:bg-[#FF3030] text-[#F5F5F2] font-display font-black text-base uppercase tracking-wider transition-all shadow-lg group"
+                        className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded bg-[#E52421] hover:bg-[#FF3030] text-[#F5F5F2] font-display font-black text-base uppercase tracking-wider transition-all shadow-lg hover:scale-[1.02] active:scale-95 group"
                       >
-                        <span>{t.common.register}</span>
-                        <ArrowUpRight className={`w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform ${isRtl ? "rtl-flip" : ""}`} />
+                        <span className="group-hover:translate-x-0.5 transition-transform duration-200">
+                          {t.common.register}
+                        </span>
+                        <ArrowUpRight className={`w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200 ${isRtl ? "rtl-flip" : ""}`} />
                       </Link>
                     </div>
                   </ScrollReveal>
                 </div>
 
-                {/* Right: Dramatic Real Action Photograph with Lazy Scroll Entrance */}
+                {/* Right: Dramatic Real Action Photograph with Cinematic Reveal & Lateral Parallax */}
                 <div className="lg:col-span-6">
-                  <ScrollReveal variant="scale-up" delay={150}>
+                  <RevealImage parallaxDirection="lateral" parallaxDistance={22}>
                     <div className="relative w-full h-[420px] sm:h-[540px] rounded-3xl overflow-hidden shadow-2xl border border-white/10 group">
                       <LazyImage
                         src="/images/disciplines/discipline-parkour.jpg"
                         alt={t.disciplines.parkour.name}
                         fill
-                        loading="lazy"
                         sizes="(max-width: 1024px) 100vw, 50vw"
                         className="object-cover group-hover:scale-105 transition-transform duration-700 select-none"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0D]/70 via-transparent to-transparent pointer-events-none" />
                     </div>
-                  </ScrollReveal>
+                  </RevealImage>
                 </div>
               </div>
             </div>
           </div>
 
           {/* ========================================================
-              DISCIPLINE 02: ESCALADE — TOWERING VERTICALITY
+              DISCIPLINE 02: ESCALADE — TOWERING VERTICALITY (VERTICAL MOTION)
              ======================================================== */}
           <div className="relative border-b border-white/10 py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#121217]">
+            {/* Vertical Accent Line (Rule 14: Escalade ascent indicator) */}
+            <AccentLine
+              orientation="vertical"
+              color="#FFD21F"
+              className="absolute top-20 right-8 h-64 opacity-25 hidden lg:block"
+            />
+
             <div className="max-w-7xl mx-auto relative z-10">
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                {/* Left: Sheer Rock Action Photo */}
+                {/* Left: Sheer Rock Action Photo with Vertical Parallax */}
                 <div className="lg:col-span-6 order-2 lg:order-1">
-                  <ScrollReveal variant="scale-up">
+                  <RevealImage parallaxDirection="vertical" parallaxDistance={28}>
                     <div className="relative w-full h-[440px] sm:h-[580px] rounded-3xl overflow-hidden shadow-2xl border border-white/10 group">
                       <LazyImage
                         src="/images/disciplines/discipline-climbing.jpg"
                         alt={t.disciplines.escalade.name}
                         fill
-                        loading="lazy"
                         sizes="(max-width: 1024px) 100vw, 50vw"
                         className="object-cover object-top group-hover:scale-105 transition-transform duration-700 select-none"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#121217]/70 via-transparent to-transparent pointer-events-none" />
                     </div>
-                  </ScrollReveal>
+                  </RevealImage>
                 </div>
 
-                {/* Right: Towering Text & Narrative */}
+                {/* Right: Towering Text & Narrative with Vertical Kinetic Personality */}
                 <div className="lg:col-span-6 order-1 lg:order-2">
-                  <ScrollReveal variant="fade-up" delay={150}>
-                    <div className="font-mono text-xs uppercase tracking-widest text-[#FFD21F] mb-3 flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-[#FFD21F]" />
-                      <span>{t.disciplines.escalade.name}</span>
-                    </div>
+                  <div className="font-mono text-xs uppercase tracking-widest text-[#FFD21F] mb-3 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#FFD21F]" />
+                    <span>{t.disciplines.escalade.name}</span>
+                  </div>
 
-                    {/* Artistic English Campaign Statement */}
-                    <h2 className="font-display text-6xl sm:text-8xl lg:text-9xl font-black uppercase text-[#F5F5F2] tracking-tight leading-[0.85] mb-6">
-                      MOVE <br />
-                      <span className="text-[#FFD21F]">HIGHER.</span>
-                    </h2>
+                  {/* Kinetic English Campaign Statement */}
+                  <div className="mb-6">
+                    <KineticHeading
+                      line1="MOVE"
+                      line2="HIGHER."
+                      accentColor="#FFD21F"
+                      personality="vertical"
+                      scrub={true}
+                      className="text-6xl sm:text-8xl lg:text-9xl"
+                    />
+                  </div>
 
-                    {/* Localized Functional Description */}
+                  {/* Localized Functional Description */}
+                  <ScrollReveal variant="fade-up" delay={100}>
                     <p className="font-body text-base text-[#9E9EA8] mb-8 max-w-md leading-relaxed">
                       {t.disciplines.escalade.desc}
                     </p>
@@ -126,10 +155,12 @@ export default function HomePage() {
                     <div className="flex items-center gap-4">
                       <Link
                         href="/register"
-                        className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded bg-[#FFD21F] hover:bg-[#FFB800] text-[#0A0A0D] font-display font-black text-base uppercase tracking-wider transition-all shadow-lg group"
+                        className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded bg-[#FFD21F] hover:bg-[#FFB800] text-[#0A0A0D] font-display font-black text-base uppercase tracking-wider transition-all shadow-lg hover:scale-[1.02] active:scale-95 group"
                       >
-                        <span>{t.common.register}</span>
-                        <ArrowUpRight className={`w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform ${isRtl ? "rtl-flip" : ""}`} />
+                        <span className="group-hover:translate-x-0.5 transition-transform duration-200">
+                          {t.common.register}
+                        </span>
+                        <ArrowUpRight className={`w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200 ${isRtl ? "rtl-flip" : ""}`} />
                       </Link>
                     </div>
                   </ScrollReveal>
@@ -139,26 +170,39 @@ export default function HomePage() {
           </div>
 
           {/* ========================================================
-              DISCIPLINE 03: TRAIL — HORIZONTAL EXPANSE
+              DISCIPLINE 03: TRAIL — HORIZONTAL EXPANSE (HORIZONTAL VELOCITY)
              ======================================================== */}
           <div className="relative border-b border-white/10 py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#0A0A0D]">
+            {/* Horizontal Route Line (Rule 14: Trail route line extends across) */}
+            <AccentLine
+              orientation="horizontal"
+              color="#FF3030"
+              className="absolute bottom-16 left-0 w-96 opacity-25 hidden sm:block"
+            />
+
             <div className="max-w-7xl mx-auto relative z-10">
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                 {/* Left: Oversized Statement */}
                 <div className="lg:col-span-6">
-                  <ScrollReveal variant="fade-up">
-                    <div className="font-mono text-xs uppercase tracking-widest text-[#FF3030] mb-3 flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-[#FF3030]" />
-                      <span>{t.disciplines.trail.name}</span>
-                    </div>
+                  <div className="font-mono text-xs uppercase tracking-widest text-[#FF3030] mb-3 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#FF3030]" />
+                    <span>{t.disciplines.trail.name}</span>
+                  </div>
 
-                    {/* Artistic English Campaign Statement */}
-                    <h2 className="font-display text-6xl sm:text-8xl lg:text-9xl font-black uppercase text-[#F5F5F2] tracking-tight leading-[0.85] mb-6">
-                      RUN <br />
-                      <span className="text-[#FF3030]">FURTHER.</span>
-                    </h2>
+                  {/* Kinetic English Campaign Statement with Horizontal Personality */}
+                  <div className="mb-6">
+                    <KineticHeading
+                      line1="RUN"
+                      line2="FURTHER."
+                      accentColor="#FF3030"
+                      personality="horizontal"
+                      scrub={true}
+                      className="text-6xl sm:text-8xl lg:text-9xl"
+                    />
+                  </div>
 
-                    {/* Localized Functional Description */}
+                  {/* Localized Functional Description */}
+                  <ScrollReveal variant="fade-up" delay={100}>
                     <p className="font-body text-base text-[#9E9EA8] mb-8 max-w-md leading-relaxed">
                       {t.disciplines.trail.desc}
                     </p>
@@ -166,30 +210,31 @@ export default function HomePage() {
                     <div className="flex items-center gap-4">
                       <Link
                         href="/register"
-                        className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded bg-[#E52421] hover:bg-[#FF3030] text-[#F5F5F2] font-display font-black text-base uppercase tracking-wider transition-all shadow-lg group"
+                        className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded bg-[#E52421] hover:bg-[#FF3030] text-[#F5F5F2] font-display font-black text-base uppercase tracking-wider transition-all shadow-lg hover:scale-[1.02] active:scale-95 group"
                       >
-                        <span>{t.common.register}</span>
-                        <ArrowUpRight className={`w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform ${isRtl ? "rtl-flip" : ""}`} />
+                        <span className="group-hover:translate-x-0.5 transition-transform duration-200">
+                          {t.common.register}
+                        </span>
+                        <ArrowUpRight className={`w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200 ${isRtl ? "rtl-flip" : ""}`} />
                       </Link>
                     </div>
                   </ScrollReveal>
                 </div>
 
-                {/* Right: High-Speed Trail Runner Shot */}
+                {/* Right: High-Speed Trail Runner Shot with Horizontal Parallax */}
                 <div className="lg:col-span-6">
-                  <ScrollReveal variant="scale-up" delay={150}>
+                  <RevealImage parallaxDirection="horizontal" parallaxDistance={24}>
                     <div className="relative w-full h-[420px] sm:h-[540px] rounded-3xl overflow-hidden shadow-2xl border border-white/10 group">
                       <LazyImage
                         src="/images/disciplines/discipline-trail.jpg"
                         alt={t.disciplines.trail.name}
                         fill
-                        loading="lazy"
                         sizes="(max-width: 1024px) 100vw, 50vw"
                         className="object-cover group-hover:scale-105 transition-transform duration-700 select-none"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0D]/70 via-transparent to-transparent pointer-events-none" />
                     </div>
-                  </ScrollReveal>
+                  </RevealImage>
                 </div>
               </div>
             </div>
@@ -205,17 +250,21 @@ export default function HomePage() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
               {/* Left Column: Movement Manifesto */}
               <div className="lg:col-span-6 space-y-8">
-                <ScrollReveal variant="fade-up">
+                <div>
                   <div className="font-mono text-xs uppercase tracking-widest text-[#FFD21F] mb-3 flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-[#E52421]" />
                     <span>{t.nav.about}</span>
                   </div>
-                  {/* Artistic English Campaign Statement */}
-                  <h2 className="font-display text-5xl sm:text-7xl font-black uppercase text-[#F5F5F2] tracking-tight leading-[0.9]">
-                    FIND <br />
-                    <span className="text-[#E52421]">YOUR LINE.</span>
-                  </h2>
-                </ScrollReveal>
+                  {/* Kinetic English Campaign Statement */}
+                  <KineticHeading
+                    line1="FIND"
+                    line2="YOUR LINE."
+                    accentColor="#E52421"
+                    personality="editorial"
+                    scrub={true}
+                    className="text-5xl sm:text-7xl"
+                  />
+                </div>
 
                 <ScrollReveal variant="fade-up" delay={100}>
                   <blockquote className="font-editorial italic text-2xl sm:text-3xl text-[#F5F5F2] border-l-2 border-[#E52421] pl-6 leading-snug">
@@ -268,42 +317,47 @@ export default function HomePage() {
 
               {/* Right Column: High-End Campaign Photo of Athlete Overlooking Oran */}
               <div className="lg:col-span-6">
-                <ScrollReveal variant="scale-up" delay={200}>
+                <RevealImage parallaxDirection="vertical" parallaxDistance={20}>
                   <div className="relative w-full h-[460px] sm:h-[560px] rounded-3xl overflow-hidden shadow-2xl border border-white/10 group">
                     <LazyImage
                       src="/images/registration/reg-campaign.jpg"
                       alt="ADD Parkour Oran Culture"
                       fill
-                      loading="lazy"
                       sizes="(max-width: 1024px) 100vw, 50vw"
                       className="object-cover group-hover:scale-105 transition-transform duration-700 select-none"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#121217]/70 via-transparent to-transparent pointer-events-none" />
                   </div>
-                </ScrollReveal>
+                </RevealImage>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 5. FINAL CALL TO ACTION: POSTER MOMENT */}
+        {/* 5. FINAL CALL TO ACTION: POSTER MOMENT (Rules 17 & 18) */}
         <section className="py-32 bg-[#0A0A0D] text-center relative overflow-hidden">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 relative z-10">
-            <ScrollReveal variant="fade-up">
-              {/* Artistic English Slogan */}
-              <h2 className="font-display text-7xl sm:text-9xl font-black text-[#F5F5F2] uppercase tracking-tight leading-[0.85]">
-                JOIN THE <br />
-                <span className="text-[#E52421]">MOVEMENT.</span>
-              </h2>
+            {/* Kinetic Slogan Reveal */}
+            <KineticHeading
+              line1="JOIN THE"
+              line2="MOVEMENT."
+              accentColor="#E52421"
+              personality="editorial"
+              scrub={true}
+              className="text-7xl sm:text-9xl"
+            />
 
-              {/* Localized Functional CTA */}
+            {/* Localized Functional CTA with Micro-Interaction */}
+            <ScrollReveal variant="fade-up" delay={150}>
               <div className="pt-8 flex flex-wrap items-center justify-center gap-6">
                 <Link
                   href="/register"
-                  className="inline-flex items-center gap-3 px-10 py-5 rounded font-display font-black text-xl text-[#F5F5F2] uppercase tracking-wider bg-[#E52421] hover:bg-[#FF3030] shadow-2xl hover:scale-105 transition-all duration-300 group"
+                  className="inline-flex items-center gap-3 px-10 py-5 rounded font-display font-black text-xl text-[#F5F5F2] uppercase tracking-wider bg-[#E52421] hover:bg-[#FF3030] shadow-2xl hover:scale-105 transition-all duration-300 active:scale-95 group"
                 >
-                  <span>{t.home.heroCta}</span>
-                  <ArrowUpRight className={`w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform ${isRtl ? "rtl-flip" : ""}`} />
+                  <span className="group-hover:translate-x-1 transition-transform duration-200">
+                    {t.home.heroCta}
+                  </span>
+                  <ArrowUpRight className={`w-6 h-6 group-hover:translate-x-1.5 group-hover:-translate-y-1.5 transition-transform duration-200 ${isRtl ? "rtl-flip" : ""}`} />
                 </Link>
               </div>
             </ScrollReveal>

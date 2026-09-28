@@ -83,8 +83,20 @@ export function StatusBadge({ status, label, size = "md" }: StatusBadgeProps) {
       defaultLabel = "Adhérent Actif";
       break;
 
+    case "ARCHIVED":
+      badgeStyle = "bg-white/5 text-[#9E9EA8] border border-white/15";
+      Icon = Clock;
+      defaultLabel = "Dossier Archivé";
+      break;
+
+    case "DRAFT":
+      badgeStyle = "bg-white/5 text-[#9E9EA8] border border-white/10";
+      Icon = Clock;
+      defaultLabel = "Brouillon";
+      break;
+
     default:
-      badgeStyle = "bg-[#072538] text-[#8faec5] border border-[#17425f]";
+      badgeStyle = "bg-white/5 text-[#9E9EA8] border border-white/10";
       Icon = Clock;
       defaultLabel = status;
       break;
@@ -108,3 +120,5 @@ export function StatusBadge({ status, label, size = "md" }: StatusBadgeProps) {
     </span>
   );
 }
+
+export default StatusBadge;

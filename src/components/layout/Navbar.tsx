@@ -10,11 +10,24 @@ import { Menu, X, ArrowUpRight, Shield, User } from "lucide-react";
 export function Navbar() {
   const { t, isRtl } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 30);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 bg-[#0A0A0D]/90 backdrop-blur-md border-b border-white/10">
+    <header className={`sticky top-0 z-50 transition-all duration-300 backdrop-blur-md border-b ${
+      scrolled
+        ? "bg-[#0A0A0D]/95 border-white/15 shadow-2xl"
+        : "bg-[#0A0A0D]/85 border-white/10"
+    }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className={`flex items-center justify-between transition-all duration-300 ${scrolled ? "h-16" : "h-20"}`}>
           {/* Logo & Brand Mark */}
           <Link href="/" className="flex items-center gap-3.5 group">
             <div className="relative w-11 h-11 rounded overflow-hidden group-hover:scale-105 transition-transform duration-300 shadow-md">

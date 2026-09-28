@@ -215,10 +215,15 @@ export interface TranslationDictionary {
     title: string;
     dashboard: string;
     registrations: string;
+    participants: string;
     duplicates: string;
     payments: string;
     receipts: string;
     seasons: string;
+    documents: string;
+    audit: string;
+    settings: string;
+    profile: string;
     activeSeason: string;
     totalRegistrations: string;
     pendingReview: string;
@@ -230,6 +235,37 @@ export interface TranslationDictionary {
     searchPlaceholder: string;
     filterDiscipline: string;
     filterStatus: string;
+    viewPublicSite: string;
+    nav: {
+      principal: string;
+      membership: string;
+      management: string;
+      account: string;
+      dashboard: string;
+      registrations: string;
+      participants: string;
+      seasons: string;
+      payments: string;
+      documents: string;
+      duplicates: string;
+      audit: string;
+      settings: string;
+      profile: string;
+      logout: string;
+    };
+    login: {
+      badge: string;
+      title: string;
+      subtitle: string;
+      phoneLabel: string;
+      passwordLabel: string;
+      showPassword: string;
+      hidePassword: string;
+      submitButton: string;
+      submitting: string;
+      errorInvalid: string;
+      securityNotice: string;
+    };
     table: {
       ref: string;
       name: string;
