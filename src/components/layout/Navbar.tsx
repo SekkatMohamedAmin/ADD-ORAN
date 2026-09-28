@@ -110,7 +110,7 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => setMobileMenuOpen((prev) => !prev)}
-              className="p-2 rounded bg-white/5 text-[#9E9EA8] hover:text-[#F5F5F2] border border-white/10 active:scale-95 cursor-pointer"
+              className="w-11 h-11 flex items-center justify-center rounded-lg bg-white/5 text-[#9E9EA8] hover:text-[#F5F5F2] border border-white/10 active:scale-95 cursor-pointer select-none"
               aria-label="Toggle Navigation Menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}

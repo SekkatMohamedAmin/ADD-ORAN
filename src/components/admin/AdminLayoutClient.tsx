@@ -294,7 +294,7 @@ export function AdminLayoutClient({ children, adminUser }: AdminLayoutClientProp
             <button
               type="button"
               onClick={() => setSidebarOpen(true)}
-              className="p-2 rounded-xl text-[#9E9EA8] hover:text-[#F5F5F2] hover:bg-white/5 md:hidden cursor-pointer active:scale-95"
+              className="w-10 h-10 flex items-center justify-center rounded-xl text-[#9E9EA8] hover:text-[#F5F5F2] hover:bg-white/5 md:hidden cursor-pointer active:scale-95 select-none"
               aria-label="Ouvrir le menu"
             >
               <Menu className="w-5 h-5" />
