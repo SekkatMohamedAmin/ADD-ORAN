@@ -101,9 +101,10 @@ export default function AdminRegistrationsPage() {
         </div>
       </div>
 
-      {/* Filter & Search Bar */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-[#141419] border border-white/10 space-y-4">
-        <form onSubmit={handleSearchSubmit} className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3">
+      {/* Filter & Search Bar with Red Energy Accent Line */}
+      <div className="relative p-4 sm:p-5 rounded-2xl bg-[#141419]/90 backdrop-blur-sm border border-white/10 space-y-4 overflow-hidden before:absolute before:top-0 before:left-0 before:right-0 before:h-[2px] before:bg-gradient-to-r before:from-transparent before:via-[#E52421] before:to-transparent shadow-lg">
+        <div className="absolute -top-12 -right-12 w-48 h-48 bg-[#E52421]/[0.06] rounded-full blur-3xl pointer-events-none" />
+        <form onSubmit={handleSearchSubmit} className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3 relative z-10">
           {/* Search Input */}
           <div className="relative flex-1">
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9EA8]" />
@@ -211,13 +212,13 @@ export default function AdminRegistrationsPage() {
       </div>
 
       {/* ========================================================
-          REGISTRATIONS DATA TABLE
+          REGISTRATIONS DATA TABLE WITH RED ENERGY ACCENT
          ======================================================== */}
-      <div className="rounded-2xl bg-[#141419] border border-white/10 overflow-hidden shadow-xl">
+      <div className="relative rounded-2xl bg-[#141419]/80 backdrop-blur-md border border-white/10 overflow-hidden shadow-xl before:absolute before:top-0 before:left-0 before:w-48 before:h-[2px] before:bg-gradient-to-r before:from-[#E52421] before:to-transparent before:shadow-[0_0_12px_#E52421]">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse font-body text-xs">
             <thead>
-              <tr className="border-b border-white/10 bg-[#1C1C24] font-mono text-[10px] uppercase text-[#9E9EA8] tracking-wider">
+              <tr className="border-b border-white/10 bg-[#1C1C24]/90 font-mono text-[10px] uppercase text-[#9E9EA8] tracking-wider">
                 <th className="py-3.5 px-4">{t.admin.table.ref}</th>
                 <th className="py-3.5 px-4">{t.admin.table.name}</th>
                 <th className="py-3.5 px-4">Contact</th>

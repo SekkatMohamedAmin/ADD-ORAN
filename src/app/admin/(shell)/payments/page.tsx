@@ -136,9 +136,10 @@ export default function PaymentsPage() {
         </div>
       </div>
 
-      {/* Filters Toolbar */}
-      <div className="p-4 bg-[#141419] border border-white/5 rounded-2xl space-y-3">
-        <form onSubmit={handleSearchSubmit} className="flex flex-wrap items-center gap-3">
+      {/* Filters Toolbar with Red Energy Accent */}
+      <div className="relative p-4 sm:p-5 bg-[#141419]/85 backdrop-blur-md border border-white/10 rounded-2xl space-y-3 overflow-hidden before:absolute before:top-0 before:left-0 before:right-0 before:h-[2px] before:bg-gradient-to-r before:from-transparent before:via-[#E52421] before:to-transparent shadow-lg">
+        <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#E52421]/[0.08] rounded-full blur-2xl pointer-events-none" />
+        <form onSubmit={handleSearchSubmit} className="flex flex-wrap items-center gap-3 relative z-10">
           <div className="relative flex-1 min-w-[260px]">
             <FiSearch className="absolute left-3.5 top-3.5 text-gray-500 w-4 h-4" />
             <input
@@ -146,7 +147,7 @@ export default function PaymentsPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Rechercher par N° de reçu, participant, référence inscription..."
-              className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#E52421]"
+              className="w-full bg-[#1C1C24] border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#E52421] font-mono"
             />
           </div>
 
@@ -156,7 +157,7 @@ export default function PaymentsPage() {
               setSelectedSeason(e.target.value);
               setPage(1);
             }}
-            className="bg-[#0A0A0D] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#E52421]"
+            className="bg-[#1C1C24] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#E52421] font-mono"
           >
             <option value="">Toutes les saisons</option>
             {seasons.map((s) => (
@@ -168,7 +169,7 @@ export default function PaymentsPage() {
 
           <button
             type="submit"
-            className="px-5 py-2.5 bg-[#E52421] hover:bg-[#FF3030] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition shadow-sm"
+            className="px-5 py-2.5 bg-[#E52421] hover:bg-[#FF3030] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition shadow-lg shadow-[#E52421]/20 font-display"
           >
             Filtrer
           </button>
@@ -181,7 +182,7 @@ export default function PaymentsPage() {
                 setSelectedSeason("");
                 setPage(1);
               }}
-              className="px-3 py-2.5 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs rounded-xl transition"
+              className="px-3 py-2.5 bg-[#1C1C24] hover:bg-white/10 text-gray-400 hover:text-white text-xs rounded-xl transition font-mono"
             >
               Effacer
             </button>
@@ -189,10 +190,10 @@ export default function PaymentsPage() {
         </form>
       </div>
 
-      {/* Payments Table */}
-      <div className="overflow-x-auto bg-[#141419] border border-white/5 rounded-2xl shadow-sm">
+      {/* Payments Table with Red Energy Accents */}
+      <div className="relative overflow-x-auto bg-[#141419]/80 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl before:absolute before:top-0 before:left-0 before:w-48 before:h-[2px] before:bg-gradient-to-r before:from-[#E52421] before:to-transparent before:shadow-[0_0_12px_#E52421]">
         <table className="w-full text-left text-sm text-gray-300">
-          <thead className="bg-[#0A0A0D] text-xs uppercase tracking-wider text-gray-400 border-b border-white/5">
+          <thead className="bg-[#1C1C24]/90 text-xs uppercase tracking-wider text-[#9E9EA8] font-mono border-b border-white/10">
             <tr>
               <th className="py-3.5 px-6">N° Reçu</th>
               <th className="py-3.5 px-6">Participant</th>

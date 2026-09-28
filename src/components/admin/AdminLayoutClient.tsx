@@ -6,6 +6,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { AdminEnergyBackground } from "@/components/admin/AdminEnergyBackground";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -140,21 +141,9 @@ export function AdminLayoutClient({ children, adminUser }: AdminLayoutClientProp
   return (
     <div className="min-h-screen bg-[#0A0A0D] text-[#F5F5F2] flex flex-col md:flex-row selection:bg-[#E52421] selection:text-[#F5F5F2] relative overflow-x-hidden">
       {/* ========================================================
-          FIXED AMBIENT ATHLETIC BACKGROUND IMAGE
+          ATHLETIC ENERGY BACKGROUND LAYER (RED/YELLOW SHAPES & TILES)
          ======================================================== */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
-        <Image
-          src="/images/hero/hero-parkour.jpg"
-          alt="ADD Oran Athletic Ambience"
-          fill
-          sizes="100vw"
-          className="object-cover object-center opacity-[0.09] mix-blend-luminosity filter contrast-130 grayscale"
-          priority={false}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0D]/85 via-[#0A0A0D]/95 to-[#0A0A0D]" />
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#E52421]/5 blur-[120px] rounded-full pointer-events-none" />
-        <div className="absolute inset-0 sports-grid-pattern opacity-35" />
-      </div>
+      <AdminEnergyBackground />
 
       {/* ========================================================
           SIDEBAR: PERSISTENT ON DESKTOP, DRAWER ON MOBILE
