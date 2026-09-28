@@ -47,14 +47,26 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* iOS Safari Touch Optimization: eliminate 300ms tap delay */
+/* Mobile Safari & Touch Optimization: eliminate tap delay, ensure tap registration, and prevent hover lock */
 button,
 a,
 [role="button"],
 input[type="submit"],
-input[type="button"] {
+input[type="button"],
+select,
+summary {
+  cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  pointer-events: auto;
+}
+
+/* Prevent sticky hover effects on touch screens from blocking clicks */
+@media (hover: none) and (pointer: coarse) {
+  button:hover,
+  a:hover {
+    transform: none;
+  }
 }
 
 /* High-Energy Athletic Accents */

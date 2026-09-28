@@ -24,13 +24,11 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
             key={opt.code}
             type="button"
             onClick={() => setLocale(opt.code)}
-            onTouchEnd={(e) => { e.preventDefault(); setLocale(opt.code); }}
-            className={`px-3 py-1 text-xs font-mono font-bold rounded-full transition-all duration-200 ${
+            className={`px-3 py-1 text-xs font-mono font-bold rounded-full transition-all duration-200 cursor-pointer select-none active:scale-95 ${
               isActive
                 ? "bg-[#E52421] text-[#F5F5F2] shadow-sm"
                 : "text-[#9E9EA8] hover:text-[#F5F5F2] hover:bg-white/5"
             }`}
-            style={{ WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
           >
             {opt.label}
           </button>

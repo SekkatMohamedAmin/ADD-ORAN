@@ -109,10 +109,8 @@ export function Navbar() {
             <LanguageSwitcher />
             <button
               type="button"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              onTouchEnd={(e) => { e.preventDefault(); setMobileMenuOpen(!mobileMenuOpen); }}
-              className="p-2 rounded bg-white/5 text-[#9E9EA8] hover:text-[#F5F5F2] border border-white/10"
-              style={{ WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              className="p-2 rounded bg-white/5 text-[#9E9EA8] hover:text-[#F5F5F2] border border-white/10 active:scale-95 cursor-pointer"
               aria-label="Toggle Navigation Menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}

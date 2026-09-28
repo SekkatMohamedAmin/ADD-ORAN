@@ -1,7 +1,17 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Syne, DM_Serif_Display, Plus_Jakarta_Sans, Space_Mono } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/components/i18n/LanguageProvider";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: "#0A0A0D",
+  colorScheme: "dark",
+  viewportFit: "cover",
+};
 
 const fontDisplay = Syne({
   subsets: ["latin"],
@@ -45,6 +55,12 @@ export const metadata: Metadata = {
     "Algérie",
     "ADD Parkour Oran",
   ],
+  formatDetection: {
+    telephone: false,
+    date: false,
+    email: false,
+    address: false,
+  },
   icons: {
     icon: "/images/club/logo.svg",
     apple: "/images/club/logo.svg",

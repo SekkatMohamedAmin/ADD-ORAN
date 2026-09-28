@@ -12,98 +12,81 @@ export function AdminEnergyBackground() {
         alt="ADD Oran Athletic Movement"
         fill
         sizes="100vw"
-        className="object-cover object-center opacity-[0.09] mix-blend-luminosity filter contrast-140 grayscale"
+        className="object-cover object-center opacity-[0.06] mix-blend-luminosity filter contrast-125 grayscale"
         priority={false}
       />
 
       {/* 2. Deep Night Base Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0D]/80 via-[#0A0A0D]/90 to-[#0A0A0D]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0D]/85 via-[#0A0A0D]/95 to-[#0A0A0D]" />
 
-      {/* 3. High-Density Kinetic Grid Pattern with Red Micro-Nodes */}
-      <div className="absolute inset-0 sports-grid-pattern opacity-60" />
+      {/* 3. Subtle Athletic Sports Micro-Grid */}
+      <div className="absolute inset-0 sports-grid-pattern opacity-30" />
 
-      {/* 4. Large Atmospheric Red Energy Glow Orbs */}
-      <div className="absolute -top-24 right-[15%] w-[650px] h-[650px] bg-[#E52421]/15 blur-[140px] rounded-full pointer-events-none" />
-      <div className="absolute top-1/2 -left-24 w-[500px] h-[500px] bg-[#E52421]/12 blur-[130px] rounded-full pointer-events-none" />
-      <div className="absolute -bottom-20 right-1/4 w-[600px] h-[500px] bg-[#E52421]/10 blur-[150px] rounded-full pointer-events-none" />
-      <div className="absolute top-1/4 right-5 w-[350px] h-[350px] bg-[#FFD21F]/[0.06] blur-[100px] rounded-full pointer-events-none" />
+      {/* 4. Balanced Atmospheric Glow (Soft White + Gentle Red) */}
+      <div className="absolute -top-32 right-1/4 w-[500px] h-[500px] bg-white/[0.02] blur-[140px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/4 -right-16 w-[450px] h-[450px] bg-[#E52421]/[0.06] blur-[150px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-1/4 -left-20 w-[400px] h-[400px] bg-white/[0.015] blur-[120px] rounded-full pointer-events-none" />
 
       {/* ========================================================
-          5. GEOMETRIC RED ENERGY SHAPES & ANGLED TILES
+          5. BALANCED ARCHITECTURAL TILES (WHITE + RED ACCENT)
          ======================================================== */}
 
-      {/* Tile A: Top-Right Heavy Angular Red Energy Polygon Plate */}
-      <div className="absolute -top-16 -right-10 w-[540px] h-[400px] transform rotate-[-12deg] skew-x-[-14deg]">
-        <div className="w-full h-full rounded-3xl border-2 border-[#E52421]/40 bg-gradient-to-br from-[#E52421]/25 via-[#E52421]/10 to-transparent backdrop-blur-[2px] relative overflow-hidden shadow-[0_0_80px_rgba(229,36,33,0.22)]">
-          {/* Diagonal Red Velocity Stripes inside the tile */}
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,rgba(229,36,33,0.14)_0px,rgba(229,36,33,0.14)_3px,transparent_3px,transparent_18px)]" />
-          {/* Laser-Sharp Glowing Red Blade Accent */}
-          <div className="absolute top-0 right-0 w-48 h-1.5 bg-[#E52421] shadow-[0_0_18px_#E52421]" />
-          <div className="absolute top-0 right-0 w-2 h-16 bg-[#E52421] shadow-[0_0_18px_#E52421]" />
-          {/* Tile Tag */}
-          <span className="absolute bottom-4 right-6 font-mono text-[9px] tracking-widest text-[#E52421]/70 uppercase">
-            ENERGY_SLAB // 01
+      {/* Primary Tile: Top-Right Frosted Architectural Slab with Crisp White Border & Red Detail */}
+      <div className="absolute -top-12 -right-8 w-[460px] h-[340px] transform rotate-[-10deg] skew-x-[-12deg]">
+        <div className="w-full h-full rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.04] via-white/[0.01] to-transparent backdrop-blur-[2px] relative overflow-hidden shadow-[0_0_50px_rgba(255,255,255,0.02)]">
+          {/* Subtle White Technical Hatch Lines */}
+          <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,rgba(255,255,255,0.02)_0px,rgba(255,255,255,0.02)_1px,transparent_1px,transparent_18px)]" />
+          {/* Crisp White Hairline Top Edge */}
+          <div className="absolute top-0 right-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-white/25 to-white/5" />
+          {/* Refined Athletic Red Corner Accent */}
+          <div className="absolute top-0 right-0 w-24 h-[2px] bg-[#E52421] shadow-[0_0_10px_#E52421]" />
+          <div className="absolute top-0 right-0 w-[2px] h-10 bg-[#E52421]" />
+          {/* Clean White Technical Tag */}
+          <span className="absolute bottom-4 right-6 font-mono text-[9px] tracking-widest text-white/30 uppercase">
+            ADD // SECTOR_01
           </span>
         </div>
       </div>
 
-      {/* Tile B: Mid-Left Floating Red Geometric Rhombus Tile */}
-      <div className="absolute top-1/3 -left-20 w-[420px] h-[320px] transform rotate-[16deg] skew-y-[-8deg]">
-        <div className="w-full h-full rounded-3xl border border-[#E52421]/35 bg-gradient-to-tr from-[#E52421]/20 via-[#E52421]/5 to-transparent relative overflow-hidden shadow-[0_0_60px_rgba(229,36,33,0.18)]">
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(-45deg,rgba(229,36,33,0.10)_0px,rgba(229,36,33,0.10)_2px,transparent_2px,transparent_14px)]" />
-          <div className="absolute bottom-0 left-0 w-36 h-1 bg-[#FFD21F] shadow-[0_0_14px_#FFD21F]" />
-          <div className="absolute top-0 left-12 w-20 h-1 bg-[#E52421] shadow-[0_0_12px_#E52421]" />
-          <span className="absolute top-4 left-6 font-mono text-[9px] tracking-widest text-[#E52421]/60 uppercase">
-            VECTOR_SECTOR // 02
+      {/* Secondary Tile: Mid-Left Floating Minimal Frosted Angle */}
+      <div className="absolute top-1/3 -left-16 w-[340px] h-[260px] transform rotate-[14deg] skew-y-[-6deg]">
+        <div className="w-full h-full rounded-2xl border border-white/10 bg-gradient-to-tr from-white/[0.03] via-transparent to-transparent relative overflow-hidden">
+          <div className="absolute inset-0 bg-[repeating-linear-gradient(-45deg,rgba(255,255,255,0.015)_0px,rgba(255,255,255,0.015)_1px,transparent_1px,transparent_14px)]" />
+          {/* Warm Athletic Gold Hairline Bottom */}
+          <div className="absolute bottom-0 left-0 w-24 h-[1px] bg-[#FFD21F]/60" />
+          <span className="absolute top-4 left-6 font-mono text-[9px] tracking-widest text-white/25 uppercase">
+            ORAN // MATRIX
           </span>
         </div>
       </div>
 
-      {/* Tile C: Right Mid-Ground Angled Red Energy Shard */}
-      <div className="absolute top-[55%] -right-16 w-[380px] h-[280px] transform rotate-[-8deg] skew-x-[15deg]">
-        <div className="w-full h-full rounded-2xl border border-[#E52421]/30 bg-gradient-to-bl from-[#E52421]/20 via-transparent to-[#FFD21F]/10 relative overflow-hidden shadow-[0_0_50px_rgba(229,36,33,0.15)]">
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,rgba(229,36,33,0.08)_0px,rgba(229,36,33,0.08)_2px,transparent_2px,transparent_12px)]" />
-          <div className="absolute top-0 right-0 w-28 h-1 bg-[#E52421] shadow-[0_0_12px_#E52421]" />
-        </div>
-      </div>
+      {/* ========================================================
+          6. CRISP WHITE & RED KINETIC SPEED LINES
+         ======================================================== */}
+      {/* Precision White Speed Lines */}
+      <div className="absolute top-0 right-[25%] w-[1px] h-[700px] bg-gradient-to-b from-transparent via-white/15 to-transparent transform rotate-[-35deg]" />
+      <div className="absolute top-24 right-[23%] w-[1px] h-[500px] bg-gradient-to-b from-transparent via-white/10 to-transparent transform rotate-[-35deg]" />
 
-      {/* Tile D: Bottom Center-Left Angular Plate */}
-      <div className="absolute -bottom-14 left-[18%] w-[420px] h-[220px] transform rotate-[-6deg] skew-x-[-12deg]">
-        <div className="w-full h-full rounded-2xl border border-[#E52421]/25 bg-gradient-to-t from-[#E52421]/15 via-[#FF3030]/5 to-transparent relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#E52421] to-transparent shadow-[0_0_12px_#E52421]" />
-        </div>
-      </div>
+      {/* Single Kinetic Red Accent Line */}
+      <div className="absolute top-10 right-[30%] w-[1.5px] h-[600px] bg-gradient-to-b from-transparent via-[#E52421]/35 to-transparent transform rotate-[-35deg]" />
+
+      {/* Left Hairline */}
+      <div className="absolute bottom-20 left-[20%] w-[1px] h-[500px] bg-gradient-to-b from-transparent via-white/10 to-transparent transform rotate-[-35deg]" />
 
       {/* ========================================================
-          6. DIAGONAL VELOCITY SLASHES & ENERGY BEAMS
+          7. REFINED TACTICAL SPATIAL HUD NODES (WHITE / MONO)
          ======================================================== */}
-      {/* Primary Red Slashes */}
-      <div className="absolute top-0 right-[28%] w-[2px] h-[750px] bg-gradient-to-b from-transparent via-[#E52421]/60 to-transparent transform rotate-[-38deg] shadow-[0_0_10px_#E52421]" />
-      <div className="absolute top-20 right-[26%] w-[1px] h-[550px] bg-gradient-to-b from-transparent via-[#FF3030]/50 to-transparent transform rotate-[-38deg]" />
-      <div className="absolute top-44 right-[32%] w-[1.5px] h-[650px] bg-gradient-to-b from-transparent via-[#FFD21F]/40 to-transparent transform rotate-[-38deg]" />
-
-      {/* Left Slashes */}
-      <div className="absolute bottom-10 left-[22%] w-[2px] h-[600px] bg-gradient-to-b from-transparent via-[#E52421]/50 to-transparent transform rotate-[-38deg] shadow-[0_0_8px_#E52421]" />
-      <div className="absolute bottom-32 left-[25%] w-[1px] h-[450px] bg-gradient-to-b from-transparent via-[#FFD21F]/35 to-transparent transform rotate-[-38deg]" />
-
-      {/* ========================================================
-          7. TACTICAL SPATIAL HUD NODES & CROSSHAIRS
-         ======================================================== */}
-      <div className="absolute top-24 left-[14%] flex items-center gap-1.5 font-mono text-[10px] text-[#E52421]/60">
-        <span className="font-bold text-xs">+</span>
-        <span className="tracking-widest">ADD//GRID.35.69</span>
+      <div className="absolute top-24 left-[14%] flex items-center gap-1.5 font-mono text-[10px] text-white/35">
+        <span className="font-bold text-xs text-white/50">+</span>
+        <span className="tracking-widest">35.6987° N, 0.6349° W</span>
       </div>
-      <div className="absolute top-40 right-[12%] flex items-center gap-1.5 font-mono text-[10px] text-[#FFD21F]/60">
+      <div className="absolute top-36 right-[12%] flex items-center gap-1.5 font-mono text-[10px] text-[#FFD21F]/40">
         <span className="font-bold text-xs">+</span>
-        <span className="tracking-widest">KINETIC.SECTOR//A</span>
+        <span className="tracking-widest">SYS // ONLINE</span>
       </div>
-      <div className="absolute bottom-52 right-[20%] flex items-center gap-1.5 font-mono text-[10px] text-[#E52421]/50">
-        <span className="font-bold text-xs">+</span>
-        <span className="tracking-widest">FLOW_NODE//26</span>
-      </div>
-      <div className="absolute bottom-28 left-[18%] flex items-center gap-1.5 font-mono text-[10px] text-[#FFD21F]/50">
-        <span className="font-bold text-xs">+</span>
-        <span className="tracking-widest">VELOCITY//SYS</span>
+      <div className="absolute bottom-40 right-[18%] flex items-center gap-1.5 font-mono text-[10px] text-white/25">
+        <span className="font-bold text-xs text-white/40">+</span>
+        <span className="tracking-widest">ADD.PARKOUR.2026</span>
       </div>
     </div>
   );
