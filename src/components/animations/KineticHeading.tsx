@@ -160,20 +160,31 @@ export function KineticHeading({
   }, [line1, line2, personality, scrub, delay, isArabic]);
 
   return (
-    <div ref={containerRef} className="inline-block max-w-full">
-      <Tag className={`font-display font-black uppercase text-[#F5F5F2] tracking-tight leading-[0.85] select-none ${className}`}>
+    <div
+      ref={containerRef}
+      dir={isArabic ? "rtl" : "ltr"}
+      className={`inline-block max-w-full ${isArabic ? "text-right [direction:rtl]" : "text-left [direction:ltr]"}`}
+    >
+      <Tag
+        className={`font-display font-black uppercase text-[#F5F5F2] tracking-tight leading-[0.85] select-none ${
+          isArabic ? "text-right [direction:rtl]" : "text-left [direction:ltr]"
+        } ${className}`}
+      >
         {/* Line 1 with clip container */}
-        <span className="block overflow-hidden pb-1">
-          <span ref={line1Ref} className="inline-block will-change-transform">
+        <span className={`block overflow-hidden pb-1 ${isArabic ? "text-right [direction:rtl]" : "text-left [direction:ltr]"}`}>
+          <span
+            ref={line1Ref}
+            className={`inline-block will-change-transform ${isArabic ? "[direction:rtl]" : "[direction:ltr]"}`}
+          >
             {line1}
           </span>
         </span>
 
         {/* Line 2 with clip container and accent styling */}
-        <span className="block overflow-hidden pt-1">
+        <span className={`block overflow-hidden pt-1 ${isArabic ? "text-right [direction:rtl]" : "text-left [direction:ltr]"}`}>
           <span
             ref={line2Ref}
-            className="inline-block will-change-transform"
+            className={`inline-block will-change-transform ${isArabic ? "[direction:rtl]" : "[direction:ltr]"}`}
             style={{ color: accentColor }}
           >
             {line2}

@@ -123,14 +123,15 @@ export function HeroKineticTitle({
   return (
     <h1
       ref={containerRef}
-      className="font-display text-7xl sm:text-8xl lg:text-[10rem] font-black uppercase tracking-tight text-[#F5F5F2] leading-[0.85] drop-shadow-lg mb-6 select-none"
+      dir="ltr"
+      className="font-display text-7xl sm:text-8xl lg:text-[10rem] font-black uppercase tracking-tight text-[#F5F5F2] leading-[0.85] drop-shadow-lg mb-6 select-none text-left [direction:ltr]"
     >
       {/* Line 1: Character Split Reveal */}
-      <span className="block overflow-hidden pb-1">
-        <span className="inline-flex">
+      <span className="block overflow-hidden pb-1 text-left [direction:ltr]">
+        <span className="inline-flex text-left [direction:ltr]">
           {line1Text.split("").map((char, index) => (
-            <span key={`l1-${index}`} className="inline-block overflow-hidden">
-              <span className="hero-char-l1 inline-block will-change-transform">
+            <span key={`l1-${index}`} className="inline-block overflow-hidden [direction:ltr]">
+              <span className="hero-char-l1 inline-block will-change-transform [direction:ltr]">
                 {char === " " ? "\u00A0" : char}
               </span>
             </span>
@@ -139,11 +140,11 @@ export function HeroKineticTitle({
       </span>
 
       {/* Line 2: Character Split Reveal with Accent Color */}
-      <span className="block overflow-hidden pt-1">
-        <span className="inline-flex" style={{ color: accentColor }}>
+      <span className="block overflow-hidden pt-1 text-left [direction:ltr]">
+        <span className="inline-flex text-left [direction:ltr]" style={{ color: accentColor }}>
           {line2Text.split("").map((char, index) => (
-            <span key={`l2-${index}`} className="inline-block overflow-hidden">
-              <span className="hero-char-l2 inline-block will-change-transform">
+            <span key={`l2-${index}`} className="inline-block overflow-hidden [direction:ltr]">
+              <span className="hero-char-l2 inline-block will-change-transform [direction:ltr]">
                 {char === " " ? "\u00A0" : char}
               </span>
             </span>

@@ -203,18 +203,18 @@ export function HeroCarousel() {
         className="relative z-20 max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex flex-col justify-between pt-28 pb-10 will-change-transform"
       >
         {/* Subtle Natural City Reference without clutter */}
-        <div ref={badgeRef} className="flex items-center gap-3">
+        <div ref={badgeRef} dir="ltr" className="flex items-center gap-3 [direction:ltr]">
           <span 
             className="inline-block w-2.5 h-2.5 rounded-full transition-colors duration-500"
             style={{ backgroundColor: slide.accentColor }} 
           />
-          <span className="font-mono text-xs uppercase tracking-widest text-[#9E9EA8]">
+          <span className="font-mono text-xs uppercase tracking-widest text-[#9E9EA8] [direction:ltr]">
             ART DU DÉPLACEMENT // ORAN
           </span>
         </div>
 
         {/* Center: Oversized English Campaign Statement with Kinetic Typography */}
-        <div className="max-w-4xl my-auto py-6">
+        <div dir="ltr" className="max-w-4xl my-auto py-6 [direction:ltr] text-left">
           <HeroKineticTitle
             statement={slide.statement}
             accentColor={slide.accentColor}
@@ -246,14 +246,14 @@ export function HeroCarousel() {
         </div>
 
         {/* Bottom Campaign Navigation: Clean, Minimal, Non-Boxy */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4">
-          <div className="flex items-center gap-6">
+        <div dir="ltr" className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 [direction:ltr]">
+          <div className="flex items-center gap-6 [direction:ltr]">
             {HERO_SLIDES.map((s, idx) => (
               <button
                 key={s.id}
                 onClick={() => setCurrentIdx(idx)}
                 aria-label={`Poster ${idx + 1}: ${s.statement}`}
-                className={`group flex items-center gap-2 py-1 transition-all duration-300 text-left ${
+                className={`group flex items-center gap-2 py-1 transition-all duration-300 text-left [direction:ltr] ${
                   idx === currentIdx
                     ? "text-[#F5F5F2] font-bold border-b-2"
                     : "text-[#9E9EA8]/70 hover:text-[#F5F5F2]"
