@@ -4,14 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev --hostname 0.0.0.0",
-    "build": "node --max-old-space-size=4096 node_modules/next/dist/bin/next build",
+    "build": "prisma generate && node --max-old-space-size=4096 node_modules/next/dist/bin/next build",
+    "postinstall": "prisma generate",
     "start": "next start --hostname 0.0.0.0",
     "lint": "eslint",
     "db:seed": "tsx prisma/seed.ts",
     "test": "tsx tests/run-all-tests.ts"
-  },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
