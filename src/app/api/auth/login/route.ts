@@ -15,11 +15,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const cleanPhone = phone.replace(/[\s-]/g, "");
+    const cleaned = phone.replace(/[\s\-\.\(\)]/g, "");
+    const candidatePhones = new Set<string>([phone.trim(), cleaned]);
+    if (cleaned.startsWith("+213")) {
+      candidatePhones.add("0" + cleaned.slice(4));
+      candidatePhones.add(cleaned.slice(4));
+      candidatePhones.add("00213" + cleaned.slice(4));
+    } else if (cleaned.startsWith("00213")) {
+      candidatePhones.add("0" + cleaned.slice(5));
+      candidatePhones.add(cleaned.slice(5));
+      candidatePhones.add("+213" + cleaned.slice(5));
+    } else if (cleaned.startsWith("0") && cleaned.length >= 9) {
+      candidatePhones.add("+213" + cleaned.slice(1));
+      candidatePhones.add("00213" + cleaned.slice(1));
+      candidatePhones.add(cleaned.slice(1));
+    } else if (!cleaned.startsWith("0") && !cleaned.startsWith("+") && cleaned.length >= 8) {
+      candidatePhones.add("0" + cleaned);
+      candidatePhones.add("+213" + cleaned);
+    }
 
     const user = await prisma.user.findFirst({
       where: {
-        OR: [{ phone: cleanPhone }, { phone }],
+        OR: Array.from(candidatePhones).map((p) => ({ phone: p })),
       },
       include: {
         participants: {
