@@ -1,8 +1,16 @@
 import fs from "fs/promises";
 import path from "path";
 import crypto from "crypto";
+import os from "os";
 
-const STORAGE_ROOT = path.join(process.cwd(), "storage", "uploads");
+function getStorageRoot(): string {
+  // If in a serverless environment (Vercel, AWS Lambda), write to os.tmpdir()
+  // because the project root /var/task is read-only.
+  if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+    return path.join(os.tmpdir(), "storage", "uploads");
+  }
+  return path.join(process.cwd(), "storage", "uploads");
+}
 
 // Allowed file types for document uploads (strict validation)
 export const ALLOWED_MIME_TYPES = [
@@ -29,10 +37,12 @@ export interface StorageProvider {
 
 class LocalPrivateStorageProvider implements StorageProvider {
   private async ensureDir() {
-    await fs.mkdir(STORAGE_ROOT, { recursive: true });
+    const root = getStorageRoot();
+    await fs.mkdir(root, { recursive: true });
   }
 
   async save(buffer: Buffer, originalFilename: string, mimeType: string): Promise<StoredFileResult> {
+    const root = getStorageRoot();
     await this.ensureDir();
 
     if (!ALLOWED_MIME_TYPES.includes(mimeType)) {
@@ -55,10 +65,10 @@ class LocalPrivateStorageProvider implements StorageProvider {
     // Safe randomized storage filename
     const uniqueId = crypto.randomUUID();
     const storedFilename = `${uniqueId}${extension}`;
-    const fullPath = path.join(STORAGE_ROOT, storedFilename);
+    const fullPath = path.join(/*turbopackIgnore: true*/ root, storedFilename);
 
     // Prevent directory traversal
-    if (!fullPath.startsWith(STORAGE_ROOT)) {
+    if (!fullPath.startsWith(root)) {
       throw new Error("Invalid storage destination");
     }
 
@@ -73,28 +83,42 @@ class LocalPrivateStorageProvider implements StorageProvider {
   }
 
   async read(storagePath: string): Promise<Buffer | null> {
-    const fullPath = path.join(STORAGE_ROOT, path.basename(storagePath));
-    if (!fullPath.startsWith(STORAGE_ROOT)) {
-      return null;
+    const filename = path.basename(storagePath);
+    const candidatePaths = [
+      path.join(/*turbopackIgnore: true*/ getStorageRoot(), filename),
+      path.join(/*turbopackIgnore: true*/ os.tmpdir(), "storage", "uploads", filename),
+      path.join(/*turbopackIgnore: true*/ process.cwd(), "storage", "uploads", filename),
+    ];
+
+    for (const p of candidatePaths) {
+      try {
+        return await fs.readFile(/*turbopackIgnore: true*/ p);
+      } catch {
+        // Continue searching
+      }
     }
-    try {
-      return await fs.readFile(fullPath);
-    } catch {
-      return null;
-    }
+
+    return null;
   }
 
   async delete(storagePath: string): Promise<boolean> {
-    const fullPath = path.join(STORAGE_ROOT, path.basename(storagePath));
-    if (!fullPath.startsWith(STORAGE_ROOT)) {
-      return false;
+    const filename = path.basename(storagePath);
+    const candidatePaths = [
+      path.join(/*turbopackIgnore: true*/ getStorageRoot(), filename),
+      path.join(/*turbopackIgnore: true*/ os.tmpdir(), "storage", "uploads", filename),
+      path.join(/*turbopackIgnore: true*/ process.cwd(), "storage", "uploads", filename),
+    ];
+
+    for (const p of candidatePaths) {
+      try {
+        await fs.unlink(/*turbopackIgnore: true*/ p);
+        return true;
+      } catch {
+        // Continue
+      }
     }
-    try {
-      await fs.unlink(fullPath);
-      return true;
-    } catch {
-      return false;
-    }
+
+    return false;
   }
 }
 
