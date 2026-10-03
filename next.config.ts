@@ -36,6 +36,11 @@ const nextConfig: NextConfig = {
     "172.31.*.*",
   ],
 
+  // Ensure SQLite dev.db is included in Vercel serverless function bundles
+  outputFileTracingIncludes: {
+    "/**": ["./prisma/dev.db"],
+  },
+
   // Serve static images directly without proxy failures on mobile Safari or LAN testing
   images: {
     unoptimized: true,
