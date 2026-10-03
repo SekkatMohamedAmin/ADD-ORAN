@@ -24,6 +24,7 @@ import {
   Hash,
   Upload,
 } from "lucide-react";
+import { compressImage } from "@/lib/imageCompression";
 
 export default function DashboardPage() {
   const { t, locale, isRtl } = useLanguage();
@@ -78,10 +79,22 @@ export default function DashboardPage() {
       const formData = new FormData();
       formData.append("registrationId", registration.id);
 
-      if (replacedPhoto) formData.append("photo", replacedPhoto);
-      if (replacedNationalId) formData.append("nationalId", replacedNationalId);
-      if (replacedMedical) formData.append("medicalCertificate", replacedMedical);
-      if (replacedParentalId) formData.append("parentNationalId", replacedParentalId);
+      if (replacedPhoto) {
+        const optPhoto = await compressImage(replacedPhoto, { maxWidth: 1000, maxHeight: 1000, quality: 0.82 });
+        formData.append("photo", optPhoto);
+      }
+      if (replacedNationalId) {
+        const optId = await compressImage(replacedNationalId, { maxWidth: 1600, maxHeight: 1600, quality: 0.82 });
+        formData.append("nationalId", optId);
+      }
+      if (replacedMedical) {
+        const optMed = await compressImage(replacedMedical, { maxWidth: 1600, maxHeight: 1600, quality: 0.82 });
+        formData.append("medicalCertificate", optMed);
+      }
+      if (replacedParentalId) {
+        const optPar = await compressImage(replacedParentalId, { maxWidth: 1600, maxHeight: 1600, quality: 0.82 });
+        formData.append("parentNationalId", optPar);
+      }
 
       const res = await fetch("/api/participant/resubmit", {
         method: "POST",

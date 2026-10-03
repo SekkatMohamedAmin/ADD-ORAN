@@ -23,6 +23,7 @@ import {
   ExternalLink,
   ArrowUpRight,
 } from "lucide-react";
+import { compressImage } from "@/lib/imageCompression";
 
 export default function RegisterPage() {
   const { t, isRtl } = useLanguage();
@@ -118,11 +119,43 @@ export default function RegisterPage() {
     }
   };
 
-  const handlePhotoSelect = (file: File | null) => {
-    if (!file) return;
-    setPhotoFile(file);
-    const url = URL.createObjectURL(file);
+  const handlePhotoSelect = async (file: File | null) => {
+    if (!file) {
+      setPhotoFile(null);
+      setPhotoPreview(null);
+      return;
+    }
+    const optimized = await compressImage(file, { maxWidth: 1000, maxHeight: 1000, quality: 0.82 });
+    setPhotoFile(optimized);
+    const url = URL.createObjectURL(optimized);
     setPhotoPreview(url);
+  };
+
+  const handleNationalIdSelect = async (file: File | null) => {
+    if (!file) {
+      setNationalIdFile(null);
+      return;
+    }
+    const optimized = await compressImage(file, { maxWidth: 1600, maxHeight: 1600, quality: 0.82 });
+    setNationalIdFile(optimized);
+  };
+
+  const handleMedicalSelect = async (file: File | null) => {
+    if (!file) {
+      setMedicalFile(null);
+      return;
+    }
+    const optimized = await compressImage(file, { maxWidth: 1600, maxHeight: 1600, quality: 0.82 });
+    setMedicalFile(optimized);
+  };
+
+  const handleParentalIdSelect = async (file: File | null) => {
+    if (!file) {
+      setParentalIdFile(null);
+      return;
+    }
+    const optimized = await compressImage(file, { maxWidth: 1600, maxHeight: 1600, quality: 0.82 });
+    setParentalIdFile(optimized);
   };
 
   const toggleDiscipline = (slug: string) => {
@@ -249,10 +282,22 @@ export default function RegisterPage() {
 
       formData.append("disciplines", JSON.stringify(selectedDisciplines));
 
-      if (photoFile) formData.append("photo", photoFile);
-      if (nationalIdFile) formData.append("nationalId", nationalIdFile);
-      if (medicalFile) formData.append("medicalCertificate", medicalFile);
-      if (isMinor && parentalIdFile) formData.append("parentalId", parentalIdFile);
+      if (photoFile) {
+        const optPhoto = await compressImage(photoFile, { maxWidth: 1000, maxHeight: 1000, quality: 0.82 });
+        formData.append("photo", optPhoto);
+      }
+      if (nationalIdFile) {
+        const optId = await compressImage(nationalIdFile, { maxWidth: 1600, maxHeight: 1600, quality: 0.82 });
+        formData.append("nationalId", optId);
+      }
+      if (medicalFile) {
+        const optMed = await compressImage(medicalFile, { maxWidth: 1600, maxHeight: 1600, quality: 0.82 });
+        formData.append("medicalCertificate", optMed);
+      }
+      if (isMinor && parentalIdFile) {
+        const optPar = await compressImage(parentalIdFile, { maxWidth: 1600, maxHeight: 1600, quality: 0.82 });
+        formData.append("parentalId", optPar);
+      }
 
       formData.append("engagementAccepted", engagementAccepted ? "true" : "false");
       if (isMinor) {
@@ -949,7 +994,7 @@ export default function RegisterPage() {
                       <input
                         type="file"
                         accept="image/*,application/pdf"
-                        onChange={(e) => setNationalIdFile(e.target.files?.[0] || null)}
+                        onChange={(e) => handleNationalIdSelect(e.target.files?.[0] || null)}
                         className="block w-full text-xs text-[#9E9EA8] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#16161D] file:text-white hover:file:bg-[#E52421] cursor-pointer"
                       />
                       {nationalIdFile && (
@@ -982,7 +1027,7 @@ export default function RegisterPage() {
                       <input
                         type="file"
                         accept="image/*,application/pdf"
-                        onChange={(e) => setMedicalFile(e.target.files?.[0] || null)}
+                        onChange={(e) => handleMedicalSelect(e.target.files?.[0] || null)}
                         className="block w-full text-xs text-[#9E9EA8] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#16161D] file:text-white hover:file:bg-[#E52421] cursor-pointer"
                       />
                       {medicalFile && (
@@ -1021,7 +1066,7 @@ export default function RegisterPage() {
                         <input
                           type="file"
                           accept="image/*,application/pdf"
-                          onChange={(e) => setParentalIdFile(e.target.files?.[0] || null)}
+                          onChange={(e) => handleParentalIdSelect(e.target.files?.[0] || null)}
                           className="block w-full text-xs text-[#9E9EA8] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#16161D] file:text-white hover:file:bg-[#E52421] cursor-pointer"
                         />
                         {parentalIdFile && (
