@@ -10,14 +10,14 @@ export default function ParentalDocPage() {
   const { t } = useLanguage();
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#00141f] text-[#f4f7f9]">
+    <div className="min-h-screen flex flex-col bg-[#0A0A0D] text-[#F5F5F2] selection:bg-[#E52421] selection:text-white">
       <Navbar />
 
       <main className="flex-1 max-w-4xl mx-auto w-full px-4 py-12">
-        <div className="flex items-center justify-between mb-8 no-print">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 no-print">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#003D5B] border border-[#00798C] text-[#38b6cb] font-mono text-xs font-bold uppercase tracking-wider mb-2">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#EDAE49]" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#E52421]/15 border border-[#E52421]/30 text-[#FFD21F] font-mono text-xs font-bold uppercase tracking-wider mb-2">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#E52421]" />
               <span>Document Officiel // Autorisation Parentale</span>
             </div>
             <h1 className="font-display text-3xl sm:text-4xl font-black text-white uppercase tracking-tight">
@@ -27,7 +27,7 @@ export default function ParentalDocPage() {
           <button
             type="button"
             onClick={() => window.print()}
-            className="btn-print flex items-center gap-2 px-5 py-2.5 bg-[#EDAE49] hover:bg-[#ffc266] text-[#003D5B] rounded-xl font-display font-black text-xs uppercase tracking-wider shadow-lg transition-all"
+            className="btn-print flex items-center gap-2 px-6 py-3 bg-[#E52421] hover:bg-[#FF3030] text-white rounded-xl font-display font-black text-xs uppercase tracking-wider shadow-lg shadow-[#E52421]/25 hover:scale-[1.01] active:scale-[0.99] transition-all"
           >
             <Printer className="w-4 h-4" />
             {t.common.print}

@@ -39,16 +39,16 @@ export default function ReceiptPage({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#00141f] flex items-center justify-center text-white">
-        <div className="w-10 h-10 border-2 border-[#EDAE49] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#0A0A0D] flex items-center justify-center text-white">
+        <div className="w-10 h-10 border-2 border-[#E52421] border-t-transparent rounded-full animate-spin shadow-lg shadow-[#E52421]/20" />
       </div>
     );
   }
 
   if (error || !payment) {
     return (
-      <div className="min-h-screen bg-[#00141f] flex items-center justify-center p-4">
-        <div className="bg-[#072538] border border-[#17425f] rounded-xl p-6 text-center text-[#f17887] text-xs font-mono">
+      <div className="min-h-screen bg-[#0A0A0D] flex items-center justify-center p-4">
+        <div className="bg-[#141419] border border-white/10 rounded-2xl p-6 text-center text-[#FF8585] text-xs font-mono shadow-2xl">
           {error || "Reçu non trouvé"}
         </div>
       </div>
@@ -58,24 +58,24 @@ export default function ReceiptPage({
   const p = payment.registration.participant;
 
   return (
-    <div className="min-h-screen bg-[#00141f] py-8 px-4 sm:px-6 text-[#f4f7f9]">
+    <div className="min-h-screen bg-[#0A0A0D] py-8 px-4 sm:px-6 text-[#F5F5F2] selection:bg-[#E52421] selection:text-white">
       {/* Control Bar (hidden during printing) */}
-      <div className="max-w-2xl mx-auto mb-8 flex items-center justify-between no-print bg-[#072538] border border-[#17425f] p-4 rounded-2xl shadow-xl">
+      <div className="max-w-2xl mx-auto mb-8 flex items-center justify-between no-print bg-[#141419]/90 border border-white/10 p-4 rounded-2xl shadow-xl backdrop-blur-xl">
         <Link
           href="/dashboard"
-          className="flex items-center gap-2 font-mono text-xs font-semibold text-[#8faec5] hover:text-white transition-colors"
+          className="flex items-center gap-2 font-mono text-xs font-semibold text-[#9E9EA8] hover:text-white transition-colors"
         >
-          <ArrowLeft className="w-4 h-4 text-[#EDAE49]" />
-          Retour
+          <ArrowLeft className="w-4 h-4 text-[#E52421]" />
+          Retour à l&apos;espace
         </Link>
 
         {/* Language selector */}
-        <div className="flex gap-1 bg-[#00141f] p-1 rounded-xl border border-[#17425f]">
+        <div className="flex gap-1 bg-[#0A0A0D]/80 p-1.5 rounded-xl border border-white/10">
           <button
             type="button"
             onClick={() => setLang("fr")}
             className={`px-3 py-1 font-mono text-xs font-bold rounded-lg transition-colors ${
-              lang === "fr" ? "bg-[#003D5B] text-[#EDAE49]" : "text-[#8faec5]"
+              lang === "fr" ? "bg-[#E52421]/20 text-[#FFD21F] border border-[#E52421]/40" : "text-[#9E9EA8] hover:text-white"
             }`}
           >
             FR
@@ -84,7 +84,7 @@ export default function ReceiptPage({
             type="button"
             onClick={() => setLang("ar")}
             className={`px-3 py-1 font-mono text-xs font-bold rounded-lg transition-colors ${
-              lang === "ar" ? "bg-[#003D5B] text-[#EDAE49]" : "text-[#8faec5]"
+              lang === "ar" ? "bg-[#E52421]/20 text-[#FFD21F] border border-[#E52421]/40" : "text-[#9E9EA8] hover:text-white"
             }`}
           >
             العربية
@@ -93,7 +93,7 @@ export default function ReceiptPage({
             type="button"
             onClick={() => setLang("en")}
             className={`px-3 py-1 font-mono text-xs font-bold rounded-lg transition-colors ${
-              lang === "en" ? "bg-[#003D5B] text-[#EDAE49]" : "text-[#8faec5]"
+              lang === "en" ? "bg-[#E52421]/20 text-[#FFD21F] border border-[#E52421]/40" : "text-[#9E9EA8] hover:text-white"
             }`}
           >
             EN
@@ -103,7 +103,7 @@ export default function ReceiptPage({
         <button
           type="button"
           onClick={() => window.print()}
-          className="btn-print flex items-center gap-2 px-5 py-2.5 bg-[#EDAE49] hover:bg-[#ffc266] text-[#003D5B] font-display font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all"
+          className="btn-print flex items-center gap-2 px-5 py-2.5 bg-[#E52421] hover:bg-[#FF3030] text-white font-display font-black text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-[#E52421]/25 hover:scale-[1.01] active:scale-[0.99] transition-all"
         >
           <Printer className="w-4 h-4" />
           Imprimer le reçu

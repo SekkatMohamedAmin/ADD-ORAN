@@ -78,10 +78,10 @@ export default function PaperworkPage({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#00141f] flex items-center justify-center text-[#8faec5]">
+      <div className="min-h-screen bg-[#0A0A0D] flex items-center justify-center text-[#9E9EA8]">
         <div className="text-center space-y-3">
-          <div className="w-10 h-10 border-2 border-[#EDAE49] border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="font-mono text-xs uppercase tracking-widest text-[#8faec5]">Chargement du document officiel...</p>
+          <div className="w-10 h-10 border-2 border-[#E52421] border-t-transparent rounded-full animate-spin mx-auto shadow-lg shadow-[#E52421]/20" />
+          <p className="font-mono text-xs uppercase tracking-widest text-[#9E9EA8]">Chargement du document officiel...</p>
         </div>
       </div>
     );
@@ -89,14 +89,14 @@ export default function PaperworkPage({
 
   if (error || !data) {
     return (
-      <div className="min-h-screen bg-[#00141f] flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-[#072538] border border-[#17425f] rounded-2xl p-6 text-center space-y-4">
-          <p className="text-[#f17887] text-xs font-mono">{error || "Document non trouvé"}</p>
+      <div className="min-h-screen bg-[#0A0A0D] flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-[#141419] border border-white/10 rounded-2xl p-6 text-center space-y-4 shadow-2xl">
+          <p className="text-[#FF8585] text-xs font-mono">{error || "Document non trouvé"}</p>
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#00141f] hover:bg-[#003D5B] text-white rounded-xl text-xs font-mono border border-[#17425f]"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-xl text-xs font-mono border border-white/10 transition-all"
           >
-            <ArrowLeft className="w-4 h-4 text-[#EDAE49]" /> Retour à mon espace
+            <ArrowLeft className="w-4 h-4 text-[#E52421]" /> Retour à mon espace
           </Link>
         </div>
       </div>
@@ -111,25 +111,25 @@ export default function PaperworkPage({
   );
 
   return (
-    <div className="min-h-screen bg-[#00141f] py-8 px-4 sm:px-6">
+    <div className="min-h-screen bg-[#0A0A0D] py-8 px-4 sm:px-6 selection:bg-[#E52421] selection:text-white">
       {/* Control Bar (hidden during printing) */}
-      <div className="max-w-4xl mx-auto mb-8 bg-[#072538] border border-[#17425f] rounded-2xl p-4 sm:p-5 shadow-2xl no-print">
+      <div className="max-w-4xl mx-auto mb-8 bg-[#141419]/90 border border-white/10 rounded-2xl p-4 sm:p-5 shadow-2xl backdrop-blur-xl no-print">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 font-mono text-xs font-semibold text-[#8faec5] hover:text-white transition-colors"
+            className="flex items-center gap-2 font-mono text-xs font-semibold text-[#9E9EA8] hover:text-white transition-colors"
           >
-            <ArrowLeft className="w-4 h-4 text-[#EDAE49]" />
-            Retour
+            <ArrowLeft className="w-4 h-4 text-[#E52421]" />
+            Retour à l&apos;espace
           </Link>
 
           {/* Document Type Selector */}
-          <div className="flex flex-wrap gap-1.5 bg-[#00141f] p-1 rounded-xl border border-[#17425f]">
+          <div className="flex flex-wrap gap-1.5 bg-[#0A0A0D]/80 p-1.5 rounded-xl border border-white/10">
             <button
               type="button"
               onClick={() => setDocType("DOSSIER")}
               className={`px-3 py-1.5 font-mono text-xs font-bold rounded-lg transition-all ${
-                docType === "DOSSIER" ? "bg-[#EDAE49] text-[#003D5B] shadow" : "text-[#8faec5] hover:text-white"
+                docType === "DOSSIER" ? "bg-[#E52421] text-white shadow-md shadow-[#E52421]/30" : "text-[#9E9EA8] hover:text-white"
               }`}
             >
               Dossier Complet
@@ -138,7 +138,7 @@ export default function PaperworkPage({
               type="button"
               onClick={() => setDocType("CONFIRMATION")}
               className={`px-3 py-1.5 font-mono text-xs font-bold rounded-lg transition-all ${
-                docType === "CONFIRMATION" ? "bg-[#EDAE49] text-[#003D5B] shadow" : "text-[#8faec5] hover:text-white"
+                docType === "CONFIRMATION" ? "bg-[#E52421] text-white shadow-md shadow-[#E52421]/30" : "text-[#9E9EA8] hover:text-white"
               }`}
             >
               Confirmation
@@ -147,7 +147,7 @@ export default function PaperworkPage({
               type="button"
               onClick={() => setDocType("ENGAGEMENT")}
               className={`px-3 py-1.5 font-mono text-xs font-bold rounded-lg transition-all ${
-                docType === "ENGAGEMENT" ? "bg-[#EDAE49] text-[#003D5B] shadow" : "text-[#8faec5] hover:text-white"
+                docType === "ENGAGEMENT" ? "bg-[#E52421] text-white shadow-md shadow-[#E52421]/30" : "text-[#9E9EA8] hover:text-white"
               }`}
             >
               Engagement
@@ -157,7 +157,7 @@ export default function PaperworkPage({
                 type="button"
                 onClick={() => setDocType("PARENTAL")}
                 className={`px-3 py-1.5 font-mono text-xs font-bold rounded-lg transition-all ${
-                  docType === "PARENTAL" ? "bg-[#EDAE49] text-[#003D5B] shadow" : "text-[#8faec5] hover:text-white"
+                  docType === "PARENTAL" ? "bg-[#E52421] text-white shadow-md shadow-[#E52421]/30" : "text-[#9E9EA8] hover:text-white"
                 }`}
               >
                 Autorisation Parentale
@@ -168,7 +168,7 @@ export default function PaperworkPage({
                 type="button"
                 onClick={() => setDocType("RECEIPT")}
                 className={`px-3 py-1.5 font-mono text-xs font-bold rounded-lg transition-all ${
-                  docType === "RECEIPT" ? "bg-[#EDAE49] text-[#003D5B] shadow" : "text-[#8faec5] hover:text-white"
+                  docType === "RECEIPT" ? "bg-[#E52421] text-white shadow-md shadow-[#E52421]/30" : "text-[#9E9EA8] hover:text-white"
                 }`}
               >
                 Reçu de Paiement
@@ -177,12 +177,12 @@ export default function PaperworkPage({
           </div>
 
           {/* Language Switcher */}
-          <div className="flex items-center gap-1 bg-[#00141f] p-1 rounded-xl border border-[#17425f]">
+          <div className="flex items-center gap-1 bg-[#0A0A0D]/80 p-1.5 rounded-xl border border-white/10">
             <button
               type="button"
               onClick={() => setLang("fr")}
-              className={`px-2.5 py-1 font-mono text-xs font-bold rounded-lg ${
-                lang === "fr" ? "bg-[#003D5B] text-[#EDAE49]" : "text-[#8faec5]"
+              className={`px-2.5 py-1 font-mono text-xs font-bold rounded-lg transition-colors ${
+                lang === "fr" ? "bg-[#E52421]/20 text-[#FFD21F] border border-[#E52421]/40" : "text-[#9E9EA8] hover:text-white"
               }`}
             >
               FR
@@ -190,8 +190,8 @@ export default function PaperworkPage({
             <button
               type="button"
               onClick={() => setLang("ar")}
-              className={`px-2.5 py-1 font-mono text-xs font-bold rounded-lg ${
-                lang === "ar" ? "bg-[#003D5B] text-[#EDAE49]" : "text-[#8faec5]"
+              className={`px-2.5 py-1 font-mono text-xs font-bold rounded-lg transition-colors ${
+                lang === "ar" ? "bg-[#E52421]/20 text-[#FFD21F] border border-[#E52421]/40" : "text-[#9E9EA8] hover:text-white"
               }`}
             >
               العربية
@@ -199,8 +199,8 @@ export default function PaperworkPage({
             <button
               type="button"
               onClick={() => setLang("en")}
-              className={`px-2.5 py-1 font-mono text-xs font-bold rounded-lg ${
-                lang === "en" ? "bg-[#003D5B] text-[#EDAE49]" : "text-[#8faec5]"
+              className={`px-2.5 py-1 font-mono text-xs font-bold rounded-lg transition-colors ${
+                lang === "en" ? "bg-[#E52421]/20 text-[#FFD21F] border border-[#E52421]/40" : "text-[#9E9EA8] hover:text-white"
               }`}
             >
               EN
@@ -211,7 +211,7 @@ export default function PaperworkPage({
           <button
             type="button"
             onClick={() => window.print()}
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#EDAE49] hover:bg-[#ffc266] text-[#003D5B] font-display font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all"
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#E52421] hover:bg-[#FF3030] text-white font-display font-black text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-[#E52421]/25 hover:scale-[1.01] active:scale-[0.99] transition-all"
           >
             <Printer className="w-4 h-4" />
             Imprimer / PDF
