@@ -35,19 +35,64 @@ export async function POST(request: NextRequest) {
     }
 
     // Process replaced documents
-    const docTypes = ["PHOTO", "NATIONAL_ID", "MEDICAL_CERTIFICATE", "PARENT_NATIONAL_ID"] as const;
+    const docTypes = ["PHOTO", "NATIONAL_ID", "MEDICAL_CERTIFICATE", "PARENT_NATIONAL_ID", "PARENTAL_ID", "PARENTAL_AUTHORIZATION"] as const;
     const replacedTypes: string[] = [];
 
+    // Check direct single file replacement first: file + docType or type
+    const directFile = formData.get("file") as File | null;
+    const directType = (formData.get("type") || formData.get("docType"))?.toString();
+    const directDocId = formData.get("documentId")?.toString();
+
+    if (directFile && directFile.size > 0 && (directType || directDocId)) {
+      const buffer = Buffer.from(await directFile.arrayBuffer());
+      const stored = await storage.save(buffer, directFile.name, directFile.type || "application/octet-stream");
+
+      const existingDoc = directDocId
+        ? registration.documents.find((d) => d.id === directDocId)
+        : registration.documents.find((d) => d.type === directType);
+
+      if (existingDoc) {
+        await prisma.document.update({
+          where: { id: existingDoc.id },
+          data: {
+            storagePath: stored.storagePath,
+            originalFilename: stored.filename,
+            mimeType: stored.mimeType,
+            fileSize: stored.fileSize,
+            status: "PENDING",
+            rejectionReason: null,
+          },
+        });
+        replacedTypes.push(existingDoc.type);
+      } else if (directType) {
+        await prisma.document.create({
+          data: {
+            participantId: registration.participantId,
+            registrationId: registration.id,
+            type: directType,
+            storagePath: stored.storagePath,
+            originalFilename: stored.filename,
+            mimeType: stored.mimeType,
+            fileSize: stored.fileSize,
+            status: "PENDING",
+          },
+        });
+        replacedTypes.push(directType);
+      }
+    }
+
+    // Process keyed files (photo, medicalCertificate, nationalId, parentalId, parentNationalId, parentalAuthorization)
     for (const docType of docTypes) {
-      const fileKey = docType.toLowerCase().replace(/_([a-z])/g, (_, c) => c.toUpperCase()); // e.g. photo, nationalId
-      const file = formData.get(fileKey) as File | null;
+      const fileKey = docType.toLowerCase().replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+      const altKey = docType === "PARENT_NATIONAL_ID" ? "parentalId" : docType === "PARENTAL_ID" ? "parentNationalId" : null;
+      const file = (formData.get(fileKey) || (altKey ? formData.get(altKey) : null)) as File | null;
 
       if (file && file.size > 0) {
         const buffer = Buffer.from(await file.arrayBuffer());
         const stored = await storage.save(buffer, file.name, file.type || "application/octet-stream");
 
         // Mark previous document as replaced or update it
-        const existingDoc = registration.documents.find((d) => d.type === docType);
+        const existingDoc = registration.documents.find((d) => d.type === docType || (docType.startsWith("PARENT") && d.type.startsWith("PARENT")));
         if (existingDoc) {
           await prisma.document.update({
             where: { id: existingDoc.id },

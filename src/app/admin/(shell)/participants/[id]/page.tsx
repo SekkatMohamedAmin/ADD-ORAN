@@ -23,6 +23,7 @@ import {
   Shield as FiShield,
   CreditCard as FiCreditCard,
   CheckCircle2 as FiCheckCircle,
+  Trash2 as FiTrash2,
 } from "lucide-react";
 
 interface ParticipantProfile {
@@ -106,6 +107,8 @@ export default function ParticipantProfilePage({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showCardModal, setShowCardModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchProfile = async () => {
     try {
@@ -125,6 +128,21 @@ export default function ParticipantProfilePage({
       setError(err.message || "Erreur de chargement du profil.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteParticipant = async () => {
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/admin/participants/${id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur lors de la suppression.");
+      router.push("/admin/participants");
+    } catch (err: any) {
+      alert(err.message || "Erreur de suppression.");
+      setDeleting(false);
     }
   };
 
@@ -212,6 +230,26 @@ export default function ParticipantProfilePage({
                 <span>Membre depuis le {new Date(member.createdAt).toLocaleDateString("fr-FR")}</span>
               </p>
             </div>
+          </div>
+
+          {/* Header Action Buttons */}
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setShowCardModal(true)}
+              className="px-4 py-2.5 bg-[#E52421]/15 hover:bg-[#E52421]/25 text-[#E52421] border border-[#E52421]/30 rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer"
+            >
+              <FiCreditCard className="w-4 h-4" />
+              <span>Voir la Carte</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowDeleteModal(true)}
+              className="px-4 py-2.5 bg-red-600/15 hover:bg-red-600/25 text-red-400 border border-red-500/30 rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer"
+            >
+              <FiTrash2 className="w-4 h-4" />
+              <span>Supprimer l&apos;adhérent</span>
+            </button>
           </div>
         </div>
       </div>
@@ -431,20 +469,47 @@ export default function ParticipantProfilePage({
         </div>
       </div>
 
-      {/* Membership Card Modal */}
-      {showCardModal && member && (
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && member && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="relative bg-[#101015] border border-white/10 rounded-3xl p-6 max-w-xl w-full flex flex-col items-center shadow-2xl">
-            <MembershipCard
-              participant={member}
-              registration={member.registrations?.[0]}
-              photoDocId={
-                member.documents?.find((d) => d.type === "PHOTO")?.id ||
-                member.registrations?.[0]?.documents?.find((d) => d.type === "PHOTO")?.id ||
-                null
-              }
-              onClose={() => setShowCardModal(false)}
-            />
+          <div className="bg-[#141419] border border-red-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
+            <div className="w-12 h-12 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center text-red-400">
+              <FiAlertTriangle className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-display font-black text-lg text-white">
+                Supprimer définitivement cet adhérent ?
+              </h3>
+              <p className="text-xs text-gray-400 mt-2 leading-relaxed">
+                Êtes-vous sûr de vouloir supprimer définitivement la fiche de{" "}
+                <strong className="text-white font-bold">
+                  {member.firstName} {member.lastName}
+                </strong>{" "}
+                (Téléphone : {member.phone}) ?
+              </p>
+              <p className="text-xs text-red-400/90 font-mono mt-2 bg-red-500/10 p-2.5 rounded-xl border border-red-500/20">
+                ⚠️ Cette action est irréversible. L&apos;ensemble des inscriptions, documents, paiements et présences associés seront effacés.
+              </p>
+            </div>
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowDeleteModal(false)}
+                disabled={deleting}
+                className="px-4 py-2.5 rounded-xl border border-white/10 text-xs font-semibold text-gray-300 hover:bg-white/5 transition"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteParticipant}
+                disabled={deleting}
+                className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-lg shadow-red-600/30 flex items-center gap-2 transition disabled:opacity-50"
+              >
+                <FiTrash2 className="w-4 h-4" />
+                <span>{deleting ? "Suppression en cours..." : "Confirmer la suppression"}</span>
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -240,6 +240,7 @@ async function main() {
     await prisma.payment.create({
       data: {
         registrationId: yassineReg.id,
+        seasonId: season2026.id,
         receiptNumber: "ADD-PAY-2026-000001",
         amount: 3000,
         paymentMethod: "CASH",

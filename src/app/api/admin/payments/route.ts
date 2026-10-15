@@ -15,10 +15,13 @@ export async function GET(request: NextRequest) {
     const limit = Math.min(50, Math.max(5, parseInt(searchParams.get("limit") || "15", 10)));
     const skip = (page - 1) * limit;
 
+    const activeSeason = await prisma.season.findFirst({ where: { isActive: true } });
+    const effectiveSeason = seasonCode ? seasonCode : (activeSeason?.code || "");
+
     const whereClause: any = {};
 
-    if (seasonCode) {
-      whereClause.season = { code: seasonCode };
+    if (effectiveSeason && effectiveSeason !== "ALL") {
+      whereClause.season = { code: effectiveSeason };
     }
 
     if (search) {
@@ -76,6 +79,7 @@ export async function GET(request: NextRequest) {
         totalPages: Math.ceil(totalCount / limit),
       },
       seasons,
+      currentSeason: activeSeason ? { code: activeSeason.code, label: activeSeason.label } : null,
     });
   } catch (error) {
     console.error("Admin payments query error:", error);

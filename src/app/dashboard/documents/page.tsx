@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
-import { usePortal } from "@/components/portal/PortalContext";
+import { usePortal, DocumentItem } from "@/components/portal/PortalContext";
 import { compressImage } from "@/lib/imageCompression";
 import {
   FileText,
@@ -34,6 +34,7 @@ export default function DashboardDocumentsPage() {
 
   // Re-upload form state
   const [showReuploadDrawer, setShowReuploadDrawer] = useState(false);
+  const [replacingDocId, setReplacingDocId] = useState<string | null>(null);
   const [replacedPhoto, setReplacedPhoto] = useState<File | null>(null);
   const [replacedNationalId, setReplacedNationalId] = useState<File | null>(null);
   const [replacedMedical, setReplacedMedical] = useState<File | null>(null);
@@ -41,6 +42,41 @@ export default function DashboardDocumentsPage() {
   const [resubmitting, setResubmitting] = useState(false);
   const [resubmitSuccess, setResubmitSuccess] = useState("");
   const [resubmitError, setResubmitError] = useState("");
+
+  const handleDirectFileReplace = async (doc: DocumentItem, file: File) => {
+    if (!activeRegistration) return;
+    setReplacingDocId(doc.id);
+    setResubmitError("");
+    setResubmitSuccess("");
+
+    try {
+      const formData = new FormData();
+      formData.append("registrationId", activeRegistration.id);
+      formData.append("documentId", doc.id);
+      formData.append("type", doc.type);
+
+      const isImage = file.type.startsWith("image/") || /\.(jpg|jpeg|png|webp)$/i.test(file.name);
+      const processedFile = isImage ? await compressImage(file) : file;
+      formData.append("file", processedFile);
+
+      const res = await fetch("/api/participant/resubmit", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Erreur lors du remplacement du document.");
+      }
+
+      setResubmitSuccess(`Le document « ${getDocTypeLabel(doc.type)} » a été remplacé avec succès.`);
+      await refreshUserData();
+    } catch (err: any) {
+      setResubmitError(err.message || "Erreur lors du téléversement.");
+    } finally {
+      setReplacingDocId(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -355,17 +391,30 @@ export default function DashboardDocumentsPage() {
                 {getStatusBadge(doc.status)}
               </div>
 
+              {/* Rejection Notice if rejected */}
+              {doc.status === "REJECTED" && (
+                <div className="p-3 rounded-2xl bg-red-500/10 border border-red-500/30 text-xs text-red-200 space-y-1">
+                  <div className="flex items-center gap-1.5 font-bold text-red-300">
+                    <AlertTriangle className="w-3.5 h-3.5 text-red-400 shrink-0" />
+                    <span>Document non conforme / rejeté</span>
+                  </div>
+                  <p className="text-[11px] text-red-300/90 font-mono">
+                    {doc.rejectionReason || "Ce document a été rejeté par l'administration. Veuillez téléverser un fichier de remplacement valide ci-dessous."}
+                  </p>
+                </div>
+              )}
+
               <div className="flex items-center justify-between text-[11px] font-mono text-white/40 pt-2 border-t border-white/5">
                 <span>{(doc.fileSize / 1024).toFixed(0)} Ko</span>
                 <span>{new Date(doc.createdAt).toLocaleDateString("fr-FR")}</span>
               </div>
 
-              <div className="flex items-center gap-2 pt-1">
+              <div className="flex flex-wrap items-center gap-2 pt-1">
                 <a
                   href={`/api/documents/${doc.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-semibold border border-white/10 transition-colors"
+                  className="flex-1 min-w-[100px] flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-semibold border border-white/10 transition-colors"
                 >
                   <Eye className="w-3.5 h-3.5 text-white/50" />
                   <span>Visualiser</span>
@@ -378,6 +427,41 @@ export default function DashboardDocumentsPage() {
                 >
                   <Download className="w-4 h-4" />
                 </a>
+
+                {/* Direct in-place replacement file picker */}
+                <label
+                  className={`flex-1 min-w-[140px] cursor-pointer flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all ${
+                    doc.status === "REJECTED"
+                      ? "bg-[#E52421] hover:bg-[#c91d1a] text-white shadow-md shadow-[#E52421]/20"
+                      : "bg-[#FFD21F]/15 hover:bg-[#FFD21F]/25 text-[#FFD21F] border border-[#FFD21F]/30"
+                  }`}
+                >
+                  <input
+                    type="file"
+                    accept={
+                      doc.type === "PHOTO"
+                        ? "image/jpeg,image/png,image/webp"
+                        : "image/jpeg,image/png,image/webp,application/pdf"
+                    }
+                    disabled={replacingDocId === doc.id}
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) handleDirectFileReplace(doc, f);
+                    }}
+                    className="hidden"
+                  />
+                  {replacingDocId === doc.id ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Remplacement...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>{doc.status === "REJECTED" ? "Remplacer cette pièce" : "Remplacer"}</span>
+                    </>
+                  )}
+                </label>
               </div>
             </div>
           );

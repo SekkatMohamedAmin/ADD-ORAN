@@ -16,7 +16,9 @@ export type AuditAction =
   | "MEMBER_ARCHIVED"
   | "MEMBER_ACTIVATED"
   | "MEMBERSHIP_CARD_GENERATED"
-  | "PASSWORD_RESET";
+  | "PASSWORD_RESET"
+  | "MEMBER_DELETED"
+  | "REGISTRATION_DELETED";
 
 export interface LogAuditParams {
   action: AuditAction;

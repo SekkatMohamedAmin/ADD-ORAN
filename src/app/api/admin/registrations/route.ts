@@ -16,18 +16,19 @@ export async function GET(request: NextRequest) {
     const duplicateOnly = searchParams.get("duplicates") === "true";
 
     // 1. Get active or requested season
-    const currentSeason = seasonParam
-      ? await prisma.season.findUnique({ where: { code: seasonParam } })
-      : await prisma.season.findFirst({ where: { isActive: true } });
+    const activeSeason = await prisma.season.findFirst({ where: { isActive: true } });
+    let currentSeason = activeSeason;
 
-    if (!currentSeason) {
-      return NextResponse.json({ error: "Aucune saison active" }, { status: 404 });
+    if (seasonParam && seasonParam !== "ALL") {
+      const found = await prisma.season.findUnique({ where: { code: seasonParam } });
+      if (found) currentSeason = found;
     }
 
     // 2. Build where filter
-    const whereClause: any = {
-      seasonId: currentSeason.id,
-    };
+    const whereClause: any = {};
+    if (seasonParam !== "ALL" && currentSeason) {
+      whereClause.seasonId = currentSeason.id;
+    }
 
     if (duplicateOnly) {
       whereClause.isMarkedDuplicate = true;
@@ -76,6 +77,8 @@ export async function GET(request: NextRequest) {
     });
 
     // 4. Compute Season-Scoped Statistics (Strict Real Database Metrics)
+    const statsWhere = currentSeason && seasonParam !== "ALL" ? { seasonId: currentSeason.id } : {};
+
     const [
       totalCount,
       submittedCount,
@@ -88,16 +91,16 @@ export async function GET(request: NextRequest) {
       archivedCount,
       duplicatesCount,
     ] = await Promise.all([
-      prisma.registration.count({ where: { seasonId: currentSeason.id } }),
-      prisma.registration.count({ where: { seasonId: currentSeason.id, status: "SUBMITTED" } }),
-      prisma.registration.count({ where: { seasonId: currentSeason.id, status: "UNDER_REVIEW" } }),
-      prisma.registration.count({ where: { seasonId: currentSeason.id, status: "NEEDS_CORRECTION" } }),
-      prisma.registration.count({ where: { seasonId: currentSeason.id, status: "ACCEPTED" } }),
-      prisma.registration.count({ where: { seasonId: currentSeason.id, status: "PAYMENT_PENDING" } }),
-      prisma.registration.count({ where: { seasonId: currentSeason.id, status: "PAID" } }),
-      prisma.registration.count({ where: { seasonId: currentSeason.id, status: "ACTIVE" } }),
-      prisma.registration.count({ where: { seasonId: currentSeason.id, status: "ARCHIVED" } }),
-      prisma.registration.count({ where: { seasonId: currentSeason.id, isMarkedDuplicate: true } }),
+      prisma.registration.count({ where: statsWhere }),
+      prisma.registration.count({ where: { ...statsWhere, status: "SUBMITTED" } }),
+      prisma.registration.count({ where: { ...statsWhere, status: "UNDER_REVIEW" } }),
+      prisma.registration.count({ where: { ...statsWhere, status: "NEEDS_CORRECTION" } }),
+      prisma.registration.count({ where: { ...statsWhere, status: "ACCEPTED" } }),
+      prisma.registration.count({ where: { ...statsWhere, status: "PAYMENT_PENDING" } }),
+      prisma.registration.count({ where: { ...statsWhere, status: "PAID" } }),
+      prisma.registration.count({ where: { ...statsWhere, status: "ACTIVE" } }),
+      prisma.registration.count({ where: { ...statsWhere, status: "ARCHIVED" } }),
+      prisma.registration.count({ where: { ...statsWhere, isMarkedDuplicate: true } }),
     ]);
 
     const stats = {

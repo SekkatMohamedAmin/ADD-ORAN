@@ -21,23 +21,27 @@ import {
   AlertCircle,
 } from "lucide-react";
 
+import { getStoredAdminSeason, setStoredAdminSeason } from "@/lib/adminSeason";
+
 export default function AdminDashboardPage() {
   const { t, isRtl } = useLanguage();
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>(null);
-  const [selectedSeasonCode, setSelectedSeasonCode] = useState<string>("");
+  const [selectedSeasonCode, setSelectedSeasonCode] = useState<string>(() => getStoredAdminSeason() || "");
 
   const fetchOverview = async (seasonCode?: string) => {
     setLoading(true);
     try {
-      const url = seasonCode ? `/api/admin/overview?season=${seasonCode}` : `/api/admin/overview`;
+      const activeCode = seasonCode || selectedSeasonCode;
+      const url = activeCode ? `/api/admin/overview?season=${encodeURIComponent(activeCode)}` : `/api/admin/overview`;
       const res = await fetch(url, { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
         setData(json);
         if (json.currentSeason) {
           setSelectedSeasonCode(json.currentSeason.code);
+          setStoredAdminSeason(json.currentSeason.code);
         }
       }
     } catch (err) {
@@ -53,6 +57,7 @@ export default function AdminDashboardPage() {
 
   const handleSeasonChange = (code: string) => {
     setSelectedSeasonCode(code);
+    setStoredAdminSeason(code);
     fetchOverview(code);
   };
 

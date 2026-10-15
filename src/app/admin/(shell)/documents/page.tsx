@@ -17,6 +17,7 @@ import {
   CheckCircle2 as FiCheckCircle,
   XCircle as FiXCircle,
 } from "lucide-react";
+import { getStoredAdminSeason, setStoredAdminSeason } from "@/lib/adminSeason";
 
 interface DocumentItem {
   id: string;
@@ -57,7 +58,7 @@ export default function DocumentsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
-  const [seasonCode, setSeasonCode] = useState("");
+  const [seasonCode, setSeasonCode] = useState(() => getStoredAdminSeason() || "");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
@@ -87,6 +88,10 @@ export default function DocumentsPage() {
       setTotalPages(data.pagination?.totalPages || 1);
       setTotalCount(data.pagination?.total || 0);
       if (data.seasons) setSeasons(data.seasons);
+      if (!seasonCode && data.currentSeason) {
+        setSeasonCode(data.currentSeason.code);
+        setStoredAdminSeason(data.currentSeason.code);
+      }
     } catch (err: any) {
       setError(err.message || "Une erreur est survenue.");
     } finally {
@@ -233,11 +238,12 @@ export default function DocumentsPage() {
             value={seasonCode}
             onChange={(e) => {
               setSeasonCode(e.target.value);
+              setStoredAdminSeason(e.target.value);
               setPage(1);
             }}
             className="bg-[#0A0A0D] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#E52421]"
           >
-            <option value="">Toutes les saisons</option>
+            <option value="ALL">Toutes les saisons</option>
             {seasons.map((s) => (
               <option key={s.id} value={s.code}>
                 {s.label || `Saison ${s.code}`}
@@ -252,14 +258,15 @@ export default function DocumentsPage() {
             Filtrer
           </button>
 
-          {(search || statusFilter || typeFilter || seasonCode) && (
+          {(search || statusFilter || typeFilter || (seasonCode && seasonCode !== "ALL")) && (
             <button
               type="button"
               onClick={() => {
                 setSearch("");
                 setStatusFilter("");
                 setTypeFilter("");
-                setSeasonCode("");
+                setSeasonCode("ALL");
+                setStoredAdminSeason("ALL");
                 setPage(1);
               }}
               className="px-3 py-2.5 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs rounded-xl transition"

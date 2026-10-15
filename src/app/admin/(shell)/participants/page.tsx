@@ -18,7 +18,11 @@ import {
   ArrowRight as FiArrowRight,
   CreditCard as FiCreditCard,
   CheckCircle2 as FiCheckCircle,
+  Trash2 as FiTrash2,
+  AlertTriangle as FiAlertTriangle,
+  X as FiX,
 } from "lucide-react";
+import { getStoredAdminSeason, setStoredAdminSeason } from "@/lib/adminSeason";
 
 interface ParticipantItem {
   id: string;
@@ -82,10 +86,12 @@ export default function ParticipantsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCardParticipant, setSelectedCardParticipant] = useState<ParticipantItem | null>(null);
+  const [memberToDelete, setMemberToDelete] = useState<ParticipantItem | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   // Filters
   const [search, setSearch] = useState("");
-  const [selectedSeason, setSelectedSeason] = useState("");
+  const [selectedSeason, setSelectedSeason] = useState(() => getStoredAdminSeason() || "");
   const [ageCategory, setAgeCategory] = useState(""); // "" | "minor" | "adult"
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -112,10 +118,33 @@ export default function ParticipantsPage() {
       setTotalPages(data.pagination?.totalPages || 1);
       setTotalCount(data.pagination?.total || 0);
       if (data.seasons) setSeasons(data.seasons);
+
+      if (!selectedSeason && data.currentSeason) {
+        setSelectedSeason(data.currentSeason.code);
+        setStoredAdminSeason(data.currentSeason.code);
+      }
     } catch (err: any) {
       setError(err.message || "Une erreur est survenue.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteParticipant = async () => {
+    if (!memberToDelete) return;
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/admin/participants/${memberToDelete.id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur de suppression.");
+      setMemberToDelete(null);
+      fetchParticipants();
+    } catch (err: any) {
+      alert(err.message || "Erreur lors de la suppression.");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -169,12 +198,15 @@ export default function ParticipantsPage() {
           <select
             value={selectedSeason}
             onChange={(e) => {
-              setSelectedSeason(e.target.value);
+              const val = e.target.value;
+              setSelectedSeason(val);
+              setStoredAdminSeason(val);
               setPage(1);
             }}
             className="bg-[#1C1C24] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#E52421] font-mono"
           >
-            <option value="">Toutes les saisons</option>
+            <option value="">Saison en cours (Active)</option>
+            <option value="ALL">Toutes les saisons</option>
             {seasons.map((s) => (
               <option key={s.id} value={s.code}>
                 Saison {s.name || s.code}
@@ -351,6 +383,14 @@ export default function ParticipantsPage() {
                           Profil
                           <FiArrowRight className="w-3.5 h-3.5 text-[#E52421]" />
                         </Link>
+                        <button
+                          type="button"
+                          onClick={() => setMemberToDelete(member)}
+                          className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-xl transition border border-red-500/20 cursor-pointer"
+                          title="Supprimer définitivement l'adhérent"
+                        >
+                          <FiTrash2 className="w-3.5 h-3.5" />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -411,6 +451,51 @@ export default function ParticipantsPage() {
               }
               onClose={() => setSelectedCardParticipant(null)}
             />
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {memberToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-[#141419] border border-red-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
+            <div className="w-12 h-12 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center text-red-400">
+              <FiAlertTriangle className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-display font-black text-lg text-white">
+                Supprimer définitivement l&apos;adhérent ?
+              </h3>
+              <p className="text-xs text-gray-400 mt-2 leading-relaxed">
+                Êtes-vous certain de vouloir supprimer définitivement{" "}
+                <strong className="text-white font-bold">
+                  {memberToDelete.firstName} {memberToDelete.lastName}
+                </strong>{" "}
+                (Téléphone : {memberToDelete.phone}) ?
+              </p>
+              <p className="text-xs text-red-400/90 font-mono mt-2 bg-red-500/10 p-2.5 rounded-xl border border-red-500/20">
+                ⚠️ Cette action est irréversible et supprimera l&apos;ensemble de ses dossiers, documents, paiements et présences.
+              </p>
+            </div>
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setMemberToDelete(null)}
+                disabled={deleting}
+                className="px-4 py-2.5 rounded-xl border border-white/10 text-xs font-semibold text-gray-300 hover:bg-white/5 transition"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteParticipant}
+                disabled={deleting}
+                className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-lg shadow-red-600/30 flex items-center gap-2 transition disabled:opacity-50"
+              >
+                <FiTrash2 className="w-4 h-4" />
+                <span>{deleting ? "Suppression en cours..." : "Confirmer la suppression"}</span>
+              </button>
+            </div>
           </div>
         </div>
       )}

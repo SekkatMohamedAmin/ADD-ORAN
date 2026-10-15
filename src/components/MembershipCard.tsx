@@ -191,19 +191,12 @@ export function CardRectoFace({
               >
                 Parkour Oran
               </span>
-              <span
-                className={`text-gray-400 font-mono tracking-tight ${
-                  isPrintVersion ? "text-[6pt]" : "text-[9px]"
-                }`}
-              >
-                // ATHLETE PASS
-              </span>
             </div>
           </div>
         </div>
 
-        {/* Season Badge & Contactless symbol */}
-        <div className="flex flex-col items-end gap-1">
+        {/* Season Badge */}
+        <div className="flex flex-col items-end">
           <span
             className={`bg-[#E52421]/20 border border-[#E52421]/40 text-[#FFD21F] font-mono font-bold rounded-lg uppercase tracking-wider ${
               isPrintVersion
@@ -212,13 +205,6 @@ export function CardRectoFace({
             }`}
           >
             {seasonLabel}
-          </span>
-          <span
-            className={`text-gray-400 font-mono tracking-widest flex items-center gap-1 ${
-              isPrintVersion ? "text-[6pt]" : "text-[10px]"
-            }`}
-          >
-            RFID <span className="text-white font-bold leading-none">)))</span>
           </span>
         </div>
       </div>
@@ -413,31 +399,24 @@ export function CardRectoFace({
           </span>
         </div>
 
-        {/* Status pill & QR code */}
-        <div className="flex items-center gap-2">
+        {/* Club Brand Tag */}
+        <div className="flex items-center">
           <div className="text-right">
             <span
-              className={`bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold font-mono rounded uppercase inline-block ${
-                isPrintVersion
-                  ? "px-[1.5mm] py-[0.25mm] text-[5.5pt]"
-                  : "px-2 py-0.5 text-[9px]"
+              className={`text-white/80 font-bold font-display uppercase tracking-wider block ${
+                isPrintVersion ? "text-[6.5pt]" : "text-[10px]"
               }`}
             >
-              ACTIF / VALIDÉ
+              ADD ORAN
             </span>
             <span
               className={`text-gray-500 block font-mono ${
                 isPrintVersion ? "text-[5pt]" : "text-[8px]"
               }`}
             >
-              Club ADD Oran
+              Carte Officielle
             </span>
           </div>
-
-          <DynamicQrCodeSvg
-            value={`ADD-ORAN:${cardNumber}:${participant.phone}`}
-            size={isPrintVersion ? 32 : 38}
-          />
         </div>
       </div>
     </div>

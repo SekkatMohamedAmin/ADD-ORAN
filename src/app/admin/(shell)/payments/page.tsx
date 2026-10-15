@@ -15,6 +15,7 @@ import {
   FileText as FiFileText,
   CheckCircle2 as FiCheckCircle,
 } from "lucide-react";
+import { getStoredAdminSeason, setStoredAdminSeason } from "@/lib/adminSeason";
 
 interface PaymentItem {
   id: string;
@@ -58,7 +59,7 @@ export default function PaymentsPage() {
 
   // Filters & Pagination
   const [search, setSearch] = useState("");
-  const [selectedSeason, setSelectedSeason] = useState("");
+  const [selectedSeason, setSelectedSeason] = useState(() => getStoredAdminSeason() || "");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
@@ -89,6 +90,10 @@ export default function PaymentsPage() {
       setTotalPages(data.pagination?.totalPages || 1);
       setTotalCount(data.pagination?.total || 0);
       if (data.seasons) setSeasons(data.seasons);
+      if (!selectedSeason && data.currentSeason) {
+        setSelectedSeason(data.currentSeason.code);
+        setStoredAdminSeason(data.currentSeason.code);
+      }
     } catch (err: any) {
       setError(err.message || "Une erreur est survenue.");
     } finally {
@@ -157,11 +162,12 @@ export default function PaymentsPage() {
             value={selectedSeason}
             onChange={(e) => {
               setSelectedSeason(e.target.value);
+              setStoredAdminSeason(e.target.value);
               setPage(1);
             }}
             className="bg-[#1C1C24] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#E52421] font-mono"
           >
-            <option value="">Toutes les saisons</option>
+            <option value="ALL">Toutes les saisons</option>
             {seasons.map((s) => (
               <option key={s.id} value={s.code}>
                 {s.label || `Saison ${s.code}`}
@@ -176,12 +182,13 @@ export default function PaymentsPage() {
             Filtrer
           </button>
 
-          {(search || selectedSeason) && (
+          {(search || (selectedSeason && selectedSeason !== "ALL")) && (
             <button
               type="button"
               onClick={() => {
                 setSearch("");
-                setSelectedSeason("");
+                setSelectedSeason("ALL");
+                setStoredAdminSeason("ALL");
                 setPage(1);
               }}
               className="px-3 py-2.5 bg-[#1C1C24] hover:bg-white/10 text-gray-400 hover:text-white text-xs rounded-xl transition font-mono"

@@ -16,7 +16,9 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  Trash2,
 } from "lucide-react";
+import { getStoredAdminSeason, setStoredAdminSeason } from "@/lib/adminSeason";
 
 export default function AdminRegistrationsPage() {
   const { t } = useLanguage();
@@ -25,12 +27,14 @@ export default function AdminRegistrationsPage() {
   const [registrations, setRegistrations] = useState<any[]>([]);
   const [seasons, setSeasons] = useState<any[]>([]);
   const [stats, setStats] = useState<any>({});
+  const [registrationToDelete, setRegistrationToDelete] = useState<any | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   // Filter state
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
   const [discipline, setDiscipline] = useState("");
-  const [season, setSeason] = useState("");
+  const [season, setSeason] = useState(() => getStoredAdminSeason() || "");
   const [duplicatesOnly, setDuplicatesOnly] = useState(false);
 
   const fetchRegistrations = async () => {
@@ -56,12 +60,35 @@ export default function AdminRegistrationsPage() {
         setStats(data.stats || {});
         if (!season && data.currentSeason) {
           setSeason(data.currentSeason.code);
+          setStoredAdminSeason(data.currentSeason.code);
         }
       }
     } catch (err) {
       console.error("Registrations fetch error:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteRegistration = async () => {
+    if (!registrationToDelete) return;
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/admin/registrations/${registrationToDelete.id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setRegistrationToDelete(null);
+        fetchRegistrations();
+      } else {
+        const data = await res.json();
+        alert(data.error || "Erreur lors de la suppression de la candidature");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erreur réseau lors de la suppression.");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -137,9 +164,13 @@ export default function AdminRegistrationsPage() {
           <div className="flex items-center gap-2">
             <select
               value={season}
-              onChange={(e) => setSeason(e.target.value)}
+              onChange={(e) => {
+                setSeason(e.target.value);
+                setStoredAdminSeason(e.target.value);
+              }}
               className="bg-[#1C1C24] border border-white/10 rounded-xl px-3 py-2.5 text-xs text-[#F5F5F2] focus:border-[#E52421] focus:outline-none font-mono"
             >
+              <option value="ALL">Toutes les saisons</option>
               {seasons.map((s: any) => (
                 <option key={s.id} value={s.code}>
                   Saison {s.code}
@@ -332,13 +363,23 @@ export default function AdminRegistrationsPage() {
 
                       {/* Actions */}
                       <td className="py-3.5 px-4 text-right">
-                        <Link
-                          href={`/admin/registrations/${reg.id}`}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-[#E52421] text-[#F5F5F2] font-mono text-xs font-bold transition-all shadow-sm group-hover:bg-[#E52421]"
-                        >
-                          <Eye className="w-3.5 h-3.5" />
-                          <span>Dossier</span>
-                        </Link>
+                        <div className="inline-flex items-center gap-2">
+                          <Link
+                            href={`/admin/registrations/${reg.id}`}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-[#E52421] text-[#F5F5F2] font-mono text-xs font-bold transition-all shadow-sm group-hover:bg-[#E52421]"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                            <span>Dossier</span>
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={() => setRegistrationToDelete(reg)}
+                            className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 border border-red-500/20 transition-colors"
+                            title="Supprimer la candidature"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -348,6 +389,55 @@ export default function AdminRegistrationsPage() {
           </table>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {registrationToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-[#141419] border border-red-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
+            <div className="w-12 h-12 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center text-red-400">
+              <AlertTriangle className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-display font-black text-lg text-white">
+                Supprimer la candidature ?
+              </h3>
+              <p className="text-xs text-gray-400 mt-2 leading-relaxed">
+                Êtes-vous certain de vouloir supprimer le dossier{" "}
+                <strong className="text-white font-mono font-bold">
+                  {registrationToDelete.reference}
+                </strong>{" "}
+                de{" "}
+                <strong className="text-white font-bold">
+                  {registrationToDelete.participant.firstName} {registrationToDelete.participant.lastName}
+                </strong>{" "}
+                ?
+              </p>
+              <p className="text-xs text-red-400/90 font-mono mt-2 bg-red-500/10 p-2.5 rounded-xl border border-red-500/20">
+                ⚠️ Cette action est irréversible et supprimera le dossier d'inscription ainsi que ses pièces justificatives associées.
+              </p>
+            </div>
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setRegistrationToDelete(null)}
+                disabled={deleting}
+                className="px-4 py-2.5 rounded-xl border border-white/10 text-xs font-semibold text-gray-300 hover:bg-white/5 transition"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteRegistration}
+                disabled={deleting}
+                className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-lg shadow-red-600/30 flex items-center gap-2 transition disabled:opacity-50"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>{deleting ? "Suppression en cours..." : "Confirmer la suppression"}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

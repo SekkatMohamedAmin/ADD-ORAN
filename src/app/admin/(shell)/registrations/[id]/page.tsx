@@ -27,6 +27,7 @@ import {
   Eye as FiEye,
   Check as FiCheck,
   X as FiX,
+  Trash2 as FiTrash2,
 } from "lucide-react";
 
 interface RegistrationDetail {
@@ -155,6 +156,30 @@ export default function RegistrationDetailPage({
 
   // Printable receipt state
   const [selectedReceipt, setSelectedReceipt] = useState<any | null>(null);
+
+  // Delete candidate state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDeleteCandidate = async () => {
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/admin/registrations/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        router.push("/admin/registrations");
+      } else {
+        const data = await res.json();
+        alert(data.error || "Erreur lors de la suppression de la candidature");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Erreur réseau lors de la suppression de la candidature");
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   // Fetch full details
   const fetchDetails = async () => {
@@ -444,6 +469,16 @@ export default function RegistrationDetailPage({
           >
             <FiShield className="w-4 h-4" />
             {registration.isMarkedDuplicate ? "Résoudre doublon" : "Signaler doublon"}
+          </button>
+
+          {/* Delete candidate button */}
+          <button
+            onClick={() => setShowDeleteModal(true)}
+            className="px-3 py-2.5 text-xs font-semibold rounded-xl border border-red-500/20 bg-red-500/10 hover:bg-red-500/20 text-red-400 transition flex items-center gap-1.5"
+            title="Supprimer la candidature"
+          >
+            <FiTrash2 className="w-4 h-4" />
+            <span>Supprimer</span>
           </button>
         </div>
       </div>
@@ -1411,6 +1446,54 @@ export default function RegistrationDetailPage({
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-[#141419] border border-red-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
+            <div className="w-12 h-12 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center text-red-400">
+              <FiAlertTriangle className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-display font-black text-lg text-white">
+                Supprimer la candidature ?
+              </h3>
+              <p className="text-xs text-gray-400 mt-2 leading-relaxed">
+                Êtes-vous certain de vouloir supprimer définitivement le dossier{" "}
+                <strong className="text-white font-mono font-bold">
+                  {registration.reference}
+                </strong>{" "}
+                de{" "}
+                <strong className="text-white font-bold">
+                  {p.firstName} {p.lastName}
+                </strong>{" "}
+                ?
+              </p>
+              <p className="text-xs text-red-400/90 font-mono mt-2 bg-red-500/10 p-2.5 rounded-xl border border-red-500/20">
+                ⚠️ Cette action est irréversible et supprimera le dossier, ses justificatifs et les données associées.
+              </p>
+            </div>
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowDeleteModal(false)}
+                disabled={deleting}
+                className="px-4 py-2.5 rounded-xl border border-white/10 text-xs font-semibold text-gray-300 hover:bg-white/5 transition"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteCandidate}
+                disabled={deleting}
+                className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-lg shadow-red-600/30 flex items-center gap-2 transition disabled:opacity-50"
+              >
+                <FiTrash2 className="w-4 h-4" />
+                <span>{deleting ? "Suppression en cours..." : "Confirmer la suppression"}</span>
+              </button>
             </div>
           </div>
         </div>

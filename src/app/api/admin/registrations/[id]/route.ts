@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { logAudit } from "@/lib/audit";
 
 export async function GET(
   request: NextRequest,
@@ -57,3 +58,97 @@ export async function GET(
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 }
+
+export async function DELETE(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  try {
+    const admin = await requireAdmin();
+    const { id } = await context.params;
+
+    const registration = await prisma.registration.findUnique({
+      where: { id },
+      include: {
+        participant: true,
+      },
+    });
+
+    if (!registration) {
+      return NextResponse.json({ error: "Candidature introuvable" }, { status: 404 });
+    }
+
+    await prisma.$transaction(async (tx) => {
+      // 1. Delete payments
+      await tx.payment.deleteMany({
+        where: { registrationId: id },
+      });
+
+      // 2. Delete audit logs
+      await tx.auditLog.deleteMany({
+        where: { registrationId: id },
+      });
+
+      // 3. Delete disciplines
+      await tx.registrationDiscipline.deleteMany({
+        where: { registrationId: id },
+      });
+
+      // 4. Delete parental authorization
+      await tx.parentalAuthorization.deleteMany({
+        where: { registrationId: id },
+      });
+
+      // 5. Delete documents
+      await tx.document.deleteMany({
+        where: { registrationId: id },
+      });
+
+      // 6. Delete registration
+      await tx.registration.delete({
+        where: { id },
+      });
+
+      // 7. Check if participant has remaining registrations, if not delete participant
+      const otherRegs = await tx.registration.count({
+        where: { participantId: registration.participantId },
+      });
+      if (otherRegs === 0) {
+        await tx.document.deleteMany({
+          where: { participantId: registration.participantId },
+        });
+        await tx.eventAttendance.deleteMany({
+          where: { participantId: registration.participantId },
+        });
+        await tx.parentalAuthorization.deleteMany({
+          where: { participantId: registration.participantId },
+        });
+        await tx.participant.delete({
+          where: { id: registration.participantId },
+        });
+      }
+    });
+
+    await logAudit({
+      userId: admin.id,
+      action: "REGISTRATION_DELETED",
+      details: {
+        registrationId: registration.id,
+        reference: registration.reference,
+        candidateName: `${registration.participant.firstName} ${registration.participant.lastName}`,
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: `La candidature ${registration.reference} (${registration.participant.firstName} ${registration.participant.lastName}) a été supprimée avec succès.`,
+    });
+  } catch (error) {
+    console.error("Admin registration delete error:", error);
+    if ((error as Error).message === "UNAUTHORIZED" || (error as Error).message === "FORBIDDEN") {
+      return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
+    }
+    return NextResponse.json({ error: "Erreur serveur lors de la suppression de la candidature" }, { status: 500 });
+  }
+}
+

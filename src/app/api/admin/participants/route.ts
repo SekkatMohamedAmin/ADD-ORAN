@@ -22,11 +22,14 @@ export async function GET(request: NextRequest) {
       whereClause.isMinor = false;
     }
 
-    if (seasonCode) {
+    const activeSeason = await prisma.season.findFirst({ where: { isActive: true } });
+    const effectiveSeason = seasonCode ? seasonCode : (activeSeason?.code || "");
+
+    if (effectiveSeason && effectiveSeason !== "ALL") {
       whereClause.registrations = {
         some: {
           season: {
-            code: seasonCode,
+            code: effectiveSeason,
           },
         },
       };
@@ -97,6 +100,7 @@ export async function GET(request: NextRequest) {
         totalPages: Math.ceil(totalCount / limit),
       },
       seasons,
+      currentSeason: activeSeason ? { code: activeSeason.code, label: activeSeason.label } : null,
     });
   } catch (error) {
     console.error("Admin participants query error:", error);
