@@ -163,3 +163,130 @@ export async function PATCH(request: NextRequest) {
     );
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const admin = await requireAdmin();
+    const { searchParams } = new URL(request.url);
+    let id = searchParams.get("id");
+
+    if (!id) {
+      try {
+        const body = await request.json();
+        id = body?.id;
+      } catch {
+        // Body was empty or not JSON
+      }
+    }
+
+    if (!id) {
+      return NextResponse.json({ error: "Identifiant de la saison manquant." }, { status: 400 });
+    }
+
+    const season = await prisma.season.findUnique({
+      where: { id },
+    });
+
+    if (!season) {
+      return NextResponse.json({ error: "Saison introuvable." }, { status: 404 });
+    }
+
+    const totalSeasons = await prisma.season.count();
+    if (totalSeasons <= 1) {
+      return NextResponse.json(
+        { error: "Impossible de supprimer la seule saison restante dans le système." },
+        { status: 400 }
+      );
+    }
+
+    // Execute cascade purge of this season's data in an atomic transaction
+    await prisma.$transaction(async (tx) => {
+      // 1. Gather all registrations in this season
+      const regs = await tx.registration.findMany({
+        where: { seasonId: season.id },
+        select: { id: true },
+      });
+      const regIds = regs.map((r) => r.id);
+
+      if (regIds.length > 0) {
+        // 2. Cascade delete dependent child records
+        await tx.auditLog.deleteMany({
+          where: { registrationId: { in: regIds } },
+        });
+
+        await tx.document.deleteMany({
+          where: { registrationId: { in: regIds } },
+        });
+
+        await tx.parentalAuthorization.deleteMany({
+          where: { registrationId: { in: regIds } },
+        });
+
+        await tx.registrationDiscipline.deleteMany({
+          where: { registrationId: { in: regIds } },
+        });
+
+        await tx.payment.deleteMany({
+          where: { registrationId: { in: regIds } },
+        });
+
+        await tx.registration.deleteMany({
+          where: { id: { in: regIds } },
+        });
+      }
+
+      // 3. Delete any remaining payments linked to the season
+      await tx.payment.deleteMany({
+        where: { seasonId: season.id },
+      });
+
+      // 4. Delete sequential counters
+      await tx.sequentialCounter.deleteMany({
+        where: {
+          key: { in: [`REG_${season.code}`, `PAY_${season.code}`] },
+        },
+      });
+
+      // 5. If this season was active, activate the latest remaining season
+      if (season.isActive) {
+        const nextActive = await tx.season.findFirst({
+          where: { id: { not: season.id } },
+          orderBy: { code: "desc" },
+        });
+        if (nextActive) {
+          await tx.season.update({
+            where: { id: nextActive.id },
+            data: { isActive: true },
+          });
+        }
+      }
+
+      // 6. Delete the season itself
+      await tx.season.delete({
+        where: { id: season.id },
+      });
+    });
+
+    await logAudit({
+      action: "REGISTRATION_REVIEWED",
+      userId: admin.id,
+      details: {
+        action: "SEASON_DELETED",
+        seasonCode: season.code,
+        seasonLabel: season.label,
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: `La saison ${season.code} et ses données ont été supprimées avec succès.`,
+      deletedCode: season.code,
+    });
+  } catch (error) {
+    console.error("Admin season deletion error:", error);
+    return NextResponse.json(
+      { error: (error as Error).message || "Erreur lors de la suppression de la saison." },
+      { status: 500 }
+    );
+  }
+}

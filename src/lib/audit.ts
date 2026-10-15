@@ -15,6 +15,7 @@ export type AuditAction =
   | "DUPLICATE_RESOLVED"
   | "MEMBER_ARCHIVED"
   | "MEMBER_ACTIVATED"
+  | "MEMBERSHIP_CARD_GENERATED"
   | "PASSWORD_RESET";
 
 export interface LogAuditParams {

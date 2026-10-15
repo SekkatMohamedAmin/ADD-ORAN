@@ -78,7 +78,9 @@ export default function PaymentsPage() {
       if (search.trim()) params.append("search", search.trim());
       if (selectedSeason) params.append("season", selectedSeason);
 
-      const res = await fetch(`/api/admin/payments?${params.toString()}`);
+      const res = await fetch(`/api/admin/payments?${params.toString()}`, {
+        cache: "no-store",
+      });
       if (!res.ok) throw new Error("Erreur de chargement des versements.");
 
       const data = await res.json();

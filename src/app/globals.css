@@ -223,20 +223,38 @@ summary {
   transform: scaleX(-1);
 }
 
-/* Media Print for Paperwork & Receipts */
+/* Media Print for Paperwork, Receipts & PVC Cards */
+@media screen {
+  .pvc-print-layout {
+    display: none !important;
+  }
+}
+
 @media print {
+  @page {
+    size: auto;
+    margin: 8mm;
+  }
+
   body {
     background-color: #ffffff !important;
     color: #000000 !important;
     font-size: 11pt;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .no-print,
+  .pvc-screen-layout,
   nav,
   header,
   footer,
   .btn-print {
     display: none !important;
+  }
+
+  .pvc-print-layout {
+    display: block !important;
   }
 
   .printable-document {
@@ -261,3 +279,4 @@ summary {
     min-height: 120px !important;
   }
 }
+

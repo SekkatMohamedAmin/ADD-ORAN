@@ -56,6 +56,11 @@ export async function GET(request: NextRequest) {
         take: limit,
         orderBy: { createdAt: "desc" },
         include: {
+          documents: {
+            where: { type: "PHOTO" },
+            take: 1,
+            select: { id: true, type: true, status: true },
+          },
           registrations: {
             orderBy: { createdAt: "desc" },
             include: {
@@ -66,6 +71,11 @@ export async function GET(request: NextRequest) {
               payments: {
                 orderBy: { createdAt: "desc" },
                 take: 1,
+              },
+              documents: {
+                where: { type: "PHOTO" },
+                take: 1,
+                select: { id: true, type: true, status: true },
               },
             },
           },

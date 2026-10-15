@@ -99,6 +99,14 @@ export async function destroySession(): Promise<void> {
     }).catch(() => {});
   }
 
+  cookieStore.set(SESSION_COOKIE_NAME, "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    expires: new Date(0),
+    maxAge: 0,
+  });
   cookieStore.delete(SESSION_COOKIE_NAME);
 }
 

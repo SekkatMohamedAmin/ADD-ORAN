@@ -3,6 +3,8 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { createSession } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -69,15 +71,22 @@ export async function POST(request: NextRequest) {
     // Create session
     await createSession(user.id);
 
-    return NextResponse.json({
-      success: true,
-      user: {
-        id: user.id,
-        phone: user.phone,
-        role: user.role,
-        participant: user.participants[0] || null,
+    return NextResponse.json(
+      {
+        success: true,
+        user: {
+          id: user.id,
+          phone: user.phone,
+          role: user.role,
+          participant: user.participants[0] || null,
+        },
       },
-    });
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        },
+      }
+    );
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json({ error: "Erreur interne du serveur." }, { status: 500 });

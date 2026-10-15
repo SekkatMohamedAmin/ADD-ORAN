@@ -1,6 +1,7 @@
 import { prisma } from "../src/lib/prisma";
 import bcrypt from "bcryptjs";
-import { generateRegistrationReference, generateReceiptNumber } from "../src/lib/sequences";
+import { generateRegistrationReference, generateReceiptNumber, generateMembershipCardNumber } from "../src/lib/sequences";
+import { ensureMembershipCardNumber } from "../src/lib/membershipCard";
 import { checkPossibleDuplicates } from "../src/lib/duplicates";
 import { storage } from "../src/lib/storage";
 
@@ -81,6 +82,12 @@ async function runUnitTests() {
   const pay2 = await generateReceiptNumber("2026");
   assert(/^ADD-PAY-2026-\d{6}$/.test(pay1), `Generated receipt conforms to ADD-PAY-2026-000001 pattern (${pay1})`);
   assert(pay1 !== pay2, `Sequential receipts are strictly unique (${pay1} vs ${pay2})`);
+
+  // Sequential Membership Card Numbering
+  const card1 = await generateMembershipCardNumber("2026");
+  const card2 = await generateMembershipCardNumber("2026");
+  assert(/^ADD-CARD-2026-\d{4}$/.test(card1), `Generated card conforms to ADD-CARD-2026-0001 pattern (${card1})`);
+  assert(card1 !== card2, `Sequential membership cards are strictly unique (${card1} vs ${card2})`);
 }
 
 async function runIntegrationTests() {
@@ -183,7 +190,13 @@ async function runIntegrationTests() {
   assert(payment.receiptNumber.startsWith("ADD-PAY-2026-"), "Payment receipt generated with valid prefix");
   assert(activated.status === "ACTIVE", "Payment transitions registration to ACTIVE member status");
 
-  // 8. Duplicate Detection Verification
+  // 8. Electronic Membership Card Generation
+  const cardNum = await ensureMembershipCardNumber(participant.id, season!.code);
+  assert(/^ADD-CARD-2026-\d{4}$/.test(cardNum), `Membership card successfully assigned: ${cardNum}`);
+  const cardNumIdempotent = await ensureMembershipCardNumber(participant.id, season!.code);
+  assert(cardNum === cardNumIdempotent, "Membership card assignment is idempotent");
+
+  // 9. Duplicate Detection Verification
   const duplicateCheck = await checkPossibleDuplicates({
     firstName: "Karim",
     lastName: "Benali",
@@ -270,6 +283,95 @@ async function runAdminAuthAndWorkflowTests() {
   }
 }
 
+async function runMultiChildAndEventTests() {
+  console.log("\n==============================");
+  console.log("5. MULTI-CHILD PARENT PORTAL & EVENT TESTS");
+  console.log("==============================");
+
+  // 1. Create a parent user with 2 children
+  const parentPhone = `055599${Date.now().toString().slice(-4)}`;
+  const parentUser = await prisma.user.create({
+    data: {
+      phone: parentPhone,
+      passwordHash: await bcrypt.hash("ParentSecret123!", 10),
+      role: "PARTICIPANT",
+    },
+  });
+  assert(parentUser !== null, "Parent user created successfully");
+
+  // Child 1
+  const child1 = await prisma.participant.create({
+    data: {
+      userId: parentUser.id,
+      firstName: "Yanis",
+      lastName: "ParentTest",
+      dateOfBirth: new Date("2014-06-15"),
+      placeOfBirth: "Oran",
+      phone: parentPhone,
+      isMinor: true,
+      bloodType: "A+",
+    },
+  });
+  assert(child1.isMinor === true, "Child 1 registered as minor");
+
+  // Child 2
+  const child2 = await prisma.participant.create({
+    data: {
+      userId: parentUser.id,
+      firstName: "Sarah",
+      lastName: "ParentTest",
+      dateOfBirth: new Date("2017-09-20"),
+      placeOfBirth: "Oran",
+      phone: parentPhone,
+      isMinor: true,
+      bloodType: "O+",
+    },
+  });
+  assert(child2.isMinor === true, "Child 2 registered as minor");
+
+  // Verify parent has both children
+  const parentChildren = await prisma.participant.findMany({
+    where: { userId: parentUser.id },
+  });
+  assert(parentChildren.length === 2, "Parent account accurately retrieves both children");
+  assert(
+    parentChildren.some((c) => c.firstName === "Yanis") &&
+    parentChildren.some((c) => c.firstName === "Sarah"),
+    "Parent children retain distinct first names and identities under shared parent account"
+  );
+
+  // 2. Upcoming Events & Attendance tracking
+  const event = await prisma.event.findFirst({
+    where: { isPublished: true },
+  });
+  assert(event !== null, "Official upcoming club event exists in database");
+
+  if (event) {
+    // Child 1 confirms attendance
+    const attendance = await prisma.eventAttendance.upsert({
+      where: {
+        eventId_participantId: {
+          eventId: event.id,
+          participantId: child1.id,
+        },
+      },
+      update: { status: "CONFIRMED" },
+      create: {
+        eventId: event.id,
+        participantId: child1.id,
+        status: "CONFIRMED",
+      },
+    });
+    assert(attendance.status === "CONFIRMED", "Child 1 successfully confirms event attendance");
+
+    // Check attendance count
+    const attendeeCount = await prisma.eventAttendance.count({
+      where: { eventId: event.id, status: "CONFIRMED" },
+    });
+    assert(attendeeCount >= 1, "Event attendance count accurately reflects confirmed attendee");
+  }
+}
+
 async function main() {
   console.log("Running ADD Parkour Oran Test Suite...\n");
   try {
@@ -277,6 +379,7 @@ async function main() {
     await runIntegrationTests();
     await runSecurityTests();
     await runAdminAuthAndWorkflowTests();
+    await runMultiChildAndEventTests();
   } catch (err) {
     console.error("Test execution failed with error:", err);
     failedCount++;

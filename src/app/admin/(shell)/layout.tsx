@@ -24,7 +24,7 @@ export default async function AdminLayout({
   }
 
   if (user.role !== "ADMIN") {
-    redirect("/dashboard");
+    redirect("/admin/login?reason=participant");
   }
 
   // 2. Render dedicated Admin Shell

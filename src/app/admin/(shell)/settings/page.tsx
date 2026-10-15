@@ -48,7 +48,9 @@ export default function SettingsPage() {
     try {
       setLoading(true);
       setErrorMsg(null);
-      const res = await fetch("/api/admin/settings");
+      const res = await fetch("/api/admin/settings", {
+        cache: "no-store",
+      });
       if (!res.ok) throw new Error("Erreur de chargement des paramètres.");
       const data = await res.json();
       if (data.settings) setSettings(data.settings);

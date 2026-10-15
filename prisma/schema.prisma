@@ -65,6 +65,7 @@ model Participant {
   registrations         Registration[]
   documents             Document[]
   parentalAuthorizations ParentalAuthorization[]
+  eventAttendances      EventAttendance[]
 
   @@index([userId])
   @@index([phone])
@@ -210,4 +211,37 @@ model SequentialCounter {
   key       String   @unique // e.g. "REG_2026", "PAY_2026"
   lastValue Int      @default(0)
   updatedAt DateTime @updatedAt
+}
+
+model Event {
+  id          String            @id @default(cuid())
+  title       String
+  description String
+  discipline  String            // "parkour" | "escalade-montagne" | "trail" | "all"
+  category    String            @default("ALL") // "ALL" | "MINORS" | "ADULTS"
+  date        DateTime
+  location    String
+  capacity    Int?              @default(50)
+  isPublished Boolean           @default(true)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  attendances EventAttendance[]
+
+  @@index([discipline])
+  @@index([date])
+  @@index([isPublished])
+}
+
+model EventAttendance {
+  id            String      @id @default(cuid())
+  eventId       String
+  event         Event       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  participantId String
+  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  status        String      @default("CONFIRMED") // CONFIRMED, CANCELLED
+  createdAt     DateTime    @default(now())
+
+  @@unique([eventId, participantId])
+  @@index([participantId])
+  @@index([eventId])
 }

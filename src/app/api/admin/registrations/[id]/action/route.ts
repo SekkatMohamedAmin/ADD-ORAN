@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { logAudit } from "@/lib/audit";
+import { ensureMembershipCardNumber } from "@/lib/membershipCard";
 
 export async function POST(
   request: NextRequest,
@@ -17,6 +18,7 @@ export async function POST(
       where: { id },
       include: {
         participant: true,
+        season: true,
       },
     });
 
@@ -36,6 +38,17 @@ export async function POST(
         updatedStatus = "PAYMENT_PENDING";
         correctionReason = null;
         correctionFields = null;
+
+        if (!registration.participant.membershipCardNumber) {
+          try {
+            await ensureMembershipCardNumber(
+              registration.participantId,
+              registration.season?.code || "2026"
+            );
+          } catch (err) {
+            console.error("Error generating membership card:", err);
+          }
+        }
 
         await logAudit({
           action: "REGISTRATION_ACCEPTED",
@@ -114,6 +127,16 @@ export async function POST(
 
       case "ACTIVATE":
         updatedStatus = "ACTIVE";
+        if (!registration.participant.membershipCardNumber) {
+          try {
+            await ensureMembershipCardNumber(
+              registration.participantId,
+              registration.season?.code || "2026"
+            );
+          } catch (err) {
+            console.error("Error generating membership card:", err);
+          }
+        }
         await logAudit({
           action: "MEMBER_ACTIVATED",
           userId: admin.id,

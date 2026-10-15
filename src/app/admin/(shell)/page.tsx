@@ -26,13 +26,13 @@ export default function AdminDashboardPage() {
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>(null);
-  const [selectedSeasonCode, setSelectedSeasonCode] = useState<string>("2026");
+  const [selectedSeasonCode, setSelectedSeasonCode] = useState<string>("");
 
   const fetchOverview = async (seasonCode?: string) => {
     setLoading(true);
     try {
-      const code = seasonCode || selectedSeasonCode;
-      const res = await fetch(`/api/admin/overview?season=${code}`);
+      const url = seasonCode ? `/api/admin/overview?season=${seasonCode}` : `/api/admin/overview`;
+      const res = await fetch(url, { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
         setData(json);

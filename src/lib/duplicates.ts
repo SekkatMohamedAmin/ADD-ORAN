@@ -63,12 +63,16 @@ export async function checkPossibleDuplicates(
     const pPhone = p.phone.replace(/[\s-]/g, "");
 
     let reason = "";
-    if (pPhone === cleanPhone) {
-      reason = "Même numéro de téléphone";
-    } else if (
+    const isSameName =
       (pFirst === normFirst && pLast === normLast) ||
-      (pFirst === normLast && pLast === normFirst)
-    ) {
+      (pFirst === normLast && pLast === normFirst);
+
+    if (pPhone === cleanPhone) {
+      if (isSameName) {
+        reason = "Même personne (téléphone et nom identiques)";
+      }
+      // Note: If phone is identical but name is different, this is a sibling/child under parent account, not a duplicate!
+    } else if (isSameName) {
       reason = "Même nom, prénom et date de naissance";
     }
 

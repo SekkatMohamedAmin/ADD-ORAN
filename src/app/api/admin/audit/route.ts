@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     await requireAdmin();
@@ -87,17 +89,24 @@ export async function GET(request: NextRequest) {
       "PASSWORD_RESET",
     ];
 
-    return NextResponse.json({
-      success: true,
-      logs,
-      pagination: {
-        total: totalCount,
-        page,
-        limit,
-        totalPages: Math.ceil(totalCount / limit),
+    return NextResponse.json(
+      {
+        success: true,
+        logs,
+        pagination: {
+          total: totalCount,
+          page,
+          limit,
+          totalPages: Math.ceil(totalCount / limit),
+        },
+        distinctActions,
       },
-      distinctActions,
-    });
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        },
+      }
+    );
   } catch (error) {
     console.error("Admin audit query error:", error);
     if ((error as Error).message === "UNAUTHORIZED" || (error as Error).message === "FORBIDDEN") {

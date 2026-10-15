@@ -14,6 +14,7 @@ import {
   Archive as FiArchive,
   AlertCircle as FiAlertCircle,
   Check as FiCheck,
+  Trash2 as FiTrash2,
 } from "lucide-react";
 
 interface SeasonItem {
@@ -46,6 +47,11 @@ export default function SeasonsPage() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [isActive, setIsActive] = useState(false);
+
+  // Modal delete
+  const [seasonToDelete, setSeasonToDelete] = useState<SeasonItem | null>(null);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const fetchSeasons = async () => {
     try {
@@ -123,6 +129,37 @@ export default function SeasonsPage() {
       fetchSeasons();
     } catch (err: any) {
       alert(err.message || "Erreur réseau.");
+    }
+  };
+
+  const handleDeleteSeason = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!seasonToDelete) return;
+
+    if (deleteConfirmText.trim() !== seasonToDelete.code) {
+      alert(`Veuillez saisir exactement "${seasonToDelete.code}" pour confirmer la suppression.`);
+      return;
+    }
+
+    try {
+      setDeleteLoading(true);
+      const res = await fetch(`/api/admin/seasons?id=${seasonToDelete.id}`, {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Impossible de supprimer la saison.");
+        return;
+      }
+
+      setSeasonToDelete(null);
+      setDeleteConfirmText("");
+      fetchSeasons();
+    } catch (err: any) {
+      alert(err.message || "Erreur réseau.");
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -231,14 +268,30 @@ export default function SeasonsPage() {
                   Voir inscriptions <FiArrowRight className="w-3.5 h-3.5 text-[#E52421]" />
                 </Link>
 
-                {!season.isActive && (
-                  <button
-                    onClick={() => handleSetActive(season.id)}
-                    className="px-3 py-1.5 bg-[#1C1C24] hover:bg-[#252530] text-gray-300 hover:text-white rounded-lg text-xs font-semibold transition"
-                  >
-                    Activer
-                  </button>
-                )}
+                <div className="flex items-center gap-2">
+                  {!season.isActive && (
+                    <button
+                      onClick={() => handleSetActive(season.id)}
+                      className="px-3 py-1.5 bg-[#1C1C24] hover:bg-[#252530] text-gray-300 hover:text-white rounded-lg text-xs font-semibold transition"
+                    >
+                      Activer
+                    </button>
+                  )}
+
+                  {seasons.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSeasonToDelete(season);
+                        setDeleteConfirmText("");
+                      }}
+                      className="p-1.5 bg-red-950/30 hover:bg-red-950/60 text-[#E52421] border border-[#E52421]/20 hover:border-[#E52421]/40 rounded-lg text-xs transition"
+                      title="Supprimer la saison et ses données"
+                    >
+                      <FiTrash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           ))
@@ -346,6 +399,79 @@ export default function SeasonsPage() {
                 className="px-5 py-2.5 bg-[#E52421] hover:bg-[#FF3030] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition"
               >
                 {modalLoading ? "Création..." : "Créer la saison"}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* DELETE SEASON MODAL */}
+      {seasonToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <form
+            onSubmit={handleDeleteSeason}
+            className="bg-[#141419] border border-white/10 rounded-2xl max-w-md w-full p-6 space-y-5"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-red-950/50 text-[#E52421] rounded-xl flex items-center justify-center border border-[#E52421]/20">
+                <FiTrash2 className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white">Supprimer la saison</h3>
+                <p className="text-xs text-red-400">Action destructrice irréversible</p>
+              </div>
+            </div>
+
+            <div className="p-4 bg-red-950/20 border border-[#E52421]/20 rounded-xl space-y-2 text-xs text-gray-300">
+              <p>
+                Vous êtes sur le point de supprimer la saison{" "}
+                <strong className="text-white font-mono">{seasonToDelete.code}</strong> (
+                {seasonToDelete.label}).
+              </p>
+              <p className="text-red-300 font-semibold">
+                ⚠️ Toutes les données rattachées à cette saison seront définitivement effacées :
+              </p>
+              <ul className="list-disc pl-4 space-y-0.5 text-gray-400">
+                <li>
+                  <strong className="text-white">{seasonToDelete._count?.registrations || 0}</strong>{" "}
+                  dossier(s) d'inscription
+                </li>
+                <li>
+                  <strong className="text-white">{seasonToDelete._count?.payments || 0}</strong>{" "}
+                  reçu(s) et versement(s) financier(s)
+                </li>
+                <li>Les compteurs séquentiels associés à la saison</li>
+              </ul>
+            </div>
+
+            <div>
+              <label className="text-xs text-gray-300 font-semibold block mb-1">
+                Tapez <span className="text-[#FFD21F] font-mono font-bold">{seasonToDelete.code}</span> pour confirmer :
+              </label>
+              <input
+                type="text"
+                value={deleteConfirmText}
+                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                placeholder={seasonToDelete.code}
+                className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421] font-mono"
+                required
+              />
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/5">
+              <button
+                type="button"
+                onClick={() => setSeasonToDelete(null)}
+                className="px-4 py-2 bg-transparent hover:bg-white/5 text-gray-300 rounded-xl text-xs font-semibold transition"
+              >
+                Annuler
+              </button>
+              <button
+                type="submit"
+                disabled={deleteLoading || deleteConfirmText.trim() !== seasonToDelete.code}
+                className="px-5 py-2.5 bg-[#E52421] hover:bg-[#FF3030] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition disabled:opacity-40"
+              >
+                {deleteLoading ? "Suppression..." : "Supprimer définitivement"}
               </button>
             </div>
           </form>

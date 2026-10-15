@@ -3,6 +3,8 @@ import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { logAudit } from "@/lib/audit";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     await requireAdmin();
@@ -62,12 +64,19 @@ export async function GET(request: NextRequest) {
 
     const seasons = await prisma.season.findMany({ orderBy: { code: "desc" } });
 
-    return NextResponse.json({
-      success: true,
-      duplicateCases,
-      count: duplicateCases.length,
-      seasons,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        duplicateCases,
+        count: duplicateCases.length,
+        seasons,
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        },
+      }
+    );
   } catch (error) {
     console.error("Admin duplicates query error:", error);
     if ((error as Error).message === "UNAUTHORIZED" || (error as Error).message === "FORBIDDEN") {

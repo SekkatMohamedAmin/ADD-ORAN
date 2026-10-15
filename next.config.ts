@@ -34,9 +34,7 @@ const nextConfig: NextConfig = {
     "172.29.*.*",
     "172.30.*.*",
     "172.31.*.*",
-  ],
-
-  // Ensure SQLite dev.db is included in Vercel serverless function bundles
+  ], // Ensure SQLite dev.db is included in Vercel serverless function bundles
   outputFileTracingIncludes: {
     "/**": ["./prisma/dev.db"],
   },

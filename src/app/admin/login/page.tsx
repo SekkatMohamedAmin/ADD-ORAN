@@ -16,7 +16,54 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
+  const [loggedInParticipant, setLoggedInParticipant] = useState<{
+    phone: string;
+    name?: string;
+  } | null>(null);
   const [error, setError] = useState("");
+
+  React.useEffect(() => {
+    const checkCurrentSession = async () => {
+      try {
+        const res = await fetch("/api/auth/me", { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.authenticated && data.user) {
+            if (data.user.role === "ADMIN") {
+              router.push("/admin");
+              return;
+            } else {
+              setLoggedInParticipant({
+                phone: data.user.phone,
+                name: data.user.participant
+                  ? `${data.user.participant.firstName} ${data.user.participant.lastName}`
+                  : undefined,
+              });
+            }
+          }
+        }
+      } catch {
+        // Ignore session check errors
+      } finally {
+        setCheckingSession(false);
+      }
+    };
+    checkCurrentSession();
+  }, [router]);
+
+  const handleDisconnectParticipant = async () => {
+    try {
+      setLoading(true);
+      await fetch("/api/auth/logout", { method: "POST" });
+      setLoggedInParticipant(null);
+      setError("");
+    } catch {
+      setError("Erreur lors de la déconnexion.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,6 +178,41 @@ export default function AdminLoginPage() {
               {t.admin.login.subtitle}
             </p>
           </div>
+
+          {/* Participant Active Session Alert */}
+          {loggedInParticipant && (
+            <div className="p-4 bg-[#FFD21F]/10 border border-[#FFD21F]/30 rounded-2xl space-y-3 animate-fade-in text-xs font-mono">
+              <div className="flex items-start gap-2.5 text-[#FFD21F]">
+                <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="font-bold block text-sm">Session Adhérent Active</strong>
+                  <p className="text-gray-300 mt-1 font-body">
+                    Vous êtes actuellement connecté en tant qu'adhérent :{" "}
+                    <span className="font-bold text-white font-mono">
+                      {loggedInParticipant.name || loggedInParticipant.phone}
+                    </span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t border-[#FFD21F]/20">
+                <button
+                  type="button"
+                  onClick={handleDisconnectParticipant}
+                  disabled={loading}
+                  className="flex-1 py-2 px-3 bg-[#E52421] hover:bg-[#FF3030] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition text-center"
+                >
+                  {loading ? "Déconnexion..." : "Déconnecter et se connecter en tant qu'admin"}
+                </button>
+                <Link
+                  href="/dashboard"
+                  className="py-2 px-3 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white rounded-xl text-xs font-bold uppercase tracking-wider transition text-center border border-white/10"
+                >
+                  Espace adhérent ↗
+                </Link>
+              </div>
+            </div>
+          )}
 
           {/* Error Message */}
           {error && (

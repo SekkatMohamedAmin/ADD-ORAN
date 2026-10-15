@@ -35,10 +35,10 @@ export default function AdminProfilePage() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("/api/auth/me");
+        const res = await fetch("/api/auth/me", { cache: "no-store" });
         if (!res.ok) throw new Error("Non authentifié");
         const data = await res.json();
-        if (data.authenticated && data.user) {
+        if (data.authenticated && data.user && data.user.role === "ADMIN") {
           setAdminUser(data.user);
         } else {
           router.push("/admin/login");
@@ -96,6 +96,7 @@ export default function AdminProfilePage() {
       await fetch("/api/auth/logout", { method: "POST" });
     } finally {
       router.push("/admin/login");
+      router.refresh();
     }
   };
 

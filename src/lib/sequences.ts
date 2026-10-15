@@ -41,3 +41,23 @@ export async function generateReceiptNumber(
   const paddedNumber = String(counter.lastValue).padStart(6, "0");
   return `ADD-PAY-${seasonCode}-${paddedNumber}`;
 }
+
+/**
+ * Generates an atomic sequential membership card number such as ADD-CARD-2026-0001
+ */
+export async function generateMembershipCardNumber(
+  seasonCode: string,
+  tx?: Prisma.TransactionClient
+): Promise<string> {
+  const client = tx || prisma;
+  const key = `CARD_${seasonCode}`;
+
+  const counter = await client.sequentialCounter.upsert({
+    where: { key },
+    update: { lastValue: { increment: 1 } },
+    create: { key, lastValue: 1 },
+  });
+
+  const paddedNumber = String(counter.lastValue).padStart(4, "0");
+  return `ADD-CARD-${seasonCode}-${paddedNumber}`;
+}

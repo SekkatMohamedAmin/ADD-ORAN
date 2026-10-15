@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/lib/i18n";
 import StatusBadge from "@/components/StatusBadge";
+import MembershipCard from "@/components/MembershipCard";
 import {
   ArrowLeft as FiArrowLeft,
   User as FiUser,
@@ -104,6 +105,7 @@ export default function ParticipantProfilePage({
   const [member, setMember] = useState<ParticipantProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showCardModal, setShowCardModal] = useState(false);
 
   const fetchProfile = async () => {
     try {
@@ -328,6 +330,17 @@ export default function ParticipantProfilePage({
                 </span>
               </div>
             </div>
+
+            <div className="pt-2 border-t border-white/5">
+              <button
+                type="button"
+                onClick={() => setShowCardModal(true)}
+                className="w-full py-2.5 bg-[#E52421]/15 hover:bg-[#E52421]/25 text-[#E52421] hover:text-[#FF3030] rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition border border-[#E52421]/25 shadow-sm font-display tracking-wider uppercase cursor-pointer"
+              >
+                <FiCreditCard className="w-4 h-4" />
+                Afficher la carte d'adhérent
+              </button>
+            </div>
           </div>
         </div>
 
@@ -417,6 +430,24 @@ export default function ParticipantProfilePage({
           </div>
         </div>
       </div>
+
+      {/* Membership Card Modal */}
+      {showCardModal && member && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative bg-[#101015] border border-white/10 rounded-3xl p-6 max-w-xl w-full flex flex-col items-center shadow-2xl">
+            <MembershipCard
+              participant={member}
+              registration={member.registrations?.[0]}
+              photoDocId={
+                member.documents?.find((d) => d.type === "PHOTO")?.id ||
+                member.registrations?.[0]?.documents?.find((d) => d.type === "PHOTO")?.id ||
+                null
+              }
+              onClose={() => setShowCardModal(false)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";
 import { generateRegistrationReference } from "@/lib/sequences";
+import { ensureMembershipCardNumber } from "@/lib/membershipCard";
 import { checkPossibleDuplicates } from "@/lib/duplicates";
 import { createSession } from "@/lib/auth";
 import { logAudit } from "@/lib/audit";
@@ -183,6 +184,10 @@ export async function POST(request: NextRequest) {
         where: { OR: [{ phone: cleanPhone }, { phone }] },
       });
 
+      if (user && user.role === "ADMIN") {
+        throw new Error("Ce numéro de téléphone est réservé à l'administration du club.");
+      }
+
       if (!user) {
         user = await tx.user.create({
           data: {
@@ -307,6 +312,14 @@ export async function POST(request: NextRequest) {
             ipAddress: request.headers.get("x-forwarded-for") || "local",
           },
         });
+      }
+
+      // 7. Auto-generate electronic membership card for the athlete
+      try {
+        const cardNumber = await ensureMembershipCardNumber(participant.id, activeSeason.code, tx);
+        participant.membershipCardNumber = cardNumber;
+      } catch (cardErr) {
+        console.error("Auto card generation warning on register:", cardErr);
       }
 
       return { user, participant, registration };

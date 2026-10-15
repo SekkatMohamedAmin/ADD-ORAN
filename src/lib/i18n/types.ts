@@ -50,6 +50,9 @@ export interface TranslationDictionary {
     about: string;
     registration: string;
     participantSpace: string;
+    myCard: string;
+    mySubscriptions: string;
+    upcomingEvents: string;
     admin: string;
     contact: string;
   };
@@ -210,6 +213,16 @@ export interface TranslationDictionary {
     paperworkTitle: string;
     noRegistrations: string;
     changeLanguage: string;
+    myChildren: string;
+    parentSpace: string;
+    adherentSpace: string;
+    addChild: string;
+    childAge: string;
+    eventsTitle: string;
+    rsvpConfirmed: string;
+    rsvpJoin: string;
+    rejectionAlertTitle: string;
+    rejectionAlertDesc: string;
   };
   admin: {
     title: string;

@@ -91,11 +91,13 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Transition status to UNDER_REVIEW
+    // Transition status to UNDER_REVIEW and clear previous correction flag
     const updatedReg = await prisma.registration.update({
       where: { id: registration.id },
       data: {
         status: "UNDER_REVIEW",
+        correctionReason: null,
+        correctionFields: null,
         reviewedAt: null,
         reviewedBy: null,
       },

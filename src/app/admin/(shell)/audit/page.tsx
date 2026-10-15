@@ -64,7 +64,9 @@ export default function AuditPage() {
       if (search.trim()) params.append("search", search.trim());
       if (selectedAction) params.append("action", selectedAction);
 
-      const res = await fetch(`/api/admin/audit?${params.toString()}`);
+      const res = await fetch(`/api/admin/audit?${params.toString()}`, {
+        cache: "no-store",
+      });
       if (!res.ok) throw new Error("Erreur de chargement du journal d'audit.");
 
       const data = await res.json();

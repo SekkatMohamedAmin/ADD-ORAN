@@ -32,12 +32,27 @@ function resolveDatabaseUrl(): string {
     return `file:${normalizedTmp}`;
   }
 
-  // 3. Local development environment
-  if (process.env.DATABASE_URL) {
-    return process.env.DATABASE_URL;
+  // 3. Local server or development environment:
+  // Prisma stores the database at prisma/dev.db (relative to prisma/schema.prisma)
+  const prismaDbPath = path.join(process.cwd(), "prisma", "dev.db");
+  if (fs.existsSync(prismaDbPath)) {
+    return `file:${prismaDbPath.replace(/\\/g, "/")}`;
   }
 
-  return "file:./dev.db";
+  // Fallback if custom path specified in DATABASE_URL
+  if (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith("file:")) {
+    const rawPath = process.env.DATABASE_URL.replace(/^file:/, "");
+    const candidatePaths = [
+      path.resolve(process.cwd(), "prisma", rawPath.replace(/^\.\//, "")),
+      path.resolve(process.cwd(), rawPath),
+    ];
+    const found = candidatePaths.find((p) => fs.existsSync(p));
+    if (found) {
+      return `file:${found.replace(/\\/g, "/")}`;
+    }
+  }
+
+  return `file:${prismaDbPath.replace(/\\/g, "/")}`;
 }
 
 const dbUrl = resolveDatabaseUrl();

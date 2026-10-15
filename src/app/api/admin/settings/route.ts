@@ -31,11 +31,20 @@ async function saveSettings(settings: typeof DEFAULT_SETTINGS) {
   await fs.writeFile(SETTINGS_FILE, JSON.stringify(settings, null, 2), "utf-8");
 }
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     await requireAdmin();
     const settings = await getSettings();
-    return NextResponse.json({ success: true, settings });
+    return NextResponse.json(
+      { success: true, settings },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        },
+      }
+    );
   } catch (error) {
     console.error("Settings GET error:", error);
     if ((error as Error).message === "UNAUTHORIZED" || (error as Error).message === "FORBIDDEN") {

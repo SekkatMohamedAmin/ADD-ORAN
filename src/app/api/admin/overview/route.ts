@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     await requireAdmin();
@@ -97,14 +99,21 @@ export async function GET(request: NextRequest) {
       totalPaymentsCount: paymentsSum._count || 0,
     };
 
-    return NextResponse.json({
-      success: true,
-      currentSeason,
-      stats,
-      recentAuditLogs,
-      recentRegistrations,
-      seasons,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        currentSeason,
+        stats,
+        recentAuditLogs,
+        recentRegistrations,
+        seasons,
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        },
+      }
+    );
   } catch (error) {
     console.error("Admin overview error:", error);
     if ((error as Error).message === "UNAUTHORIZED" || (error as Error).message === "FORBIDDEN") {

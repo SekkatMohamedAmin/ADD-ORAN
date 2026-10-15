@@ -334,11 +334,12 @@ export default function RegistrationDetailPage({
 
         {/* State Machine Action Buttons */}
         <div className="flex flex-wrap items-center gap-2.5">
-          {registration.status === "UNDER_REVIEW" && (
+          {(registration.status === "SUBMITTED" || registration.status === "UNDER_REVIEW") && (
             <>
               <button
-                onClick={() => setActionModal("ACCEPT")}
-                className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition flex items-center gap-2 shadow-sm"
+                onClick={() => handleWorkflowAction("ACCEPT")}
+                disabled={actionLoading}
+                className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition flex items-center gap-2 shadow-sm disabled:opacity-50"
               >
                 <FiCheckCircle className="w-4 h-4" />
                 Valider le dossier
@@ -360,7 +361,7 @@ export default function RegistrationDetailPage({
             </>
           )}
 
-          {registration.status === "PAYMENT_PENDING" && (
+          {(registration.status === "PAYMENT_PENDING" || registration.status === "ACCEPTED") && (
             <>
               <button
                 onClick={() => setActionModal("PAYMENT")}
@@ -371,10 +372,18 @@ export default function RegistrationDetailPage({
               </button>
               <button
                 onClick={() => handleWorkflowAction("ACTIVATE")}
-                className="px-4 py-2.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 text-xs font-bold uppercase tracking-wider rounded-xl transition flex items-center gap-2"
+                disabled={actionLoading}
+                className="px-4 py-2.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 text-xs font-bold uppercase tracking-wider rounded-xl transition flex items-center gap-2 disabled:opacity-50"
               >
                 <FiCheckCircle className="w-4 h-4" />
                 Activer manuellement
+              </button>
+              <button
+                onClick={() => setActionModal("ARCHIVE")}
+                className="px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-bold uppercase tracking-wider rounded-xl transition flex items-center gap-2"
+              >
+                <FiArchive className="w-4 h-4" />
+                Archiver
               </button>
             </>
           )}
@@ -398,10 +407,22 @@ export default function RegistrationDetailPage({
             </>
           )}
 
+          {registration.status === "ARCHIVED" && (
+            <button
+              onClick={() => handleWorkflowAction("ACTIVATE")}
+              disabled={actionLoading}
+              className="px-4 py-2.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 text-xs font-bold uppercase tracking-wider rounded-xl transition flex items-center gap-2 disabled:opacity-50"
+            >
+              <FiCheckCircle className="w-4 h-4" />
+              Réactiver le dossier
+            </button>
+          )}
+
           {registration.status === "NEEDS_CORRECTION" && (
             <button
               onClick={() => handleWorkflowAction("ACCEPT")}
-              className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition flex items-center gap-2"
+              disabled={actionLoading}
+              className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition flex items-center gap-2 disabled:opacity-50"
             >
               <FiCheckCircle className="w-4 h-4" />
               Réaccepter après révision
@@ -1229,6 +1250,49 @@ export default function RegistrationDetailPage({
               </button>
             </div>
           </form>
+        </div>
+      )}
+
+      {/* MODAL: ARCHIVE */}
+      {actionModal === "ARCHIVE" && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-[#141419] border border-white/10 rounded-2xl max-w-md w-full p-6 space-y-5">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-amber-500/10 text-amber-400 rounded-xl flex items-center justify-center">
+                <FiArchive className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white">Archiver l'adhérent</h3>
+                <p className="text-xs text-gray-400">Cette inscription sera marquée comme archivée pour cette saison</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-gray-300 leading-relaxed">
+              Êtes-vous sûr de vouloir archiver le dossier de{" "}
+              <strong className="text-white">
+                {registration.participant?.firstName} {registration.participant?.lastName}
+              </strong>{" "}
+              (Réf: <span className="font-mono text-[#FFD21F]">{registration.reference}</span>) ?
+            </p>
+
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/5">
+              <button
+                type="button"
+                onClick={() => setActionModal(null)}
+                className="px-4 py-2 bg-transparent hover:bg-white/5 text-gray-300 rounded-xl text-xs font-semibold transition"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                disabled={actionLoading}
+                onClick={() => handleWorkflowAction("ARCHIVE")}
+                className="px-5 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition disabled:opacity-50"
+              >
+                {actionLoading ? "Archivage..." : "Confirmer l'archivage"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

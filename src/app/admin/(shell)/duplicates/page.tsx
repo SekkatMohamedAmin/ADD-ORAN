@@ -73,7 +73,9 @@ export default function DuplicatesPage() {
       const params = new URLSearchParams();
       if (selectedSeason) params.append("season", selectedSeason);
 
-      const res = await fetch(`/api/admin/duplicates?${params.toString()}`);
+      const res = await fetch(`/api/admin/duplicates?${params.toString()}`, {
+        cache: "no-store",
+      });
       if (!res.ok) throw new Error("Erreur de chargement des doublons.");
 
       const data = await res.json();

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n";
 import StatusBadge from "@/components/StatusBadge";
+import MembershipCard from "@/components/MembershipCard";
 import {
   Users as FiUsers,
   Search as FiSearch,
@@ -33,6 +34,11 @@ interface ParticipantItem {
   rfidCardId?: string | null;
   membershipCardNumber?: string | null;
   createdAt: string;
+  documents?: Array<{
+    id: string;
+    type: string;
+    status: string;
+  }>;
   registrations: Array<{
     id: string;
     reference: string;
@@ -41,6 +47,7 @@ interface ParticipantItem {
       id: string;
       name: string;
       code: string;
+      label?: string;
     };
     disciplines: Array<{
       discipline: {
@@ -49,6 +56,11 @@ interface ParticipantItem {
         nameFr: string;
         nameAr: string;
       };
+    }>;
+    documents?: Array<{
+      id: string;
+      type: string;
+      status: string;
     }>;
     payments: Array<{
       id: string;
@@ -69,6 +81,7 @@ export default function ParticipantsPage() {
   const [seasons, setSeasons] = useState<Array<{ id: string; name: string; code: string }>>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedCardParticipant, setSelectedCardParticipant] = useState<ParticipantItem | null>(null);
 
   // Filters
   const [search, setSearch] = useState("");
@@ -321,13 +334,24 @@ export default function ParticipantsPage() {
 
                     {/* Actions */}
                     <td className="py-4 px-6 text-right">
-                      <Link
-                        href={`/admin/participants/${member.id}`}
-                        className="px-3.5 py-1.5 bg-[#1C1C24] hover:bg-[#252530] text-gray-200 hover:text-white rounded-xl text-xs font-semibold inline-flex items-center gap-1.5 transition border border-white/5"
-                      >
-                        Consulter profil
-                        <FiArrowRight className="w-3.5 h-3.5 text-[#E52421]" />
-                      </Link>
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedCardParticipant(member)}
+                          className="px-3 py-1.5 bg-[#E52421]/10 hover:bg-[#E52421]/20 text-[#E52421] rounded-xl text-xs font-semibold inline-flex items-center gap-1.5 transition border border-[#E52421]/20 cursor-pointer"
+                          title="Voir la carte d'adhérent"
+                        >
+                          <FiCreditCard className="w-3.5 h-3.5" />
+                          Carte
+                        </button>
+                        <Link
+                          href={`/admin/participants/${member.id}`}
+                          className="px-3.5 py-1.5 bg-[#1C1C24] hover:bg-[#252530] text-gray-200 hover:text-white rounded-xl text-xs font-semibold inline-flex items-center gap-1.5 transition border border-white/5"
+                        >
+                          Profil
+                          <FiArrowRight className="w-3.5 h-3.5 text-[#E52421]" />
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -369,6 +393,24 @@ export default function ParticipantsPage() {
             >
               <FiChevronRight className="w-4 h-4" />
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Membership Card Modal */}
+      {selectedCardParticipant && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative bg-[#101015] border border-white/10 rounded-3xl p-6 max-w-xl w-full flex flex-col items-center shadow-2xl">
+            <MembershipCard
+              participant={selectedCardParticipant}
+              registration={selectedCardParticipant.registrations?.[0]}
+              photoDocId={
+                selectedCardParticipant.documents?.[0]?.id ||
+                selectedCardParticipant.registrations?.[0]?.documents?.[0]?.id ||
+                null
+              }
+              onClose={() => setSelectedCardParticipant(null)}
+            />
           </div>
         </div>
       )}

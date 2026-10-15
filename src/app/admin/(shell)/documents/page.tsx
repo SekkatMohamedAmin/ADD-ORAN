@@ -76,7 +76,9 @@ export default function DocumentsPage() {
       if (typeFilter) params.append("type", typeFilter);
       if (seasonCode) params.append("season", seasonCode);
 
-      const res = await fetch(`/api/admin/documents?${params.toString()}`);
+      const res = await fetch(`/api/admin/documents?${params.toString()}`, {
+        cache: "no-store",
+      });
       if (!res.ok) throw new Error("Erreur de chargement des documents.");
 
       const data = await res.json();

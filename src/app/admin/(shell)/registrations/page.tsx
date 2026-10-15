@@ -30,26 +30,33 @@ export default function AdminRegistrationsPage() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
   const [discipline, setDiscipline] = useState("");
-  const [season, setSeason] = useState("2026");
+  const [season, setSeason] = useState("");
   const [duplicatesOnly, setDuplicatesOnly] = useState(false);
 
   const fetchRegistrations = async () => {
     setLoading(true);
     try {
-      const query = new URLSearchParams({
-        search,
-        status,
-        discipline,
-        season,
+      const queryParams: Record<string, string> = {
         duplicates: duplicatesOnly ? "true" : "false",
-      });
+      };
+      if (search) queryParams.search = search;
+      if (status) queryParams.status = status;
+      if (discipline) queryParams.discipline = discipline;
+      if (season) queryParams.season = season;
 
-      const res = await fetch(`/api/admin/registrations?${query.toString()}`);
+      const query = new URLSearchParams(queryParams);
+
+      const res = await fetch(`/api/admin/registrations?${query.toString()}`, {
+        cache: "no-store",
+      });
       if (res.ok) {
         const data = await res.json();
         setRegistrations(data.registrations || []);
         setSeasons(data.seasons || []);
         setStats(data.stats || {});
+        if (!season && data.currentSeason) {
+          setSeason(data.currentSeason.code);
+        }
       }
     } catch (err) {
       console.error("Registrations fetch error:", err);

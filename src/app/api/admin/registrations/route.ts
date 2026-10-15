@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     await requireAdmin();
@@ -10,13 +12,13 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get("search")?.trim() || "";
     const status = searchParams.get("status")?.trim() || "";
     const disciplineSlug = searchParams.get("discipline")?.trim() || "";
-    const seasonCode = searchParams.get("season")?.trim() || "2026";
+    const seasonParam = searchParams.get("season")?.trim();
     const duplicateOnly = searchParams.get("duplicates") === "true";
 
     // 1. Get active or requested season
-    const currentSeason =
-      (await prisma.season.findUnique({ where: { code: seasonCode } })) ||
-      (await prisma.season.findFirst({ where: { isActive: true } }));
+    const currentSeason = seasonParam
+      ? await prisma.season.findUnique({ where: { code: seasonParam } })
+      : await prisma.season.findFirst({ where: { isActive: true } });
 
     if (!currentSeason) {
       return NextResponse.json({ error: "Aucune saison active" }, { status: 404 });
@@ -114,12 +116,19 @@ export async function GET(request: NextRequest) {
       orderBy: { code: "desc" },
     });
 
-    return NextResponse.json({
-      registrations,
-      stats,
-      currentSeason,
-      seasons,
-    });
+    return NextResponse.json(
+      {
+        registrations,
+        stats,
+        currentSeason,
+        seasons,
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        },
+      }
+    );
   } catch (error) {
     console.error("Admin registrations query error:", error);
     if ((error as Error).message === "UNAUTHORIZED" || (error as Error).message === "FORBIDDEN") {

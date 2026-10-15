@@ -93,6 +93,52 @@ async function main() {
   });
 
   console.log("Sequential counters initialized.");
+
+  // 5. Official Club Upcoming Events
+  const eventsData = [
+    {
+      id: "event-jam-front-de-mer-2026",
+      title: "Parkour Jam & Gathering — Front de Mer",
+      description: "Session intensive de franchissements urbains, fluidité sur modules et partage inter-générationnel sur le front de mer d'Oran.",
+      discipline: "parkour",
+      category: "ALL",
+      date: new Date("2026-10-24T15:00:00Z"),
+      location: "Esplanade des Sablettes, Front de Mer, Oran",
+      capacity: 50,
+      isPublished: true,
+    },
+    {
+      id: "event-escalade-kristel-2026",
+      title: "Sortie Falaise Naturelle & Escalade Bloc Kristel",
+      description: "Grimpe sur roche calcaire naturelle, travail de lecture des voies, placement des appuis et assurage encadré par les moniteurs.",
+      discipline: "escalade-montagne",
+      category: "ALL",
+      date: new Date("2026-11-07T09:00:00Z"),
+      location: "Site Naturel de Kristel / Falaises de Murdjadjo, Oran",
+      capacity: 30,
+      isPublished: true,
+    },
+    {
+      id: "event-trail-santa-cruz-2026",
+      title: "Session Trail & Conditionnement Forêt des Planteurs",
+      description: "Entraînement outdoor de dénivelé, travail des appuis en descente technique et respiration en côte sur les hauteurs de Santa Cruz.",
+      discipline: "trail",
+      category: "ALL",
+      date: new Date("2026-11-14T08:30:00Z"),
+      location: "Forêt des Planteurs & Sentiers de Santa Cruz, Oran",
+      capacity: 40,
+      isPublished: true,
+    },
+  ];
+
+  for (const ev of eventsData) {
+    await prisma.event.upsert({
+      where: { id: ev.id },
+      update: ev,
+      create: ev,
+    });
+  }
+  console.log("Official upcoming events seeded.");
   console.log("Database seed completed successfully.");
 }
 

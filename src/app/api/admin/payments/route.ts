@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { generateReceiptNumber } from "@/lib/sequences";
+import { generateReceiptNumber, generateMembershipCardNumber } from "@/lib/sequences";
 import { logAudit } from "@/lib/audit";
 
 export async function GET(request: NextRequest) {
@@ -147,6 +147,15 @@ export async function POST(request: NextRequest) {
           status: "ACTIVE", // Once fee is paid and verified, member is active
         },
       });
+
+      // 4. Ensure membership card number is assigned
+      if (!registration.participant.membershipCardNumber) {
+        const cardNumber = await generateMembershipCardNumber(registration.season.code, tx);
+        await tx.participant.update({
+          where: { id: registration.participantId },
+          data: { membershipCardNumber: cardNumber },
+        });
+      }
 
       return newPayment;
     });
