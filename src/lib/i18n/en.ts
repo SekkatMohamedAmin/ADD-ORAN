@@ -231,6 +231,12 @@ export const en: TranslationDictionary = {
     rejectionAlertTitle: "Folder Rejected by Administration",
     rejectionAlertDesc:
       "Your registration requires replacing the documents below to be re-examined by the club administration.",
+    navOverview: "Overview",
+    navDocuments: "Documents & Files",
+    navEvents: "Events & Sessions",
+    navPayments: "Fees & Receipts",
+    navCard: "Membership Card",
+    navFamily: "Family & Profile",
   },
   admin: {
     title: "Administration Console — ADD Parkour Oran",

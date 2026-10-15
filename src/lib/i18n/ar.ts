@@ -231,6 +231,12 @@ export const ar: TranslationDictionary = {
     rejectionAlertTitle: "الملف مرفوض من طرف الإدارة",
     rejectionAlertDesc:
       "يتطلب ملفك استبدال أو إعادة رفع الوثائق الموضحة أدناه لتقوم إدارة النادي بإعادة دراسته.",
+    navOverview: "نظرة عامة",
+    navDocuments: "الملف والوثائق",
+    navEvents: "الفعاليات والحصص",
+    navPayments: "الاشتراكات والوصولات",
+    navCard: "بطاقة العضوية",
+    navFamily: "العائلة والملف الشخصي",
   },
   admin: {
     title: "لوحة الإدارة — نادي فن الانتقال باركور وهران",

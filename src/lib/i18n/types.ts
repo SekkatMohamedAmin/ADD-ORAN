@@ -223,6 +223,12 @@ export interface TranslationDictionary {
     rsvpJoin: string;
     rejectionAlertTitle: string;
     rejectionAlertDesc: string;
+    navOverview: string;
+    navDocuments: string;
+    navEvents: string;
+    navPayments: string;
+    navCard: string;
+    navFamily: string;
   };
   admin: {
     title: string;

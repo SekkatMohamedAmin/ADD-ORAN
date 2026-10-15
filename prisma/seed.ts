@@ -139,6 +139,186 @@ async function main() {
     });
   }
   console.log("Official upcoming events seeded.");
+
+  // 6. Demo Family Parent Account with 2 Children
+  const parentPhone = "0555123456";
+  const parentPasswordHash = await bcrypt.hash("ParentPassword2026!", 10);
+  const parentUser = await prisma.user.upsert({
+    where: { phone: parentPhone },
+    update: { passwordHash: parentPasswordHash, role: "PARTICIPANT" },
+    create: { phone: parentPhone, passwordHash: parentPasswordHash, role: "PARTICIPANT" },
+  });
+
+  // Child 1: Yassine Benali (ACTIVE, Has Card, Paid)
+  let yassine = await prisma.participant.findFirst({
+    where: { userId: parentUser.id, firstName: "Yassine" },
+  });
+  if (!yassine) {
+    yassine = await prisma.participant.create({
+      data: {
+        userId: parentUser.id,
+        firstName: "Yassine",
+        lastName: "Benali",
+        dateOfBirth: new Date("2012-05-14"),
+        placeOfBirth: "Oran",
+        phone: parentPhone,
+        bloodType: "O+",
+        isMinor: true,
+        membershipCardNumber: "ADD-CARD-2026-0001",
+      },
+    });
+  }
+
+  // Registration for Yassine
+  let yassineReg = await prisma.registration.findFirst({
+    where: { participantId: yassine.id, seasonId: season2026.id },
+  });
+  if (!yassineReg) {
+    yassineReg = await prisma.registration.create({
+      data: {
+        participantId: yassine.id,
+        seasonId: season2026.id,
+        reference: "ADD-2026-000001",
+        status: "ACTIVE",
+      },
+    });
+
+    const parkourDisc = await prisma.discipline.findUnique({ where: { slug: "parkour" } });
+    if (parkourDisc) {
+      await prisma.registrationDiscipline.create({
+        data: { registrationId: yassineReg.id, disciplineId: parkourDisc.id },
+      });
+    }
+
+    // Documents for Yassine
+    await prisma.document.createMany({
+      data: [
+        {
+          registrationId: yassineReg.id,
+          participantId: yassine.id,
+          type: "PHOTO",
+          originalFilename: "photo_identite_yassine.jpg",
+          storagePath: "demo_photo_yassine.jpg",
+          mimeType: "image/jpeg",
+          fileSize: 45000,
+          status: "VERIFIED",
+        },
+        {
+          registrationId: yassineReg.id,
+          participantId: yassine.id,
+          type: "MEDICAL_CERTIFICATE",
+          originalFilename: "certificat_medical_yassine.pdf",
+          storagePath: "demo_medical_yassine.pdf",
+          mimeType: "application/pdf",
+          fileSize: 120000,
+          status: "VERIFIED",
+        },
+        {
+          registrationId: yassineReg.id,
+          participantId: yassine.id,
+          type: "NATIONAL_ID",
+          originalFilename: "cni_tuteur_benali.jpg",
+          storagePath: "demo_cni_benali.jpg",
+          mimeType: "image/jpeg",
+          fileSize: 85000,
+          status: "VERIFIED",
+        },
+        {
+          registrationId: yassineReg.id,
+          participantId: yassine.id,
+          type: "PARENTAL_AUTHORIZATION",
+          originalFilename: "autorisation_parentale_signee.pdf",
+          storagePath: "demo_auto_yassine.pdf",
+          mimeType: "application/pdf",
+          fileSize: 95000,
+          status: "VERIFIED",
+        },
+      ],
+    });
+
+    // Payment for Yassine
+    await prisma.payment.create({
+      data: {
+        registrationId: yassineReg.id,
+        receiptNumber: "ADD-PAY-2026-000001",
+        amount: 3000,
+        paymentMethod: "CASH",
+        paymentPurpose: "Cotisation annuelle + Assurance",
+        status: "PAID",
+      },
+    });
+  }
+
+  // Child 2: Aya Benali (NEEDS_CORRECTION with flagged file)
+  let aya = await prisma.participant.findFirst({
+    where: { userId: parentUser.id, firstName: "Aya" },
+  });
+  if (!aya) {
+    aya = await prisma.participant.create({
+      data: {
+        userId: parentUser.id,
+        firstName: "Aya",
+        lastName: "Benali",
+        dateOfBirth: new Date("2017-09-22"),
+        placeOfBirth: "Oran",
+        phone: parentPhone,
+        bloodType: "A+",
+        isMinor: true,
+      },
+    });
+  }
+
+  let ayaReg = await prisma.registration.findFirst({
+    where: { participantId: aya.id, seasonId: season2026.id },
+  });
+  if (!ayaReg) {
+    ayaReg = await prisma.registration.create({
+      data: {
+        participantId: aya.id,
+        seasonId: season2026.id,
+        reference: "ADD-2026-000002",
+        status: "NEEDS_CORRECTION",
+        correctionReason: "Le certificat médical fourni est incomplet : il manque le cachet du médecin et la mention explicite d'aptitude à la pratique du Parkour.",
+        correctionFields: "medicalCertificate",
+      },
+    });
+
+    const parkourDisc = await prisma.discipline.findUnique({ where: { slug: "parkour" } });
+    if (parkourDisc) {
+      await prisma.registrationDiscipline.create({
+        data: { registrationId: ayaReg.id, disciplineId: parkourDisc.id },
+      });
+    }
+
+    // Documents for Aya
+    await prisma.document.createMany({
+      data: [
+        {
+          registrationId: ayaReg.id,
+          participantId: aya.id,
+          type: "PHOTO",
+          originalFilename: "photo_identite_aya.jpg",
+          storagePath: "demo_photo_aya.jpg",
+          mimeType: "image/jpeg",
+          fileSize: 42000,
+          status: "VERIFIED",
+        },
+        {
+          registrationId: ayaReg.id,
+          participantId: aya.id,
+          type: "MEDICAL_CERTIFICATE",
+          originalFilename: "certificat_medical_non_conforme.pdf",
+          storagePath: "demo_medical_aya.pdf",
+          mimeType: "application/pdf",
+          fileSize: 110000,
+          status: "REJECTED",
+          rejectionReason: "Manque cachet du médecin",
+        },
+      ],
+    });
+  }
+
+  console.log(`Demo Family Account seeded: Phone ${parentPhone} (Password: ParentPassword2026!) with 2 children (Yassine & Aya)`);
   console.log("Database seed completed successfully.");
 }
 

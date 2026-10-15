@@ -238,6 +238,12 @@ export const fr: TranslationDictionary = {
     rejectionAlertTitle: "Dossier rejeté par l'administration",
     rejectionAlertDesc:
       "Votre dossier nécessite le remplacement des pièces ci-dessous pour être réexaminé par l'équipe du club.",
+    navOverview: "Aperçu",
+    navDocuments: "Documents & Pièces",
+    navEvents: "Événements & Séances",
+    navPayments: "Cotisations & Reçus",
+    navCard: "Carte d'Adhérent",
+    navFamily: "Famille & Profil",
   },
   admin: {
     title: "Console d'Administration — ADD Parkour Oran",
