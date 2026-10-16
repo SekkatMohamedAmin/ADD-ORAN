@@ -43,4 +43,6 @@ next-env.d.ts
 /src/generated/prisma
 /storage/uploads/*
 !/storage/uploads/.gitkeep
+old/
 CLAUDE.zip
+*.bak
