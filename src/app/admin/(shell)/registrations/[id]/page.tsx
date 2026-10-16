@@ -28,6 +28,7 @@ import {
   Check as FiCheck,
   X as FiX,
   Trash2 as FiTrash2,
+  Edit2 as FiEdit2,
 } from "lucide-react";
 
 interface RegistrationDetail {
@@ -156,6 +157,77 @@ export default function RegistrationDetailPage({
 
   // Printable receipt state
   const [selectedReceipt, setSelectedReceipt] = useState<any | null>(null);
+
+  // Edit / Delete individual payment state
+  const [paymentToEdit, setPaymentToEdit] = useState<any | null>(null);
+  const [editPaymentForm, setEditPaymentForm] = useState({
+    amount: "",
+    paymentPurpose: "",
+    notes: "",
+    paidAt: "",
+  });
+  const [editPaymentLoading, setEditPaymentLoading] = useState(false);
+
+  const [paymentToDelete, setPaymentToDelete] = useState<any | null>(null);
+  const [deletePaymentLoading, setDeletePaymentLoading] = useState(false);
+
+  const handleOpenEditPayment = (pay: any) => {
+    setPaymentToEdit(pay);
+    const rawDate = pay.paidAt || pay.createdAt;
+    const dateStr = rawDate
+      ? new Date(rawDate).toISOString().split("T")[0]
+      : new Date().toISOString().split("T")[0];
+    setEditPaymentForm({
+      amount: pay.amount.toString(),
+      paymentPurpose: pay.paymentPurpose || "",
+      notes: pay.notes || "",
+      paidAt: dateStr,
+    });
+  };
+
+  const handleSaveEditPayment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!paymentToEdit) return;
+    setEditPaymentLoading(true);
+    try {
+      const res = await fetch(`/api/admin/payments/${paymentToEdit.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: parseFloat(editPaymentForm.amount),
+          paymentPurpose: editPaymentForm.paymentPurpose,
+          notes: editPaymentForm.notes,
+          paidAt: editPaymentForm.paidAt ? new Date(editPaymentForm.paidAt).toISOString() : undefined,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur lors de la modification.");
+      setPaymentToEdit(null);
+      fetchDetails();
+    } catch (err: any) {
+      alert(err.message || "Erreur lors de la modification.");
+    } finally {
+      setEditPaymentLoading(false);
+    }
+  };
+
+  const handleDeletePayment = async () => {
+    if (!paymentToDelete) return;
+    setDeletePaymentLoading(true);
+    try {
+      const res = await fetch(`/api/admin/payments/${paymentToDelete.id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur lors de la suppression.");
+      setPaymentToDelete(null);
+      fetchDetails();
+    } catch (err: any) {
+      alert(err.message || "Erreur lors de la suppression.");
+    } finally {
+      setDeletePaymentLoading(false);
+    }
+  };
 
   // Delete candidate state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -965,12 +1037,30 @@ export default function RegistrationDetailPage({
                       {pay.recordedBy?.phone || "Admin"}
                     </td>
                     <td className="py-4 px-6 text-right">
-                      <button
-                        onClick={() => setSelectedReceipt(pay)}
-                        className="px-3 py-1.5 bg-[#1C1C24] hover:bg-[#252530] text-gray-200 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 transition"
-                      >
-                        <FiPrinter className="w-3.5 h-3.5 text-[#FFD21F]" /> Imprimer reçu
-                      </button>
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          onClick={() => setSelectedReceipt(pay)}
+                          title="Imprimer le reçu"
+                          className="px-2.5 py-1.5 bg-[#1C1C24] hover:bg-[#252530] text-gray-200 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 transition border border-white/5"
+                        >
+                          <FiPrinter className="w-3.5 h-3.5 text-[#FFD21F]" />
+                          <span className="hidden sm:inline">Imprimer</span>
+                        </button>
+                        <button
+                          onClick={() => handleOpenEditPayment(pay)}
+                          title="Modifier le versement"
+                          className="p-1.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 rounded-lg transition"
+                        >
+                          <FiEdit2 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => setPaymentToDelete(pay)}
+                          title="Supprimer ce paiement"
+                          className="p-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-lg transition"
+                        >
+                          <FiTrash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -1450,19 +1540,19 @@ export default function RegistrationDetailPage({
           </div>
         </div>
       )}
-      {/* Delete Confirmation Modal */}
+      {/* Delete Candidate Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-[#141419] border border-red-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
-            <div className="w-12 h-12 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center text-red-400">
+          <div className="bg-[#141419] border border-amber-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400">
               <FiAlertTriangle className="w-6 h-6" />
             </div>
             <div>
               <h3 className="font-display font-black text-lg text-white">
-                Supprimer la candidature ?
+                Mettre la candidature à la corbeille ?
               </h3>
               <p className="text-xs text-gray-400 mt-2 leading-relaxed">
-                Êtes-vous certain de vouloir supprimer définitivement le dossier{" "}
+                Êtes-vous certain de vouloir déplacer le dossier{" "}
                 <strong className="text-white font-mono font-bold">
                   {registration.reference}
                 </strong>{" "}
@@ -1470,10 +1560,10 @@ export default function RegistrationDetailPage({
                 <strong className="text-white font-bold">
                   {p.firstName} {p.lastName}
                 </strong>{" "}
-                ?
+                dans la corbeille ?
               </p>
-              <p className="text-xs text-red-400/90 font-mono mt-2 bg-red-500/10 p-2.5 rounded-xl border border-red-500/20">
-                ⚠️ Cette action est irréversible et supprimera le dossier, ses justificatifs et les données associées.
+              <p className="text-xs text-emerald-400/90 font-mono mt-2 bg-emerald-500/10 p-2.5 rounded-xl border border-emerald-500/20">
+                🛡️ Sécurité : Le dossier et ses pièces justificatives sont conservés. Vous pourrez restaurer cette candidature à tout moment depuis la page Corbeille.
               </p>
             </div>
             <div className="flex items-center justify-end gap-3 pt-2">
@@ -1489,10 +1579,166 @@ export default function RegistrationDetailPage({
                 type="button"
                 onClick={handleDeleteCandidate}
                 disabled={deleting}
+                className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-lg shadow-amber-600/30 flex items-center gap-2 transition disabled:opacity-50"
+              >
+                <FiTrash2 className="w-4 h-4" />
+                <span>{deleting ? "Déplacement..." : "Mettre à la corbeille"}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Payment Modal */}
+      {paymentToEdit && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-[#141419] border border-blue-500/30 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6 animate-in zoom-in-95">
+            <div className="flex items-center justify-between pb-4 border-b border-white/10">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                  <FiEdit2 className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-display font-black text-lg text-white">
+                    Modifier le versement
+                  </h3>
+                  <p className="font-mono text-xs text-blue-400">
+                    Reçu N° {paymentToEdit.receiptNumber}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPaymentToEdit(null)}
+                className="text-gray-400 hover:text-white p-1 rounded-lg"
+              >
+                <FiX className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEditPayment} className="space-y-4">
+              <div>
+                <label className="block text-xs font-mono font-bold uppercase text-gray-300 mb-1.5">
+                  Montant perçu (DZD) *
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  step="any"
+                  required
+                  value={editPaymentForm.amount}
+                  onChange={(e) => setEditPaymentForm({ ...editPaymentForm, amount: e.target.value })}
+                  placeholder="Ex : 4500"
+                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:border-blue-500 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-mono font-bold uppercase text-gray-300 mb-1.5">
+                  Motif du versement *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editPaymentForm.paymentPurpose}
+                  onChange={(e) => setEditPaymentForm({ ...editPaymentForm, paymentPurpose: e.target.value })}
+                  placeholder="Ex : Cotisation annuelle, assurance & 1er mois"
+                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:border-blue-500 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-mono font-bold uppercase text-gray-300 mb-1.5">
+                  Date du versement *
+                </label>
+                <input
+                  type="date"
+                  required
+                  value={editPaymentForm.paidAt}
+                  onChange={(e) => setEditPaymentForm({ ...editPaymentForm, paidAt: e.target.value })}
+                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white font-mono focus:border-blue-500 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-mono font-bold uppercase text-gray-300 mb-1.5">
+                  Remarques / Observations (Facultatif)
+                </label>
+                <textarea
+                  rows={2}
+                  value={editPaymentForm.notes}
+                  onChange={(e) => setEditPaymentForm({ ...editPaymentForm, notes: e.target.value })}
+                  placeholder="Observations sur la correction..."
+                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:border-blue-500 focus:outline-none"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
+                <button
+                  type="button"
+                  onClick={() => setPaymentToEdit(null)}
+                  disabled={editPaymentLoading}
+                  className="px-4 py-2.5 rounded-xl border border-white/10 text-xs font-semibold text-gray-300 hover:bg-white/5 transition"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  disabled={editPaymentLoading}
+                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-lg shadow-blue-600/30 flex items-center gap-2 transition disabled:opacity-50"
+                >
+                  <FiEdit2 className="w-3.5 h-3.5" />
+                  <span>{editPaymentLoading ? "Enregistrement..." : "Enregistrer les modifications"}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Payment Modal */}
+      {paymentToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-[#141419] border border-red-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
+            <div className="w-12 h-12 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center text-red-400">
+              <FiAlertTriangle className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-display font-black text-lg text-white">
+                Supprimer ce versement ?
+              </h3>
+              <p className="text-xs text-gray-300 mt-2 leading-relaxed">
+                Êtes-vous certain de vouloir supprimer le reçu{" "}
+                <strong className="text-[#FFD21F] font-mono">
+                  {paymentToDelete.receiptNumber}
+                </strong>{" "}
+                d&apos;un montant de{" "}
+                <strong className="text-white font-mono font-bold">
+                  {paymentToDelete.amount.toLocaleString()} DZD
+                </strong>{" "}
+                ?
+              </p>
+              <p className="text-xs text-amber-300/90 font-mono mt-3 bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/20 leading-relaxed">
+                ℹ️ Si cette inscription ne compte aucun autre règlement, son statut sera automatiquement réinitialisé à &quot;En attente de paiement&quot;.
+              </p>
+            </div>
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setPaymentToDelete(null)}
+                disabled={deletePaymentLoading}
+                className="px-4 py-2.5 rounded-xl border border-white/10 text-xs font-semibold text-gray-300 hover:bg-white/5 transition"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={handleDeletePayment}
+                disabled={deletePaymentLoading}
                 className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-lg shadow-red-600/30 flex items-center gap-2 transition disabled:opacity-50"
               >
                 <FiTrash2 className="w-4 h-4" />
-                <span>{deleting ? "Suppression en cours..." : "Confirmer la suppression"}</span>
+                <span>{deletePaymentLoading ? "Suppression..." : "Confirmer la suppression"}</span>
               </button>
             </div>
           </div>

@@ -14,6 +14,10 @@ import {
   User as FiUser,
   FileText as FiFileText,
   CheckCircle2 as FiCheckCircle,
+  Edit2 as FiEdit2,
+  Trash2 as FiTrash2,
+  AlertTriangle as FiAlertTriangle,
+  X as FiX,
 } from "lucide-react";
 import { getStoredAdminSeason, setStoredAdminSeason } from "@/lib/adminSeason";
 
@@ -66,6 +70,78 @@ export default function PaymentsPage() {
 
   // Receipt Modal
   const [selectedReceipt, setSelectedReceipt] = useState<PaymentItem | null>(null);
+
+  // Edit Payment State
+  const [paymentToEdit, setPaymentToEdit] = useState<PaymentItem | null>(null);
+  const [editForm, setEditForm] = useState({
+    amount: "",
+    paymentPurpose: "",
+    notes: "",
+    paidAt: "",
+  });
+  const [editLoading, setEditLoading] = useState(false);
+
+  // Delete Payment State
+  const [paymentToDelete, setPaymentToDelete] = useState<PaymentItem | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const handleOpenEdit = (pay: PaymentItem) => {
+    setPaymentToEdit(pay);
+    const rawDate = pay.paidAt || pay.createdAt;
+    const dateStr = rawDate
+      ? new Date(rawDate).toISOString().split("T")[0]
+      : new Date().toISOString().split("T")[0];
+    setEditForm({
+      amount: pay.amount.toString(),
+      paymentPurpose: pay.paymentPurpose || "",
+      notes: pay.notes || "",
+      paidAt: dateStr,
+    });
+  };
+
+  const handleSaveEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!paymentToEdit) return;
+    setEditLoading(true);
+    try {
+      const res = await fetch(`/api/admin/payments/${paymentToEdit.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: parseFloat(editForm.amount),
+          paymentPurpose: editForm.paymentPurpose,
+          notes: editForm.notes,
+          paidAt: editForm.paidAt ? new Date(editForm.paidAt).toISOString() : undefined,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur lors de la modification.");
+      setPaymentToEdit(null);
+      fetchPayments();
+    } catch (err: any) {
+      alert(err.message || "Erreur lors de la modification.");
+    } finally {
+      setEditLoading(false);
+    }
+  };
+
+  const handleDeletePayment = async () => {
+    if (!paymentToDelete) return;
+    setDeleteLoading(true);
+    try {
+      const res = await fetch(`/api/admin/payments/${paymentToDelete.id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur lors de la suppression.");
+      setPaymentToDelete(null);
+      fetchPayments();
+    } catch (err: any) {
+      alert(err.message || "Erreur lors de la suppression.");
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
 
   const fetchPayments = async () => {
     try {
@@ -212,7 +288,7 @@ export default function PaymentsPage() {
               <th className="py-3.5 px-6">Montant perçu</th>
               <th className="py-3.5 px-6">Date</th>
               <th className="py-3.5 px-6">Encaissé par</th>
-              <th className="py-3.5 px-6 text-right">Reçu</th>
+              <th className="py-3.5 px-6 text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
@@ -275,12 +351,30 @@ export default function PaymentsPage() {
                     </td>
 
                     <td className="py-4 px-6 text-right">
-                      <button
-                        onClick={() => setSelectedReceipt(pay)}
-                        className="px-3 py-1.5 bg-[#1C1C24] hover:bg-[#252530] text-gray-200 hover:text-white rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 transition border border-white/5"
-                      >
-                        <FiPrinter className="w-3.5 h-3.5 text-[#FFD21F]" /> Reçu
-                      </button>
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          onClick={() => setSelectedReceipt(pay)}
+                          title="Imprimer le reçu"
+                          className="px-2.5 py-1.5 bg-[#1C1C24] hover:bg-[#252530] text-gray-200 hover:text-white rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 transition border border-white/5"
+                        >
+                          <FiPrinter className="w-3.5 h-3.5 text-[#FFD21F]" />
+                          <span className="hidden sm:inline">Reçu</span>
+                        </button>
+                        <button
+                          onClick={() => handleOpenEdit(pay)}
+                          title="Modifier le montant ou motif"
+                          className="p-1.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 rounded-lg transition"
+                        >
+                          <FiEdit2 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => setPaymentToDelete(pay)}
+                          title="Supprimer ce paiement"
+                          className="p-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-lg transition"
+                        >
+                          <FiTrash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -443,6 +537,189 @@ export default function PaymentsPage() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Edit Payment Modal */}
+      {paymentToEdit && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-[#141419] border border-blue-500/30 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6 animate-in zoom-in-95">
+            <div className="flex items-center justify-between pb-4 border-b border-white/10">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                  <FiEdit2 className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-display font-black text-lg text-white">
+                    Modifier le paiement
+                  </h3>
+                  <p className="font-mono text-xs text-blue-400">
+                    Reçu N° {paymentToEdit.receiptNumber}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPaymentToEdit(null)}
+                className="text-gray-400 hover:text-white p-1 rounded-lg"
+              >
+                <FiX className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Target info preview */}
+            <div className="bg-[#1C1C24] p-3.5 rounded-xl border border-white/5 space-y-1 text-xs">
+              <div className="text-gray-400">
+                Adhérent :{" "}
+                <strong className="text-white">
+                  {paymentToEdit.registration?.participant?.firstName}{" "}
+                  {paymentToEdit.registration?.participant?.lastName}
+                </strong>
+                {paymentToEdit.registration?.participant?.phone && (
+                  <span className="font-mono text-gray-400 ml-2">
+                    ({paymentToEdit.registration.participant.phone})
+                  </span>
+                )}
+              </div>
+              <div className="text-gray-400">
+                Dossier :{" "}
+                <span className="font-mono text-[#FFD21F]">
+                  {paymentToEdit.registration?.reference}
+                </span>{" "}
+                • Saison : <span className="text-gray-300">{paymentToEdit.season?.code}</span>
+              </div>
+            </div>
+
+            <form onSubmit={handleSaveEdit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-mono font-bold uppercase text-gray-300 mb-1.5">
+                  Montant perçu (DZD) *
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  step="any"
+                  required
+                  value={editForm.amount}
+                  onChange={(e) => setEditForm({ ...editForm, amount: e.target.value })}
+                  placeholder="Ex : 4500"
+                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:border-blue-500 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-mono font-bold uppercase text-gray-300 mb-1.5">
+                  Motif du versement *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editForm.paymentPurpose}
+                  onChange={(e) => setEditForm({ ...editForm, paymentPurpose: e.target.value })}
+                  placeholder="Ex : Cotisation annuelle, assurance & 1er mois"
+                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:border-blue-500 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-mono font-bold uppercase text-gray-300 mb-1.5">
+                  Date du versement *
+                </label>
+                <input
+                  type="date"
+                  required
+                  value={editForm.paidAt}
+                  onChange={(e) => setEditForm({ ...editForm, paidAt: e.target.value })}
+                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white font-mono focus:border-blue-500 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-mono font-bold uppercase text-gray-300 mb-1.5">
+                  Notes / Observations (Facultatif)
+                </label>
+                <textarea
+                  rows={2}
+                  value={editForm.notes}
+                  onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
+                  placeholder="Remarques éventuelles sur la correction ou le mode..."
+                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:border-blue-500 focus:outline-none"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
+                <button
+                  type="button"
+                  onClick={() => setPaymentToEdit(null)}
+                  disabled={editLoading}
+                  className="px-4 py-2.5 rounded-xl border border-white/10 text-xs font-semibold text-gray-300 hover:bg-white/5 transition"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  disabled={editLoading}
+                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-lg shadow-blue-600/30 flex items-center gap-2 transition disabled:opacity-50"
+                >
+                  <FiEdit2 className="w-3.5 h-3.5" />
+                  <span>{editLoading ? "Enregistrement..." : "Enregistrer les modifications"}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Payment Modal */}
+      {paymentToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="bg-[#141419] border border-red-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
+            <div className="w-12 h-12 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center text-red-400">
+              <FiAlertTriangle className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-display font-black text-lg text-white">
+                Supprimer ce versement ?
+              </h3>
+              <p className="text-xs text-gray-300 mt-2 leading-relaxed">
+                Êtes-vous certain de vouloir supprimer le reçu{" "}
+                <strong className="text-[#FFD21F] font-mono">
+                  {paymentToDelete.receiptNumber}
+                </strong>{" "}
+                d&apos;un montant de{" "}
+                <strong className="text-white font-mono font-bold">
+                  {paymentToDelete.amount.toLocaleString()} DZD
+                </strong>{" "}
+                encaissé pour{" "}
+                <strong className="text-white">
+                  {paymentToDelete.registration?.participant?.firstName}{" "}
+                  {paymentToDelete.registration?.participant?.lastName}
+                </strong>{" "}
+                ?
+              </p>
+              <p className="text-xs text-amber-300/90 font-mono mt-3 bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/20 leading-relaxed">
+                ℹ️ Si cette inscription ne compte aucun autre règlement, son statut sera automatiquement réinitialisé à &quot;En attente de paiement&quot;.
+              </p>
+            </div>
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setPaymentToDelete(null)}
+                disabled={deleteLoading}
+                className="px-4 py-2.5 rounded-xl border border-white/10 text-xs font-semibold text-gray-300 hover:bg-white/5 transition"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={handleDeletePayment}
+                disabled={deleteLoading}
+                className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-lg shadow-red-600/30 flex items-center gap-2 transition disabled:opacity-50"
+              >
+                <FiTrash2 className="w-4 h-4" />
+                <span>{deleteLoading ? "Suppression..." : "Confirmer la suppression"}</span>
+              </button>
             </div>
           </div>
         </div>
