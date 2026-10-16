@@ -8,6 +8,7 @@
     "start": "next start --hostname 0.0.0.0",
     "lint": "eslint",
     "db:seed": "tsx prisma/seed.ts",
+    "deploy:check": "node scripts/deploy-check.js",
     "test": "tsx tests/run-all-tests.ts"
   },
   "dependencies": {
