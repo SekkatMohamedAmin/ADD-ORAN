@@ -16,7 +16,9 @@ export async function GET(request: NextRequest) {
     const limit = Math.min(50, Math.max(5, parseInt(searchParams.get("limit") || "20", 10)));
     const skip = (page - 1) * limit;
 
-    const whereClause: any = {};
+    const whereClause: any = {
+      participant: { deletedAt: null },
+    };
 
     if (status) {
       whereClause.status = status;

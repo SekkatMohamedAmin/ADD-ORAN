@@ -277,6 +277,7 @@ export const en: TranslationDictionary = {
       duplicates: "Duplicates",
       audit: "Audit Log",
       settings: "Settings",
+      trash: "Recycle Bin",
       profile: "My Profile",
       logout: "Logout",
     },

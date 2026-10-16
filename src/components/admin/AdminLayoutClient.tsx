@@ -24,6 +24,7 @@ import {
   ExternalLink,
   ChevronDown,
   Shield,
+  Trash2,
 } from "lucide-react";
 
 interface AdminLayoutClientProps {
@@ -57,7 +58,19 @@ export function AdminLayoutClient({ children, adminUser }: AdminLayoutClientProp
     }
   };
 
-  const navSections = [
+  interface NavItem {
+    label: string;
+    href: string;
+    icon: any;
+    exact?: boolean;
+  }
+
+  interface NavSection {
+    title: string;
+    items: NavItem[];
+  }
+
+  const navSections: NavSection[] = [
     {
       title: t.admin.nav.principal,
       items: [
@@ -116,6 +129,11 @@ export function AdminLayoutClient({ children, adminUser }: AdminLayoutClientProp
           label: t.admin.nav.settings,
           href: "/admin/settings",
           icon: Settings,
+        },
+        {
+          label: t.admin.nav.trash,
+          href: "/admin/trash",
+          icon: Trash2,
         },
       ],
     },

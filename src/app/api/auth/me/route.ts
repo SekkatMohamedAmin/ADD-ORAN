@@ -21,10 +21,11 @@ export async function GET() {
 
     // Get all participants belonging to this user account (supports multi-child families & adult adherents)
     const participants = await prisma.participant.findMany({
-      where: { userId: user.id },
+      where: { userId: user.id, deletedAt: null },
       orderBy: { createdAt: "asc" },
       include: {
         registrations: {
+          where: { deletedAt: null },
           orderBy: { createdAt: "desc" },
           include: {
             season: true,

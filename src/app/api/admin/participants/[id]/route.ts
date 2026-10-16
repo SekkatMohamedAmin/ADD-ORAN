@@ -154,51 +154,83 @@ export async function DELETE(
 
     const regIds = participant.registrations.map((r) => r.id);
 
-    await prisma.$transaction(async (tx) => {
-      // 1. Delete associated payments
-      if (regIds.length > 0) {
-        await tx.payment.deleteMany({
-          where: { registrationId: { in: regIds } },
-        });
+    const isPermanent = request.nextUrl.searchParams.get("permanent") === "true";
 
-        // 2. Delete audit logs linked to registrations
-        await tx.auditLog.deleteMany({
-          where: { registrationId: { in: regIds } },
-        });
+    if (isPermanent) {
+      await prisma.$transaction(async (tx) => {
+        // 1. Delete associated payments
+        if (regIds.length > 0) {
+          await tx.payment.deleteMany({
+            where: { registrationId: { in: regIds } },
+          });
 
-        // 3. Delete registration disciplines
-        await tx.registrationDiscipline.deleteMany({
-          where: { registrationId: { in: regIds } },
-        });
-      }
+          // 2. Delete audit logs linked to registrations
+          await tx.auditLog.deleteMany({
+            where: { registrationId: { in: regIds } },
+          });
 
-      // 4. Delete documents
-      await tx.document.deleteMany({
-        where: { participantId: id },
-      });
+          // 3. Delete registration disciplines
+          await tx.registrationDiscipline.deleteMany({
+            where: { registrationId: { in: regIds } },
+          });
+        }
 
-      // 5. Delete parental authorizations
-      await tx.parentalAuthorization.deleteMany({
-        where: { participantId: id },
-      });
-
-      // 6. Delete event attendances
-      await tx.eventAttendance.deleteMany({
-        where: { participantId: id },
-      });
-
-      // 7. Delete registrations
-      if (regIds.length > 0) {
-        await tx.registration.deleteMany({
+        // 4. Delete documents
+        await tx.document.deleteMany({
           where: { participantId: id },
         });
-      }
 
-      // 8. Delete participant
-      await tx.participant.delete({
-        where: { id },
+        // 5. Delete parental authorizations
+        await tx.parentalAuthorization.deleteMany({
+          where: { participantId: id },
+        });
+
+        // 6. Delete event attendances
+        await tx.eventAttendance.deleteMany({
+          where: { participantId: id },
+        });
+
+        // 7. Delete registrations
+        if (regIds.length > 0) {
+          await tx.registration.deleteMany({
+            where: { participantId: id },
+          });
+        }
+
+        // 8. Delete participant
+        await tx.participant.delete({
+          where: { id },
+        });
       });
-    });
+
+      await logAudit({
+        userId: admin.id,
+        action: "MEMBER_PURGED",
+        details: {
+          participantId: participant.id,
+          name: `${participant.firstName} ${participant.lastName}`,
+          phone: participant.phone,
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: `L'adhérent ${participant.firstName} ${participant.lastName} a été supprimé définitivement.`,
+      });
+    }
+
+    // Default: Soft delete (Mettre à la corbeille)
+    const now = new Date();
+    await prisma.$transaction([
+      prisma.participant.update({
+        where: { id },
+        data: { deletedAt: now },
+      }),
+      prisma.registration.updateMany({
+        where: { participantId: id },
+        data: { deletedAt: now },
+      }),
+    ]);
 
     await logAudit({
       userId: admin.id,
@@ -207,12 +239,14 @@ export async function DELETE(
         participantId: participant.id,
         name: `${participant.firstName} ${participant.lastName}`,
         phone: participant.phone,
+        corbeille: true,
       },
     });
 
     return NextResponse.json({
       success: true,
-      message: `L'adhérent ${participant.firstName} ${participant.lastName} a été supprimé définitivement.`,
+      corbeille: true,
+      message: `L'adhérent ${participant.firstName} ${participant.lastName} a été placé dans la corbeille.`,
     });
   } catch (error) {
     console.error("Admin participant delete error:", error);

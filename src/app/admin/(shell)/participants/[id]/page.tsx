@@ -472,23 +472,23 @@ export default function ParticipantProfilePage({
       {/* Delete Confirmation Modal */}
       {showDeleteModal && member && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-[#141419] border border-red-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
-            <div className="w-12 h-12 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center text-red-400">
+          <div className="bg-[#141419] border border-amber-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400">
               <FiAlertTriangle className="w-6 h-6" />
             </div>
             <div>
               <h3 className="font-display font-black text-lg text-white">
-                Supprimer définitivement cet adhérent ?
+                Mettre cet adhérent à la corbeille ?
               </h3>
               <p className="text-xs text-gray-400 mt-2 leading-relaxed">
-                Êtes-vous sûr de vouloir supprimer définitivement la fiche de{" "}
+                Êtes-vous sûr de vouloir déplacer la fiche de{" "}
                 <strong className="text-white font-bold">
                   {member.firstName} {member.lastName}
                 </strong>{" "}
-                (Téléphone : {member.phone}) ?
+                (Téléphone : {member.phone}) dans la corbeille ?
               </p>
-              <p className="text-xs text-red-400/90 font-mono mt-2 bg-red-500/10 p-2.5 rounded-xl border border-red-500/20">
-                ⚠️ Cette action est irréversible. L&apos;ensemble des inscriptions, documents, paiements et présences associés seront effacés.
+              <p className="text-xs text-emerald-400/90 font-mono mt-2 bg-emerald-500/10 p-2.5 rounded-xl border border-emerald-500/20">
+                🛡️ Sécurité : Les données (justificatifs, historique, paiements) sont préservées. Vous pourrez restaurer cet adhérent à tout moment depuis la page Corbeille.
               </p>
             </div>
             <div className="flex items-center justify-end gap-3 pt-2">
@@ -504,10 +504,10 @@ export default function ParticipantProfilePage({
                 type="button"
                 onClick={handleDeleteParticipant}
                 disabled={deleting}
-                className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-lg shadow-red-600/30 flex items-center gap-2 transition disabled:opacity-50"
+                className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-lg shadow-amber-600/30 flex items-center gap-2 transition disabled:opacity-50"
               >
                 <FiTrash2 className="w-4 h-4" />
-                <span>{deleting ? "Suppression en cours..." : "Confirmer la suppression"}</span>
+                <span>{deleting ? "Déplacement..." : "Mettre à la corbeille"}</span>
               </button>
             </div>
           </div>

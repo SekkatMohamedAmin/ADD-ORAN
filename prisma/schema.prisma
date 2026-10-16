@@ -60,6 +60,7 @@ model Participant {
   isMinor               Boolean                 @default(false)
   rfidCardId            String?
   membershipCardNumber  String?
+  deletedAt             DateTime?
   createdAt             DateTime                @default(now())
   updatedAt             DateTime                @updatedAt
   registrations         Registration[]
@@ -70,6 +71,7 @@ model Participant {
   @@index([userId])
   @@index([phone])
   @@index([lastName, firstName])
+  @@index([deletedAt])
 }
 
 model Discipline {
@@ -104,6 +106,7 @@ model Registration {
   submittedAt              DateTime                 @default(now())
   reviewedAt               DateTime?
   reviewedBy               String?
+  deletedAt                DateTime?
   createdAt                DateTime                 @default(now())
   updatedAt                DateTime                 @updatedAt
   disciplines              RegistrationDiscipline[]
@@ -116,6 +119,7 @@ model Registration {
   @@index([participantId])
   @@index([status])
   @@index([reference])
+  @@index([deletedAt])
 }
 
 model RegistrationDiscipline {

@@ -14,7 +14,9 @@ export async function GET(request: NextRequest) {
     const limit = Math.min(50, Math.max(5, parseInt(searchParams.get("limit") || "15", 10)));
     const skip = (page - 1) * limit;
 
-    const whereClause: any = {};
+    const whereClause: any = {
+      deletedAt: null,
+    };
 
     if (ageCategory === "minor") {
       whereClause.isMinor = true;

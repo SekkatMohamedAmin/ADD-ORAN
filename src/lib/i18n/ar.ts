@@ -277,6 +277,7 @@ export const ar: TranslationDictionary = {
       duplicates: "المتشابهات",
       audit: "سجل العمليات",
       settings: "الإعدادات",
+      trash: "سلة المهملات",
       profile: "الملف الشخصي",
       logout: "تسجيل الخروج",
     },

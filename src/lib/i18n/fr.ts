@@ -284,6 +284,7 @@ export const fr: TranslationDictionary = {
       duplicates: "Doublons",
       audit: "Journal d'Audit",
       settings: "Paramètres",
+      trash: "Corbeille",
       profile: "Mon Profil",
       logout: "Déconnexion",
     },

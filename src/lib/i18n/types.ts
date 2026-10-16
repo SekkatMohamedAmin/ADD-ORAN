@@ -269,6 +269,7 @@ export interface TranslationDictionary {
       duplicates: string;
       audit: string;
       settings: string;
+      trash: string;
       profile: string;
       logout: string;
     };

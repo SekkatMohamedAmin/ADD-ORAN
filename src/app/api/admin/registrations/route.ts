@@ -25,7 +25,9 @@ export async function GET(request: NextRequest) {
     }
 
     // 2. Build where filter
-    const whereClause: any = {};
+    const whereClause: any = {
+      deletedAt: null,
+    };
     if (seasonParam !== "ALL" && currentSeason) {
       whereClause.seasonId = currentSeason.id;
     }
@@ -77,7 +79,12 @@ export async function GET(request: NextRequest) {
     });
 
     // 4. Compute Season-Scoped Statistics (Strict Real Database Metrics)
-    const statsWhere = currentSeason && seasonParam !== "ALL" ? { seasonId: currentSeason.id } : {};
+    const statsWhere: any = {
+      deletedAt: null,
+    };
+    if (currentSeason && seasonParam !== "ALL") {
+      statsWhere.seasonId = currentSeason.id;
+    }
 
     const [
       totalCount,

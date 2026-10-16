@@ -18,7 +18,9 @@ export async function GET(request: NextRequest) {
     const activeSeason = await prisma.season.findFirst({ where: { isActive: true } });
     const effectiveSeason = seasonCode ? seasonCode : (activeSeason?.code || "");
 
-    const whereClause: any = {};
+    const whereClause: any = {
+      registration: { deletedAt: null },
+    };
 
     if (effectiveSeason && effectiveSeason !== "ALL") {
       whereClause.season = { code: effectiveSeason };
