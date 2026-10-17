@@ -178,8 +178,11 @@ export default function PaymentsPage() {
   };
 
   useEffect(() => {
-    fetchPayments();
-  }, [page, selectedSeason]);
+    const timer = setTimeout(() => {
+      fetchPayments();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [search, page, selectedSeason]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -228,7 +231,10 @@ export default function PaymentsPage() {
             <input
               type="text"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
               placeholder="Rechercher par N° de reçu, participant, référence inscription..."
               className="w-full bg-[#1C1C24] border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#E52421] font-mono"
             />

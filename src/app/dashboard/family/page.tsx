@@ -19,6 +19,7 @@ import {
   MapPin,
   Heart,
   Sparkles,
+  Download,
 } from "lucide-react";
 
 export default function DashboardFamilyPage() {
@@ -49,16 +50,14 @@ export default function DashboardFamilyPage() {
           </p>
         </div>
 
-        {isFamilyAccount && (
-          <button
-            type="button"
-            onClick={openAddChildModal}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#E52421] hover:bg-[#c91d1a] text-white text-xs font-bold shadow-lg shadow-[#E52421]/20 transition-all self-start sm:self-auto"
-          >
-            <UserPlus className="w-4 h-4" />
-            <span>Inscrire un autre enfant</span>
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={openAddChildModal}
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#E52421] hover:bg-[#c91d1a] text-white text-xs font-bold shadow-lg shadow-[#E52421]/20 transition-all self-start sm:self-auto"
+        >
+          <UserPlus className="w-4 h-4" />
+          <span>Inscrire un autre enfant</span>
+        </button>
       </div>
 
       {/* Children / Adherents Roster */}
@@ -206,6 +205,18 @@ export default function DashboardFamilyPage() {
                   >
                     <CreditCard className="w-4 h-4" />
                   </Link>
+
+                  {reg && (
+                    <a
+                      href={`/paperwork/${reg.id}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-2.5 rounded-xl bg-white/5 hover:bg-[#E52421] text-white/60 hover:text-white transition-colors"
+                      title="Télécharger le dossier complet officiel (PDF)"
+                    >
+                      <Download className="w-4 h-4 text-[#FFD21F]" />
+                    </a>
+                  )}
                 </div>
               </div>
             );
@@ -214,27 +225,25 @@ export default function DashboardFamilyPage() {
       </div>
 
       {/* Add Another Child Callout Card */}
-      {isFamilyAccount && (
-        <div className="p-8 rounded-3xl bg-gradient-to-r from-[#FFD21F]/10 via-transparent to-transparent border border-[#FFD21F]/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <div className="space-y-1">
-            <h3 className="font-display font-black text-lg text-white">
-              Vous avez un autre enfant à inscrire pour la saison 2026 ?
-            </h3>
-            <p className="text-xs text-white/60 max-w-xl">
-              Vous n&apos;avez pas besoin de créer un second compte. Ajoutez votre enfant directement à votre espace familial pour centraliser les documents, cartes et suivis d&apos;entraînements.
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={openAddChildModal}
-            className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#FFD21F] hover:bg-[#e6bd19] text-black font-bold text-xs shadow-lg shadow-[#FFD21F]/20 shrink-0 transition-all"
-          >
-            <UserPlus className="w-4 h-4" />
-            <span>Inscrire un autre enfant</span>
-          </button>
+      <div className="p-8 rounded-3xl bg-gradient-to-r from-[#FFD21F]/10 via-transparent to-transparent border border-[#FFD21F]/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+        <div className="space-y-1">
+          <h3 className="font-display font-black text-lg text-white">
+            Vous avez un autre enfant ou proche à inscrire pour la saison 2026 ?
+          </h3>
+          <p className="text-xs text-white/60 max-w-xl">
+            Vous n&apos;avez pas besoin de créer un second compte. Ajoutez votre enfant directement à votre espace familial pour centraliser les documents, cartes et suivis d&apos;entraînements.
+          </p>
         </div>
-      )}
+
+        <button
+          type="button"
+          onClick={openAddChildModal}
+          className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#FFD21F] hover:bg-[#e6bd19] text-black font-bold text-xs shadow-lg shadow-[#FFD21F]/20 shrink-0 transition-all"
+        >
+          <UserPlus className="w-4 h-4" />
+          <span>Inscrire un autre enfant</span>
+        </button>
+      </div>
     </div>
   );
 }

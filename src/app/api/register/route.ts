@@ -5,7 +5,7 @@ import { storage } from "@/lib/storage";
 import { generateRegistrationReference } from "@/lib/sequences";
 import { ensureMembershipCardNumber } from "@/lib/membershipCard";
 import { checkPossibleDuplicates } from "@/lib/duplicates";
-import { createSession } from "@/lib/auth";
+import { createSession, getSessionUser } from "@/lib/auth";
 import { logAudit } from "@/lib/audit";
 
 export async function POST(request: NextRequest) {
@@ -93,10 +93,12 @@ export async function POST(request: NextRequest) {
       if (duplicateResult.hasPossibleDuplicate) {
         return NextResponse.json(
           {
+            warning: true,
             duplicateWarning: true,
             matches: duplicateResult.matches,
+            error: "Un dossier avec des coordonnées similaires existe déjà.",
           },
-          { status: 200 }
+          { status: 409 }
         );
       }
     }
@@ -174,6 +176,9 @@ export async function POST(request: NextRequest) {
       ? await storage.save(parentalIdBuffer, parentalIdFile.name, parentalIdFile.type || "image/jpeg")
       : null;
 
+    // Retrieve current session before transaction to avoid nested queries/locks
+    const sessionUser = await getSessionUser();
+
     // Execute atomic transaction for user, participant, sequential reference, and registration
     const result = await prisma.$transaction(async (tx) => {
       // 1. User
@@ -188,7 +193,20 @@ export async function POST(request: NextRequest) {
         throw new Error("Ce numéro de téléphone est réservé à l'administration du club.");
       }
 
-      if (!user) {
+      if (user) {
+        // If user already exists, verify identity:
+        // Either the parent is already authenticated in this session, or the entered password must match.
+        const isSelfSession = sessionUser && sessionUser.id === user.id;
+
+        if (!isSelfSession) {
+          const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+          if (!isPasswordValid) {
+            throw new Error(
+              "Ce numéro de téléphone est déjà associé à un compte. Veuillez saisir le mot de passe exact de ce compte pour y rattacher l'enfant, ou connectez-vous d'abord à votre espace."
+            );
+          }
+        }
+      } else {
         user = await tx.user.create({
           data: {
             phone: cleanPhone,

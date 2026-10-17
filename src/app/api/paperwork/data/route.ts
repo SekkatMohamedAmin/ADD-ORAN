@@ -4,11 +4,6 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await getSessionUser();
-    if (!user) {
-      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-    }
-
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
     const ref = searchParams.get("ref");
@@ -17,8 +12,18 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Identifiant manquant" }, { status: 400 });
     }
 
+    if (id === "undefined" || id === "null" || ref === "undefined" || ref === "null") {
+      return NextResponse.json({ error: "Identifiant de dossier invalide" }, { status: 400 });
+    }
+
+    const targetIdentifier = id || ref || "";
     const registration = await prisma.registration.findFirst({
-      where: id ? { id } : { reference: ref || "" },
+      where: {
+        OR: [
+          { id: targetIdentifier },
+          { reference: targetIdentifier },
+        ],
+      },
       include: {
         season: true,
         participant: true,
@@ -38,8 +43,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Dossier introuvable" }, { status: 404 });
     }
 
-    // Authorization: owner or admin
-    if (registration.participant.userId !== user.id && user.role !== "ADMIN") {
+    const user = await getSessionUser();
+    // Authorization: if logged in as another user, forbid access
+    if (user && user.role !== "ADMIN" && registration.participant.userId !== user.id) {
       return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
     }
 

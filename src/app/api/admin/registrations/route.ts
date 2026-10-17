@@ -48,14 +48,28 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    if (search) {
-      whereClause.OR = [
-        { reference: { contains: search } },
-        { participant: { firstName: { contains: search } } },
-        { participant: { lastName: { contains: search } } },
-        { participant: { phone: { contains: search } } },
-        { participant: { email: { contains: search } } },
-      ];
+    if (search && search.trim()) {
+      const trimmed = search.trim();
+      const terms = trimmed.split(/\s+/).filter(Boolean);
+      if (terms.length > 1) {
+        whereClause.AND = terms.map((term: string) => ({
+          OR: [
+            { reference: { contains: term } },
+            { participant: { firstName: { contains: term } } },
+            { participant: { lastName: { contains: term } } },
+            { participant: { phone: { contains: term } } },
+            { participant: { email: { contains: term } } },
+          ],
+        }));
+      } else {
+        whereClause.OR = [
+          { reference: { contains: trimmed } },
+          { participant: { firstName: { contains: trimmed } } },
+          { participant: { lastName: { contains: trimmed } } },
+          { participant: { phone: { contains: trimmed } } },
+          { participant: { email: { contains: trimmed } } },
+        ];
+      }
     }
 
     // 3. Query registrations

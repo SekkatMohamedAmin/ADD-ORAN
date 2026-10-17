@@ -61,11 +61,14 @@ export default function PaperworkPage({
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch(`/api/paperwork/data?id=${id}`);
-        if (!res.ok) {
-          throw new Error("Impossible de charger les données du document.");
+        if (!id || id === "undefined" || id === "null") {
+          throw new Error("Identifiant de dossier manquant ou invalide.");
         }
+        const res = await fetch(`/api/paperwork/data?id=${encodeURIComponent(id)}`);
         const json = await res.json();
+        if (!res.ok) {
+          throw new Error(json.error || "Impossible de charger les données du document.");
+        }
         setData(json.registration);
       } catch (err) {
         setError((err as Error).message);
@@ -88,16 +91,35 @@ export default function PaperworkPage({
   }
 
   if (error || !data) {
+    const isInvalidParam = id === "undefined" || id === "null" || !id;
     return (
       <div className="min-h-screen bg-[#0A0A0D] flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-[#141419] border border-white/10 rounded-2xl p-6 text-center space-y-4 shadow-2xl">
-          <p className="text-[#FF8585] text-xs font-mono">{error || "Document non trouvé"}</p>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-xl text-xs font-mono border border-white/10 transition-all"
-          >
-            <ArrowLeft className="w-4 h-4 text-[#E52421]" /> Retour à mon espace
-          </Link>
+          <div className="w-12 h-12 rounded-full bg-[#E52421]/20 text-[#E52421] flex items-center justify-center mx-auto">
+            <ArrowLeft className="w-6 h-6" />
+          </div>
+          <h3 className="font-display font-black text-lg text-white">
+            {isInvalidParam ? "Identifiant de dossier non spécifié" : "Dossier introuvable"}
+          </h3>
+          <p className="text-[#9E9EA8] text-xs font-body leading-relaxed">
+            {isInvalidParam
+              ? "Le lien d'accès ne contient pas de référence valide. Vous pouvez retrouver et télécharger votre dossier complet à tout moment depuis votre espace adhérent."
+              : error || "Impossible de charger les données du document officiel."}
+          </p>
+          <div className="pt-2 flex flex-col sm:flex-row gap-2 justify-center">
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#FFD21F] hover:bg-white text-[#0A0A0D] rounded-xl text-xs font-bold transition-all"
+            >
+              Accéder à mon espace adhérent
+            </Link>
+            <Link
+              href="/"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-white/5 hover:bg-white/10 text-white rounded-xl text-xs font-mono border border-white/10 transition-all"
+            >
+              Retour à l&apos;accueil
+            </Link>
+          </div>
         </div>
       </div>
     );

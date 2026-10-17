@@ -107,8 +107,8 @@ export default function DashboardOverviewPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* 1. Multi-Child Selector Tabs for Family Accounts */}
-      {isFamilyAccount && participants.length > 0 && (
+      {/* 1. Multi-Child / Adherent Selector Tabs */}
+      {participants.length > 0 && (
         <div className="p-4 rounded-3xl bg-[#111116] border border-white/10 shadow-xl">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-3">
             <div className="flex items-center gap-2">
@@ -516,6 +516,22 @@ export default function DashboardOverviewPage() {
           <span>{t.dashboard.paperworkTitle}</span>
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {activeRegistration && (
+            <a
+              href={`/paperwork/${activeRegistration.id}`}
+              target="_blank"
+              rel="noreferrer"
+              className="p-3.5 rounded-2xl bg-[#E52421]/15 border border-[#E52421]/40 hover:bg-[#E52421]/25 text-xs text-white flex items-center justify-between transition-all sm:col-span-3 shadow-md"
+            >
+              <div className="flex items-center gap-2.5">
+                <ShieldCheck className="w-4 h-4 text-[#FFD21F] shrink-0" />
+                <span className="font-bold">
+                  Télécharger le dossier complet officiel (PDF) • {selectedParticipant?.firstName} {selectedParticipant?.lastName} ({activeRegistration.reference})
+                </span>
+              </div>
+              <Download className="w-4 h-4 text-[#FFD21F] shrink-0" />
+            </a>
+          )}
           <a
             href="/regulations"
             target="_blank"

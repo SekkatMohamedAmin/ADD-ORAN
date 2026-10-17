@@ -3,6 +3,7 @@ import { getSessionUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";
 import { generateRegistrationReference } from "@/lib/sequences";
+import { ensureMembershipCardNumber } from "@/lib/membershipCard";
 import { logAudit } from "@/lib/audit";
 
 export async function POST(request: NextRequest) {
@@ -67,7 +68,9 @@ export async function POST(request: NextRequest) {
 
     // 3. Parental Authorization
     const guardianName = formData.get("guardianName")?.toString()?.trim() || "Parent / Tuteur Légal";
-    const parentalAccepted = formData.get("parentalAccepted") === "true";
+    const parentalAccepted =
+      formData.get("parentalAccepted") === "true" ||
+      formData.get("declarationAccepted") === "true";
     const engagementAccepted = formData.get("engagementAccepted") === "true";
 
     if (!parentalAccepted || !engagementAccepted) {
@@ -83,14 +86,14 @@ export async function POST(request: NextRequest) {
     const medicalCertificateFile = formData.get("medicalCertificate") as File | null;
     const parentalIdFile = formData.get("parentalId") as File | null;
 
-    if (!photoFile || !nationalIdFile || !medicalCertificateFile) {
+    if (!photoFile || !medicalCertificateFile) {
       return NextResponse.json(
-        { error: "La photo de l'enfant, sa pièce d'identité et son certificat médical sont obligatoires." },
+        { error: "La photo de l'enfant et son certificat médical sont obligatoires." },
         { status: 400 }
       );
     }
 
-    // Check if parental ID is uploaded or can be borrowed from existing child's documents
+    // Check if parental ID is uploaded or can be borrowed from existing family documents
     let storedParentalIdPath: string | null = null;
     let storedParentalIdFilename = "piece-identite-tuteur.jpg";
     let storedParentalIdMime = "image/jpeg";
@@ -104,11 +107,11 @@ export async function POST(request: NextRequest) {
       storedParentalIdMime = stored.mimeType;
       storedParentalIdSize = stored.fileSize;
     } else {
-      // Look for previously uploaded parent ID document under this user's participants
+      // Look for previously uploaded parent ID or national ID document under this user's participants
       const existingParentDoc = await prisma.document.findFirst({
         where: {
           participant: { userId: user.id },
-          type: "PARENT_NATIONAL_ID",
+          type: { in: ["PARENT_NATIONAL_ID", "NATIONAL_ID"] },
         },
         orderBy: { createdAt: "desc" },
       });
@@ -118,11 +121,6 @@ export async function POST(request: NextRequest) {
         storedParentalIdFilename = existingParentDoc.originalFilename;
         storedParentalIdMime = existingParentDoc.mimeType;
         storedParentalIdSize = existingParentDoc.fileSize;
-      } else {
-        return NextResponse.json(
-          { error: "La pièce d'identité du parent/tuteur légal est obligatoire pour inscrire un enfant." },
-          { status: 400 }
-        );
       }
     }
 
@@ -144,12 +142,16 @@ export async function POST(request: NextRequest) {
 
     // Process and save child files
     const photoBuffer = Buffer.from(await photoFile.arrayBuffer());
-    const nationalIdBuffer = Buffer.from(await nationalIdFile.arrayBuffer());
     const medicalBuffer = Buffer.from(await medicalCertificateFile.arrayBuffer());
+    const nationalIdBuffer = nationalIdFile && nationalIdFile.size > 0
+      ? Buffer.from(await nationalIdFile.arrayBuffer())
+      : null;
 
     const storedPhoto = await storage.save(photoBuffer, photoFile.name, photoFile.type || "image/jpeg");
-    const storedNationalId = await storage.save(nationalIdBuffer, nationalIdFile.name, nationalIdFile.type || "image/jpeg");
     const storedMedical = await storage.save(medicalBuffer, medicalCertificateFile.name, medicalCertificateFile.type || "application/pdf");
+    const storedNationalId = nationalIdBuffer && nationalIdFile
+      ? await storage.save(nationalIdBuffer, nationalIdFile.name, nationalIdFile.type || "image/jpeg")
+      : null;
 
     // Atomic transaction to create participant, registration, disciplines, documents, parental authorization
     const result = await prisma.$transaction(async (tx) => {
@@ -199,49 +201,66 @@ export async function POST(request: NextRequest) {
       }
 
       // 5. Create Documents
+      const documentsToCreate: Array<{
+        participantId: string;
+        registrationId: string;
+        type: string;
+        storagePath: string;
+        originalFilename: string;
+        mimeType: string;
+        fileSize: number;
+        status: string;
+      }> = [
+        {
+          participantId: participant.id,
+          registrationId: registration.id,
+          type: "PHOTO",
+          storagePath: storedPhoto.storagePath,
+          originalFilename: storedPhoto.filename,
+          mimeType: storedPhoto.mimeType,
+          fileSize: storedPhoto.fileSize,
+          status: "PENDING",
+        },
+        {
+          participantId: participant.id,
+          registrationId: registration.id,
+          type: "MEDICAL_CERTIFICATE",
+          storagePath: storedMedical.storagePath,
+          originalFilename: storedMedical.filename,
+          mimeType: storedMedical.mimeType,
+          fileSize: storedMedical.fileSize,
+          status: "PENDING",
+        },
+      ];
+
+      if (storedNationalId && nationalIdFile) {
+        documentsToCreate.push({
+          participantId: participant.id,
+          registrationId: registration.id,
+          type: "NATIONAL_ID",
+          storagePath: storedNationalId.storagePath,
+          originalFilename: storedNationalId.filename,
+          mimeType: storedNationalId.mimeType,
+          fileSize: storedNationalId.fileSize,
+          status: "PENDING",
+        });
+      }
+
+      if (storedParentalIdPath) {
+        documentsToCreate.push({
+          participantId: participant.id,
+          registrationId: registration.id,
+          type: "PARENT_NATIONAL_ID",
+          storagePath: storedParentalIdPath,
+          originalFilename: storedParentalIdFilename,
+          mimeType: storedParentalIdMime,
+          fileSize: storedParentalIdSize,
+          status: "PENDING",
+        });
+      }
+
       await tx.document.createMany({
-        data: [
-          {
-            participantId: participant.id,
-            registrationId: registration.id,
-            type: "PHOTO",
-            storagePath: storedPhoto.storagePath,
-            originalFilename: storedPhoto.filename,
-            mimeType: storedPhoto.mimeType,
-            fileSize: storedPhoto.fileSize,
-            status: "PENDING",
-          },
-          {
-            participantId: participant.id,
-            registrationId: registration.id,
-            type: "NATIONAL_ID",
-            storagePath: storedNationalId.storagePath,
-            originalFilename: storedNationalId.filename,
-            mimeType: storedNationalId.mimeType,
-            fileSize: storedNationalId.fileSize,
-            status: "PENDING",
-          },
-          {
-            participantId: participant.id,
-            registrationId: registration.id,
-            type: "MEDICAL_CERTIFICATE",
-            storagePath: storedMedical.storagePath,
-            originalFilename: storedMedical.filename,
-            mimeType: storedMedical.mimeType,
-            fileSize: storedMedical.fileSize,
-            status: "PENDING",
-          },
-          {
-            participantId: participant.id,
-            registrationId: registration.id,
-            type: "PARENT_NATIONAL_ID",
-            storagePath: storedParentalIdPath,
-            originalFilename: storedParentalIdFilename,
-            mimeType: storedParentalIdMime,
-            fileSize: storedParentalIdSize,
-            status: "PENDING",
-          },
-        ],
+        data: documentsToCreate,
       });
 
       // 6. Create Parental Authorization
@@ -256,6 +275,14 @@ export async function POST(request: NextRequest) {
           ipAddress: request.headers.get("x-forwarded-for") || "127.0.0.1",
         },
       });
+
+      // 7. Auto-generate electronic membership card
+      try {
+        const cardNumber = await ensureMembershipCardNumber(participant.id, activeSeason.code, tx);
+        participant.membershipCardNumber = cardNumber;
+      } catch (cardErr) {
+        console.error("Auto card generation warning on add-child:", cardErr);
+      }
 
       // 7. Audit Log
       await tx.auditLog.create({

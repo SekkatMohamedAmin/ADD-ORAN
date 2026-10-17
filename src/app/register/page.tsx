@@ -317,7 +317,11 @@ export default function RegisterPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        if (res.status === 409 && data.warning && data.matches) {
+        if (
+          (res.status === 409 || data.duplicateWarning || data.warning) &&
+          data.matches &&
+          data.matches.length > 0
+        ) {
           setDuplicateWarning(true);
           setDuplicateMatches(data.matches);
           setSubmitting(false);
@@ -328,10 +332,26 @@ export default function RegisterPage() {
         return;
       }
 
+      if (data.duplicateWarning || data.warning) {
+        if (data.matches && data.matches.length > 0) {
+          setDuplicateWarning(true);
+          setDuplicateMatches(data.matches);
+          setSubmitting(false);
+          return;
+        }
+      }
+
+      const regId = data.registrationId || data.reference;
+      if (!regId || regId === "undefined") {
+        setErrorMessage(data.error || "Une erreur est survenue : l'identifiant de dossier n'a pas pu être créé.");
+        setSubmitting(false);
+        return;
+      }
+
       setRegistrationResult({
-        reference: data.reference,
-        registrationId: data.registrationId,
-        isMinor: data.isMinor,
+        reference: data.reference || regId,
+        registrationId: regId,
+        isMinor: Boolean(data.isMinor),
       });
       setCurrentStep(7);
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1255,13 +1275,23 @@ export default function RegisterPage() {
                   </div>
 
                   <div className="flex flex-wrap items-center justify-center gap-3 max-w-lg mx-auto">
-                    <Link
-                      href={`/paperwork/${registrationResult.registrationId}`}
-                      className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#E52421] hover:bg-[#FFD21F] hover:text-[#0A0A0D] text-white font-display font-black text-sm uppercase tracking-wider shadow-lg transition-all"
-                    >
-                      <Download className="w-4 h-4" />
-                      {t.registration.confirmationStep.downloadDossierPdf}
-                    </Link>
+                    {registrationResult.registrationId && registrationResult.registrationId !== "undefined" ? (
+                      <Link
+                        href={`/paperwork/${registrationResult.registrationId}`}
+                        className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#E52421] hover:bg-[#FFD21F] hover:text-[#0A0A0D] text-white font-display font-black text-sm uppercase tracking-wider shadow-lg transition-all"
+                      >
+                        <Download className="w-4 h-4" />
+                        {t.registration.confirmationStep.downloadDossierPdf}
+                      </Link>
+                    ) : (
+                      <Link
+                        href="/dashboard"
+                        className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-[#E52421] hover:bg-[#FFD21F] hover:text-[#0A0A0D] text-white font-display font-black text-sm uppercase tracking-wider shadow-lg transition-all"
+                      >
+                        <Download className="w-4 h-4" />
+                        {t.registration.confirmationStep.goToDashboard}
+                      </Link>
+                    )}
                     {registrationResult.isMinor && (
                       <Link
                         href="/parental-doc"

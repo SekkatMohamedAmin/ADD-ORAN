@@ -12,6 +12,7 @@ import {
   FileCheck,
   Upload,
   Sparkles,
+  Download,
 } from "lucide-react";
 
 export function AddChildModal() {
@@ -41,8 +42,35 @@ export function AddChildModal() {
   const [addingChild, setAddingChild] = useState(false);
   const [addChildError, setAddChildError] = useState("");
   const [addChildSuccess, setAddChildSuccess] = useState("");
+  const [createdChildInfo, setCreatedChildInfo] = useState<{
+    name: string;
+    reference: string;
+    registrationId: string;
+  } | null>(null);
 
   if (!isAddChildModalOpen) return null;
+
+  const resetFormFields = () => {
+    setChildFirstName("");
+    setChildLastName("");
+    setChildDob("");
+    setChildPob("");
+    setChildBloodType("");
+    setChildAddress("");
+    setChildPhoto(null);
+    setChildMedical(null);
+    setChildNationalId(null);
+    setChildParentalId(null);
+    setChildGuardianName("");
+    setAddChildSuccess("");
+    setAddChildError("");
+    setCreatedChildInfo(null);
+  };
+
+  const handleModalClose = () => {
+    resetFormFields();
+    closeAddChildModal();
+  };
 
   const handleAddChildSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,6 +105,7 @@ export function AddChildModal() {
       formData.append("address", childAddress.trim() || "");
       formData.append("disciplines", JSON.stringify(childDisciplines));
       formData.append("guardianName", childGuardianName.trim() || "");
+      formData.append("parentalAccepted", String(childParentalAccepted));
       formData.append("declarationAccepted", String(childParentalAccepted));
       formData.append("engagementAccepted", String(childEngagementAccepted));
       formData.append("reuseParentId", String(reuseParentId));
@@ -107,27 +136,19 @@ export function AddChildModal() {
         throw new Error(data.error || "Erreur lors de l'enregistrement de l'enfant.");
       }
 
-      setAddChildSuccess(
-        `L'inscription de ${childFirstName} (${data.reference}) a été créée avec succès !`
-      );
-
       await refreshUserData();
       if (data.participantId) {
         setSelectedParticipantId(data.participantId);
       }
 
-      setTimeout(() => {
-        closeAddChildModal();
-        // Reset fields
-        setChildFirstName("");
-        setChildLastName("");
-        setChildDob("");
-        setChildPhoto(null);
-        setChildMedical(null);
-        setChildNationalId(null);
-        setChildParentalId(null);
-        setAddChildSuccess("");
-      }, 1500);
+      setCreatedChildInfo({
+        name: childFirstName,
+        reference: data.reference,
+        registrationId: data.registrationId,
+      });
+      setAddChildSuccess(
+        `L'inscription de ${childFirstName} (${data.reference}) a été créée avec succès !`
+      );
     } catch (err: any) {
       setAddChildError(err.message || "Une erreur est survenue.");
     } finally {
@@ -140,7 +161,7 @@ export function AddChildModal() {
       <div className="relative w-full max-w-2xl bg-[#111116] border border-white/15 rounded-3xl shadow-2xl p-6 sm:p-8 my-8 text-white max-h-[90vh] overflow-y-auto">
         <button
           type="button"
-          onClick={closeAddChildModal}
+          onClick={handleModalClose}
           className="absolute top-5 right-5 p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-colors"
         >
           <X className="w-5 h-5" />
@@ -168,13 +189,58 @@ export function AddChildModal() {
           </div>
         )}
 
-        {addChildSuccess && (
-          <div className="mb-6 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2">
-            <Check className="w-4 h-4 shrink-0" />
-            <span>{addChildSuccess}</span>
-          </div>
-        )}
+        {createdChildInfo ? (
+          <div className="p-6 rounded-3xl bg-[#14141C] border border-[#FFD21F]/40 text-center space-y-6">
+            <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto border border-emerald-500/30">
+              <Check className="w-8 h-8" />
+            </div>
 
+            <div className="space-y-1">
+              <h4 className="font-display font-black text-xl text-white">
+                Inscription enregistrée avec succès !
+              </h4>
+              <p className="text-xs text-white/70">
+                L&apos;adhérent <span className="font-bold text-white">{createdChildInfo.name}</span> est désormais inscrit pour la saison 2026.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-black/40 border border-white/10 max-w-sm mx-auto">
+              <span className="text-[10px] font-mono text-white/50 block mb-1">NUMÉRO DE RÉFÉRENCE OFFICIEL</span>
+              <span className="text-xl font-mono font-black text-[#FFD21F] tracking-wider">
+                {createdChildInfo.reference}
+              </span>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+              <a
+                href={`/paperwork/${createdChildInfo.registrationId}`}
+                target="_blank"
+                rel="noreferrer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#E52421] hover:bg-[#FFD21F] hover:text-[#0A0A0D] text-white font-display font-black text-xs uppercase tracking-wider shadow-lg transition-all"
+              >
+                <Download className="w-4 h-4" />
+                <span>Télécharger le dossier complet officiel (PDF)</span>
+              </a>
+            </div>
+
+            <div className="flex items-center justify-center gap-3 pt-4 border-t border-white/10">
+              <button
+                type="button"
+                onClick={resetFormFields}
+                className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-semibold transition-colors"
+              >
+                Inscrire un autre enfant
+              </button>
+              <button
+                type="button"
+                onClick={handleModalClose}
+                className="px-6 py-2.5 rounded-xl bg-[#FFD21F] hover:bg-white text-[#0A0A0D] text-xs font-bold transition-all"
+              >
+                Voir dans mon espace
+              </button>
+            </div>
+          </div>
+        ) : (
         <form onSubmit={handleAddChildSubmit} className="space-y-6">
           {/* Section: Identité de l'enfant */}
           <div>
@@ -420,7 +486,7 @@ export function AddChildModal() {
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
             <button
               type="button"
-              onClick={closeAddChildModal}
+              onClick={handleModalClose}
               className="px-5 py-2.5 rounded-xl border border-white/15 text-xs font-semibold text-white/80 hover:bg-white/5 transition-colors"
             >
               Annuler
@@ -437,6 +503,7 @@ export function AddChildModal() {
             </button>
           </div>
         </form>
+        )}
       </div>
     </div>
   );

@@ -37,20 +37,40 @@ export async function GET(request: NextRequest) {
       };
     }
 
-    if (search) {
-      whereClause.OR = [
-        { firstName: { contains: search } },
-        { lastName: { contains: search } },
-        { phone: { contains: search } },
-        { email: { contains: search } },
-        {
-          registrations: {
-            some: {
-              reference: { contains: search },
+    if (search && search.trim()) {
+      const trimmed = search.trim();
+      const terms = trimmed.split(/\s+/).filter(Boolean);
+      if (terms.length > 1) {
+        whereClause.AND = terms.map((term: string) => ({
+          OR: [
+            { firstName: { contains: term } },
+            { lastName: { contains: term } },
+            { phone: { contains: term } },
+            { email: { contains: term } },
+            {
+              registrations: {
+                some: {
+                  reference: { contains: term },
+                },
+              },
+            },
+          ],
+        }));
+      } else {
+        whereClause.OR = [
+          { firstName: { contains: trimmed } },
+          { lastName: { contains: trimmed } },
+          { phone: { contains: trimmed } },
+          { email: { contains: trimmed } },
+          {
+            registrations: {
+              some: {
+                reference: { contains: trimmed },
+              },
             },
           },
-        },
-      ];
+        ];
+      }
     }
 
     const [totalCount, participants, seasons] = await Promise.all([

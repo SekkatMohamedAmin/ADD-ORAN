@@ -93,8 +93,11 @@ export default function AdminRegistrationsPage() {
   };
 
   useEffect(() => {
-    fetchRegistrations();
-  }, [status, discipline, season, duplicatesOnly]);
+    const timer = setTimeout(() => {
+      fetchRegistrations();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [search, status, discipline, season, duplicatesOnly]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,7 +109,6 @@ export default function AdminRegistrationsPage() {
     setStatus("");
     setDiscipline("");
     setDuplicatesOnly(false);
-    fetchRegistrations();
   };
 
   return (

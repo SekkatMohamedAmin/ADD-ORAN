@@ -31,6 +31,7 @@ export async function checkPossibleDuplicates(
   const candidates = await prisma.participant.findMany({
     where: {
       id: params.currentParticipantId ? { not: params.currentParticipantId } : undefined,
+      deletedAt: null,
       OR: [
         { phone: cleanPhone },
         { phone: params.phone },
