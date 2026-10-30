@@ -272,6 +272,7 @@ export const ar: TranslationDictionary = {
       registrations: "طلبات الانخراط",
       participants: "المنخرطون",
       seasons: "المواسم",
+      prices: "الأسعار والاشتراكات",
       payments: "المدفوعات",
       documents: "الوثائق",
       duplicates: "المتشابهات",

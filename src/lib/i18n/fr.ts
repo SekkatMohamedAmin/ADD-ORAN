@@ -279,6 +279,7 @@ export const fr: TranslationDictionary = {
       registrations: "Inscriptions",
       participants: "Adhérents",
       seasons: "Saisons",
+      prices: "Tarifs & Cotisations",
       payments: "Paiements",
       documents: "Documents",
       duplicates: "Doublons",

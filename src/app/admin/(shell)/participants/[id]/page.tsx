@@ -24,7 +24,9 @@ import {
   CreditCard as FiCreditCard,
   CheckCircle2 as FiCheckCircle,
   Trash2 as FiTrash2,
+  Key as FiKey,
 } from "lucide-react";
+import ResetPasswordModal from "@/components/admin/ResetPasswordModal";
 
 interface ParticipantProfile {
   id: string;
@@ -107,6 +109,7 @@ export default function ParticipantProfilePage({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showCardModal, setShowCardModal] = useState(false);
+  const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -234,6 +237,14 @@ export default function ParticipantProfilePage({
 
           {/* Header Action Buttons */}
           <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setShowResetPasswordModal(true)}
+              className="px-4 py-2.5 bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border border-amber-500/30 rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer"
+            >
+              <FiKey className="w-4 h-4" />
+              <span>Mot de passe</span>
+            </button>
             <button
               type="button"
               onClick={() => setShowCardModal(true)}
@@ -380,6 +391,49 @@ export default function ParticipantProfilePage({
               </button>
             </div>
           </div>
+
+          {/* User Account & Security */}
+          <div className="p-6 bg-[#141419] border border-white/5 rounded-2xl space-y-4">
+            <h3 className="text-base font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
+              <FiKey className="w-4 h-4 text-amber-400" />
+              Compte Utilisateur & Accès
+            </h3>
+            <div className="space-y-3 text-xs">
+              <div>
+                <span className="text-gray-400 block">Identifiant de connexion (Téléphone)</span>
+                <span className="font-mono font-bold text-white text-sm">
+                  {member.user?.phone || member.phone}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-gray-400 block">Rôle</span>
+                  <span className="font-mono text-gray-300">
+                    {member.user?.role || "PARTICIPANT"}
+                  </span>
+                </div>
+                {member.user?.createdAt && (
+                  <div>
+                    <span className="text-gray-400 block">Création compte</span>
+                    <span className="text-gray-300 font-mono">
+                      {new Date(member.user.createdAt).toLocaleDateString("fr-FR")}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-white/5">
+              <button
+                type="button"
+                onClick={() => setShowResetPasswordModal(true)}
+                className="w-full py-2.5 bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 hover:text-amber-300 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition border border-amber-500/25 shadow-sm font-display tracking-wider uppercase cursor-pointer"
+              >
+                <FiKey className="w-4 h-4" />
+                Réinitialiser le mot de passe
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Right Columns: Multi-Season Registration History */}
@@ -512,6 +566,18 @@ export default function ParticipantProfilePage({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Admin Reset Password Modal */}
+      {member && (
+        <ResetPasswordModal
+          isOpen={showResetPasswordModal}
+          onClose={() => setShowResetPasswordModal(false)}
+          participantId={member.id}
+          participantName={`${member.firstName} ${member.lastName}`}
+          phone={member.phone || member.user?.phone || ""}
+          whatsapp={member.whatsapp}
+        />
       )}
     </div>
   );

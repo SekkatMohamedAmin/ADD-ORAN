@@ -264,6 +264,7 @@ export interface TranslationDictionary {
       registrations: string;
       participants: string;
       seasons: string;
+      prices: string;
       payments: string;
       documents: string;
       duplicates: string;

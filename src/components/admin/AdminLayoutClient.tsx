@@ -12,6 +12,7 @@ import {
   ClipboardList,
   Users,
   Calendar,
+  Coins,
   CreditCard,
   FileText,
   Copy,
@@ -99,6 +100,11 @@ export function AdminLayoutClient({ children, adminUser }: AdminLayoutClientProp
           label: t.admin.nav.seasons,
           href: "/admin/seasons",
           icon: Calendar,
+        },
+        {
+          label: t.admin.nav.prices,
+          href: "/admin/prices",
+          icon: Coins,
         },
         {
           label: t.admin.nav.payments,

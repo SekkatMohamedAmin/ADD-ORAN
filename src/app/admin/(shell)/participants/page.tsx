@@ -21,8 +21,10 @@ import {
   Trash2 as FiTrash2,
   AlertTriangle as FiAlertTriangle,
   X as FiX,
+  Key as FiKey,
 } from "lucide-react";
 import { getStoredAdminSeason, setStoredAdminSeason } from "@/lib/adminSeason";
+import ResetPasswordModal from "@/components/admin/ResetPasswordModal";
 
 interface ParticipantItem {
   id: string;
@@ -31,6 +33,7 @@ interface ParticipantItem {
   firstNameAr?: string | null;
   lastNameAr?: string | null;
   phone: string;
+  whatsapp?: string | null;
   email?: string | null;
   dateOfBirth: string;
   bloodType?: string | null;
@@ -86,6 +89,7 @@ export default function ParticipantsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCardParticipant, setSelectedCardParticipant] = useState<ParticipantItem | null>(null);
+  const [selectedResetParticipant, setSelectedResetParticipant] = useState<ParticipantItem | null>(null);
   const [memberToDelete, setMemberToDelete] = useState<ParticipantItem | null>(null);
   const [deleting, setDeleting] = useState(false);
 
@@ -382,6 +386,14 @@ export default function ParticipantsPage() {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           type="button"
+                          onClick={() => setSelectedResetParticipant(member)}
+                          className="p-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 rounded-xl transition border border-amber-500/20 cursor-pointer"
+                          title="Réinitialiser le mot de passe"
+                        >
+                          <FiKey className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
                           onClick={() => setSelectedCardParticipant(member)}
                           className="px-3 py-1.5 bg-[#E52421]/10 hover:bg-[#E52421]/20 text-[#E52421] rounded-xl text-xs font-semibold inline-flex items-center gap-1.5 transition border border-[#E52421]/20 cursor-pointer"
                           title="Voir la carte d'adhérent"
@@ -511,6 +523,18 @@ export default function ParticipantsPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Admin Reset Password Modal */}
+      {selectedResetParticipant && (
+        <ResetPasswordModal
+          isOpen={!!selectedResetParticipant}
+          onClose={() => setSelectedResetParticipant(null)}
+          participantId={selectedResetParticipant.id}
+          participantName={`${selectedResetParticipant.firstName} ${selectedResetParticipant.lastName}`}
+          phone={selectedResetParticipant.phone}
+          whatsapp={selectedResetParticipant.whatsapp}
+        />
       )}
     </div>
   );

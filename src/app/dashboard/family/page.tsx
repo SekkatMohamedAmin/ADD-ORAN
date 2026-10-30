@@ -20,6 +20,7 @@ import {
   Heart,
   Sparkles,
   Download,
+  Coins,
 } from "lucide-react";
 
 export default function DashboardFamilyPage() {
@@ -204,6 +205,15 @@ export default function DashboardFamilyPage() {
                     title="Voir la carte"
                   >
                     <CreditCard className="w-4 h-4" />
+                  </Link>
+
+                  <Link
+                    href="/dashboard/payments"
+                    onClick={() => setSelectedParticipantId(p.id)}
+                    className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+                    title="Voir les cotisations & reçus"
+                  >
+                    <Coins className="w-4 h-4 text-[#FFD21F]" />
                   </Link>
 
                   {reg && (

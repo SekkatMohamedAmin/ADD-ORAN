@@ -39,6 +39,12 @@ try {
   }
 } catch (error) {
   console.warn('[generate-prisma] Warning: Prisma generation encountered an issue:', error.message);
+  // If client already exists (e.g. running dev server locking DLL on Windows), warn and continue
+  const existingClient = path.resolve(__dirname, '../node_modules/.prisma/client/index.js');
+  if (fs.existsSync(existingClient)) {
+    console.warn('[generate-prisma] Existing Prisma Client detected. Proceeding with build.');
+    process.exit(0);
+  }
   // Don't fail the entire npm install if running from an unusual cPanel lifecycle hook
   if (process.env.npm_lifecycle_event === 'postinstall') {
     console.warn('[generate-prisma] Continuing install. You can run "npx prisma generate" from the project root afterward.');
