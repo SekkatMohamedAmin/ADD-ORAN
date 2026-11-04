@@ -10,6 +10,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "deploy:check": "node scripts/deploy-check.js",
     "package": "node scripts/package-zip.js",
+    "package:update": "node scripts/package-update.js",
     "test": "tsx tests/run-all-tests.ts"
   },
   "dependencies": {

@@ -169,3 +169,4 @@ export function getClubRoleDefinition(roleKey?: string | null): ClubRoleDefiniti
   if (!roleKey) return null;
   return CLUB_ROLES[roleKey as ClubRoleKey] || null;
 }
+
