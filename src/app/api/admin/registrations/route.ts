@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
     const disciplineSlug = searchParams.get("discipline")?.trim() || "";
     const seasonParam = searchParams.get("season")?.trim();
     const duplicateOnly = searchParams.get("duplicates") === "true";
+    const typeParam = searchParams.get("type")?.trim();
 
     // 1. Get active or requested season
     const activeSeason = await prisma.season.findFirst({ where: { isActive: true } });
@@ -38,6 +39,21 @@ export async function GET(request: NextRequest) {
       whereClause.status = status;
     }
 
+    
+    if (typeParam === "STAFF") {
+      whereClause.OR = [
+        { type: "STAFF" },
+        { participant: { isStaff: true } },
+        { participant: { clubRole: { not: null } } },
+      ];
+    } else if (typeParam === "ADHERENT") {
+      whereClause.AND = [
+        { type: { not: "STAFF" } },
+        { participant: { isStaff: false } },
+        { participant: { clubRole: null } },
+      ];
+    }
+
     if (disciplineSlug) {
       whereClause.disciplines = {
         some: {
@@ -59,6 +75,7 @@ export async function GET(request: NextRequest) {
             { participant: { lastName: { contains: term } } },
             { participant: { phone: { contains: term } } },
             { participant: { email: { contains: term } } },
+            { participant: { clubRole: { contains: term } } },
           ],
         }));
       } else {
@@ -68,6 +85,7 @@ export async function GET(request: NextRequest) {
           { participant: { lastName: { contains: trimmed } } },
           { participant: { phone: { contains: trimmed } } },
           { participant: { email: { contains: trimmed } } },
+          { participant: { clubRole: { contains: trimmed } } },
         ];
       }
     }

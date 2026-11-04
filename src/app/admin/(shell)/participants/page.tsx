@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n";
 import StatusBadge from "@/components/StatusBadge";
+import { getClubRoleDefinition } from "@/lib/clubRoles";
 import MembershipCard from "@/components/MembershipCard";
 import {
   Users as FiUsers,
@@ -40,6 +41,8 @@ interface ParticipantItem {
   isMinor: boolean;
   rfidCardId?: string | null;
   membershipCardNumber?: string | null;
+  clubRole?: string | null;
+  isStaff?: boolean;
   createdAt: string;
   documents?: Array<{
     id: string;
@@ -299,6 +302,8 @@ export default function ParticipantsPage() {
                   (new Date().getTime() - new Date(member.dateOfBirth).getTime()) /
                     (365.25 * 24 * 60 * 60 * 1000)
                 );
+                const isStaff = Boolean(member.isStaff || member.clubRole);
+                const roleDef = getClubRoleDefinition(member.clubRole);
 
                 return (
                   <tr key={member.id} className="hover:bg-white/[0.02] transition">
@@ -310,8 +315,13 @@ export default function ParticipantsPage() {
                           {member.lastName.charAt(0)}
                         </div>
                         <div>
-                          <div className="font-bold text-white text-sm">
-                            {member.firstName} {member.lastName}
+                          <div className="font-bold text-white text-sm flex items-center gap-1.5 flex-wrap">
+                            <span>{member.firstName} {member.lastName}</span>
+                            {isStaff && (
+                              <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[9px] font-mono font-black uppercase">
+                                ★ {roleDef ? roleDef.labelFr : "Staff"}
+                              </span>
+                            )}
                           </div>
                           <div className="text-xs text-gray-400 font-mono flex items-center gap-1.5 mt-0.5">
                             <FiPhone className="w-3 h-3" />
@@ -321,11 +331,13 @@ export default function ParticipantsPage() {
                       </div>
                     </td>
 
-                    {/* Age */}
+                    {/* Age & Profile */}
                     <td className="py-4 px-6 text-xs text-gray-300">
                       <span className="font-bold text-white text-sm">{age} ans</span>
                       <span className="block text-[11px] text-gray-400">
-                        {member.isMinor ? (
+                        {isStaff ? (
+                          <span className="text-amber-300 font-bold">{roleDef?.cardHeaderBadge || "Direction"}</span>
+                        ) : member.isMinor ? (
                           <span className="text-amber-400 font-medium">Mineur (Tuteur requis)</span>
                         ) : (
                           <span className="text-emerald-400 font-medium">Majeur</span>

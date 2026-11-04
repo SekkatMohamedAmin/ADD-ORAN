@@ -102,11 +102,14 @@ export async function GET(request: NextRequest) {
         emergencyPhone: null,
         membershipCardNumber: participant.membershipCardNumber,
         rfidCardId: participant.rfidCardId,
+        clubRole: participant.clubRole,
+        isStaff: participant.isStaff,
       },
       registration: activeRegistration
         ? {
             reference: activeRegistration.reference,
             status: activeRegistration.status,
+            type: activeRegistration.type,
             season: {
               code: activeRegistration.season.code,
               label: activeRegistration.season.label,

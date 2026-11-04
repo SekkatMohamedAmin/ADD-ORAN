@@ -37,6 +37,7 @@ interface RegistrationDetail {
   seasonId: string;
   participantId: string;
   status: string;
+  type?: string;
   correctionReason?: string | null;
   correctionFields?: string | null;
   isMarkedDuplicate: boolean;
@@ -66,6 +67,8 @@ interface RegistrationDetail {
     emergencyName?: string | null;
     emergencyPhone?: string | null;
     emergencyRelation?: string | null;
+    clubRole?: string | null;
+    isStaff?: boolean;
   };
   season: {
     id: string;
@@ -413,6 +416,11 @@ export default function RegistrationDetailPage({
                 {p.firstName} {p.lastName}
               </h1>
               <StatusBadge status={registration.status} />
+              {p.clubRole && (
+                <span className="px-2.5 py-1 bg-amber-500/20 text-amber-300 border border-amber-400/50 text-xs font-bold font-mono rounded-lg flex items-center gap-1.5 shadow-sm">
+                  ★ {p.clubRole} (Staff / Dirigeant)
+                </span>
+              )}
               {registration.isMarkedDuplicate && (
                 <span className="px-2.5 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-semibold rounded-lg flex items-center gap-1.5">
                   <FiAlertTriangle className="w-3.5 h-3.5" /> Doublon signalé

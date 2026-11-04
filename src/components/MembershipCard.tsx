@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import QRCode from "qrcode";
+import { getClubRoleDefinition } from "@/lib/clubRoles";
 import {
   CreditCard,
   RotateCw,
@@ -27,10 +28,13 @@ export interface MembershipCardProps {
     emergencyPhone?: string | null;
     membershipCardNumber?: string | null;
     rfidCardId?: string | null;
+    clubRole?: string | null;
+    isStaff?: boolean;
   };
   registration?: {
     reference: string;
     status: string;
+    type?: string;
     season: {
       code: string;
       label?: string;
@@ -228,9 +232,16 @@ export function CardRectoFace({
   registration?: MembershipCardProps["registration"];
   isPrintVersion?: boolean;
 }) {
+  const roleDef = getClubRoleDefinition(participant.clubRole);
+  const isStaff = Boolean(participant.isStaff || participant.clubRole || registration?.type === "STAFF");
+
   return (
     <div
-      className={`relative w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-[#121217] via-[#0E0E12] to-[#181820] border border-white/20 flex flex-col justify-between shadow-2xl select-none text-white ${
+      className={`relative w-full h-full rounded-2xl overflow-hidden ${
+        isStaff
+          ? "bg-gradient-to-br from-[#18120D] via-[#0E0E12] to-[#20180F] border-2 border-amber-500/60 shadow-[0_0_25px_rgba(245,158,11,0.25)]"
+          : "bg-gradient-to-br from-[#121217] via-[#0E0E12] to-[#181820] border border-white/20 shadow-2xl"
+      } flex flex-col justify-between select-none text-white ${
         isPrintVersion
           ? "p-[3.5mm] rounded-[3.18mm] text-[7.5pt] leading-tight"
           : "p-5"
@@ -242,7 +253,13 @@ export function CardRectoFace({
       }}
     >
       {/* Holographic foil line along top */}
-      <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#FFD21F] via-[#E52421] to-[#00D4FF] opacity-90" />
+      <div
+        className={`absolute top-0 left-0 right-0 h-[3px] ${
+          isStaff
+            ? "bg-gradient-to-r from-amber-400 via-[#E52421] to-yellow-300 opacity-100"
+            : "bg-gradient-to-r from-[#FFD21F] via-[#E52421] to-[#00D4FF] opacity-90"
+        }`}
+      />
 
       {/* CARD TOP HEADER: LOGO & CLUB IDENTITY */}
       <div className="relative z-10 flex items-center justify-between gap-2 shrink-0">
@@ -282,8 +299,20 @@ export function CardRectoFace({
           </div>
         </div>
 
-        {/* Season Badge */}
-        <div className="flex flex-col items-end">
+        {/* Season & Staff Header Badges */}
+        <div className="flex flex-col items-end gap-1">
+          {isStaff && (
+            <span
+              className={`bg-amber-500/20 border border-amber-400/50 text-amber-300 font-mono font-black rounded-md uppercase tracking-wider flex items-center gap-1 ${
+                isPrintVersion
+                  ? "px-[1.5mm] py-[0.3mm] text-[4.8pt]"
+                  : "px-2 py-0.5 text-[8px]"
+              }`}
+            >
+              <Sparkles className="w-2.5 h-2.5 text-amber-300 shrink-0" />
+              {roleDef?.cardHeaderBadge || "BUREAU EXÉCUTIF"}
+            </span>
+          )}
           <span
             className={`bg-[#E52421]/20 border border-[#E52421]/40 text-[#FFD21F] font-mono font-bold rounded-md uppercase tracking-wider ${
               isPrintVersion
@@ -301,7 +330,9 @@ export function CardRectoFace({
         {/* Photo Frame (4 cols) */}
         <div className="col-span-4 flex flex-col items-center">
           <div
-            className={`relative rounded-xl overflow-hidden bg-[#1C1C24] border-2 border-white/20 shadow-lg ${
+            className={`relative rounded-xl overflow-hidden bg-[#1C1C24] border-2 ${
+              isStaff ? "border-amber-400/70 shadow-amber-500/20" : "border-white/20"
+            } shadow-lg ${
               isPrintVersion
                 ? "w-[18mm] h-[22.5mm] rounded-[2mm]"
                 : "w-24 h-28"
@@ -334,13 +365,17 @@ export function CardRectoFace({
           {/* Category Pill */}
           <span
             style={{ fontFamily: "'Courier New', Courier, monospace" }}
-            className={`mt-1 font-bold uppercase rounded tracking-wider border border-white/15 bg-[#14141B] text-gray-200 shadow-inner ${
+            className={`mt-1 font-black uppercase rounded tracking-wider border shadow-inner ${
+              isStaff
+                ? "border-amber-400/40 bg-amber-500/15 text-amber-300"
+                : "border-white/15 bg-[#14141B] text-gray-200"
+            } ${
               isPrintVersion
                 ? "px-[1.5mm] py-[0.25mm] text-[4.8pt]"
                 : "px-2 py-0.5 text-[8px]"
             }`}
           >
-            {participant.isMinor ? "Mineur (<18)" : "Majeur (18+)"}
+            {isStaff ? "★ DIRIGEANT" : (participant.isMinor ? "Mineur (<18)" : "Majeur (18+)")}
           </span>
         </div>
 
@@ -349,11 +384,13 @@ export function CardRectoFace({
           {/* Member Full Name - reduced font, responsive, no truncation */}
           <div>
             <span
-              className={`text-gray-400 uppercase font-mono tracking-wider block ${
+              className={`uppercase font-mono tracking-wider block font-bold ${
+                isStaff ? "text-amber-400" : "text-gray-400"
+              } ${
                 isPrintVersion ? "text-[5pt]" : "text-[8px]"
               }`}
             >
-              Adhérent(e)
+              {isStaff ? (roleDef ? `★ ${roleDef.labelFr}` : "★ Cadre / Dirigeant") : "Adhérent(e)"}
             </span>
             <div
               className={`text-white font-extrabold uppercase font-display tracking-tight break-words ${
@@ -421,21 +458,34 @@ export function CardRectoFace({
             </div>
           </div>
 
-          {/* Disciplines pills */}
+          {/* Disciplines / Role pills */}
           <div className="pt-0.5">
             <div className="flex flex-wrap gap-1">
-              {disciplines.slice(0, 3).map((disc, idx) => (
+              {isStaff ? (
                 <span
-                  key={idx}
-                  className={`bg-white/5 border border-white/10 text-gray-200 font-bold rounded tracking-wider uppercase font-display ${
+                  className={`bg-amber-500/15 border border-amber-400/40 text-amber-300 font-black rounded tracking-wider uppercase font-display flex items-center gap-1 ${
                     isPrintVersion
                       ? "px-[1.5mm] py-[0.25mm] text-[5pt]"
                       : "px-1.5 py-0.5 text-[8.5px]"
                   }`}
                 >
-                  {disc}
+                  <Sparkles className="w-2.5 h-2.5 text-amber-300 shrink-0" />
+                  {roleDef ? `${roleDef.cardBadgeTitle}` : "BUREAU CLUB"}
                 </span>
-              ))}
+              ) : (
+                disciplines.slice(0, 3).map((disc, idx) => (
+                  <span
+                    key={idx}
+                    className={`bg-white/5 border border-white/10 text-gray-200 font-bold rounded tracking-wider uppercase font-display ${
+                      isPrintVersion
+                        ? "px-[1.5mm] py-[0.25mm] text-[5pt]"
+                        : "px-1.5 py-0.5 text-[8.5px]"
+                    }`}
+                  >
+                    {disc}
+                  </span>
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -465,15 +515,24 @@ export function CardRectoFace({
  * Only subtle monochrome club watermark in center, and footer with location & website URL.
  */
 export function CardVersoFace({
+  participant,
+  seasonLabel,
   isPrintVersion = false,
 }: {
   participant?: MembershipCardProps["participant"];
   seasonLabel?: string;
   isPrintVersion?: boolean;
 }) {
+  const roleDef = getClubRoleDefinition(participant?.clubRole);
+  const isStaff = Boolean(participant?.isStaff || participant?.clubRole);
+
   return (
     <div
-      className={`relative w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-[#121217] via-[#0D0D11] to-[#16161D] border border-white/20 flex flex-col justify-between shadow-2xl select-none text-white ${
+      className={`relative w-full h-full rounded-2xl overflow-hidden ${
+        isStaff
+          ? "bg-gradient-to-br from-[#18120D] via-[#0E0E12] to-[#20180F] border-2 border-amber-500/60 shadow-[0_0_25px_rgba(245,158,11,0.2)]"
+          : "bg-gradient-to-br from-[#121217] via-[#0D0D11] to-[#16161D] border border-white/20 shadow-2xl"
+      } flex flex-col justify-between select-none text-white ${
         isPrintVersion
           ? "p-[4.5mm] rounded-[3.18mm] text-[7pt] leading-tight"
           : "p-6"
@@ -484,24 +543,46 @@ export function CardVersoFace({
         printColorAdjust: "exact",
       }}
     >
-      {/* Subtle top accent line */}
-      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#E52421] to-transparent opacity-60" />
+      {/* Top accent line */}
+      <div
+        className={`absolute top-0 left-0 right-0 h-[2.5px] ${
+          isStaff
+            ? "bg-gradient-to-r from-amber-400 via-[#E52421] to-yellow-300 opacity-90"
+            : "bg-gradient-to-r from-transparent via-[#E52421] to-transparent opacity-80"
+        }`}
+      />
 
-      {/* Center: Sleek minimalist club watermark */}
-      <div className="flex-1 flex flex-col items-center justify-center my-auto opacity-20 pointer-events-none select-none space-y-2">
-        <Image
-          src="/images/club/logo.svg"
-          alt="Club ADD Oran"
-          width={isPrintVersion ? 40 : 56}
-          height={isPrintVersion ? 40 : 56}
-          className="grayscale contrast-200"
-        />
-        <div className="text-center font-display font-black tracking-widest text-white uppercase text-[8px] sm:text-[10px]">
-          Club Art Du Déplacement • Parkour Oran
+      {/* Center: Sleek vivid red club logo watermark */}
+      <div className="flex-1 flex flex-col items-center justify-center my-auto pointer-events-none select-none space-y-2.5">
+        <div className="relative flex items-center justify-center drop-shadow-[0_0_18px_rgba(229,36,33,0.45)]">
+          <Image
+            src="/images/club/logo-red.svg"
+            alt="Club ADD Oran"
+            width={isPrintVersion ? 46 : 64}
+            height={isPrintVersion ? 46 : 64}
+            className="object-contain"
+            priority
+            unoptimized
+          />
+        </div>
+        <div className="text-center space-y-1">
+          <div className="font-display font-black tracking-widest text-[#E52421] uppercase text-[9px] sm:text-[11px] drop-shadow-sm">
+            Club Art Du Déplacement • Parkour Oran
+          </div>
+          {isStaff ? (
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/50 text-amber-300 font-mono text-[6.5pt] sm:text-[8px] font-black tracking-wider uppercase">
+              <Sparkles className="w-2.5 h-2.5 text-amber-300" />
+              <span>ACCRÉDITATION OFFICIELLE • {roleDef ? roleDef.cardBadgeTitle : "DIRIGEANT / CADRE"}</span>
+            </div>
+          ) : (
+            <div className="text-gray-400 font-mono text-[7px] sm:text-[8.5px] tracking-wider uppercase">
+              Académie Sportive & Culturelle d&apos;Oran
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Verso Footer: Only Location on left and Website URL on right */}
+      {/* Verso Footer: Location on left and Website URL on right */}
       <div
         className={`pt-2 border-t border-white/10 flex items-center justify-between text-gray-400 font-mono ${
           isPrintVersion ? "text-[6.5pt]" : "text-[10px]"

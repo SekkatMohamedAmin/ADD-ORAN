@@ -35,7 +35,11 @@ export async function POST(
     switch (action) {
       case "ACCEPT":
         // Move to PAYMENT_PENDING so participant is accepted and next step is cash payment
-        updatedStatus = "PAYMENT_PENDING";
+        const isStaffRegistration =
+          registration.type === "STAFF" ||
+          registration.participant.isStaff ||
+          Boolean(registration.participant.clubRole);
+        updatedStatus = isStaffRegistration ? "ACTIVE" : "PAYMENT_PENDING";
         correctionReason = null;
         correctionFields = null;
 

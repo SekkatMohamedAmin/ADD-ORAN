@@ -83,6 +83,9 @@ export function Footer() {
               <Link href="/parental-doc" className="hover:text-[#FFD21F] transition-colors" target="_blank">
                 Autorisation parentale mineurs (PDF)
               </Link>
+              <Link href="/register/staff" className="hover:text-amber-300 transition-colors flex items-center gap-1.5 text-amber-400/90 font-medium pt-1">
+                <span>★ Accréditation Bureau & Encadrement</span>
+              </Link>
             </div>
           </div>
         </div>

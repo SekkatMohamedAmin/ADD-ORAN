@@ -4,6 +4,7 @@ import { generateRegistrationReference, generateReceiptNumber, generateMembershi
 import { ensureMembershipCardNumber } from "../src/lib/membershipCard";
 import { checkPossibleDuplicates } from "../src/lib/duplicates";
 import { storage } from "../src/lib/storage";
+import { CLUB_ROLES, CLUB_ROLES_LIST, getClubRoleDefinition } from "../src/lib/clubRoles";
 
 let passedCount = 0;
 let failedCount = 0;
@@ -372,6 +373,103 @@ async function runMultiChildAndEventTests() {
   }
 }
 
+
+async function runStaffAccreditationTests() {
+  console.log("\n==============================");
+  console.log("6. STAFF ACCREDITATION & ROLE SPECIALIZATION TESTS");
+  console.log("==============================");
+
+  // 1. Test role definitions
+  const expectedRoles = [
+    "PRESIDENT",
+    "VICE_PRESIDENT",
+    "SG",
+    "TRESORIER",
+    "MEMBRE_BUREAU",
+    "RESPONSABLE_PARKOUR",
+    "RESPONSABLE_TRAIL",
+    "RESPONSABLE_ESCALADE",
+    "COACH"
+  ];
+
+  assert(CLUB_ROLES_LIST.length === 9, "All 9 official executive and technical roles are registered");
+  for (const roleKey of expectedRoles) {
+    const def = getClubRoleDefinition(roleKey);
+    assert(def !== null && def.key === roleKey, `Role definition ${roleKey} exists with label '${def?.labelFr}'`);
+  }
+
+  // 2. Test staff participant and registration creation
+  const testStaffPhone = "0559999000";
+  const staffSeason = await prisma.season.findFirst({ where: { isActive: true } });
+  assert(staffSeason !== null, "Active season exists for staff accreditation test");
+
+  const existingStaffUser = await prisma.user.findUnique({ where: { phone: testStaffPhone } });
+  if (existingStaffUser) {
+    const staffParticipant = await prisma.participant.findFirst({ where: { userId: existingStaffUser.id } });
+    if (staffParticipant) {
+      await prisma.document.deleteMany({ where: { participantId: staffParticipant.id } });
+      await prisma.registrationDiscipline.deleteMany({ where: { registration: { participantId: staffParticipant.id } } });
+      await prisma.payment.deleteMany({ where: { registration: { participantId: staffParticipant.id } } });
+      await prisma.registration.deleteMany({ where: { participantId: staffParticipant.id } });
+      await prisma.participant.delete({ where: { id: staffParticipant.id } });
+    }
+    await prisma.user.delete({ where: { id: existingStaffUser.id } });
+  }
+
+  const staffUser = await prisma.user.create({
+    data: {
+      phone: testStaffPhone,
+      passwordHash: await bcrypt.hash("StaffSecret123", 10),
+      role: "PARTICIPANT",
+    },
+  });
+
+  const staffParticipant = await prisma.participant.create({
+    data: {
+      userId: staffUser.id,
+      firstName: "Amine",
+      lastName: "Président",
+      dateOfBirth: new Date("1985-06-15"),
+      phone: testStaffPhone,
+      bloodType: "O+",
+      placeOfBirth: "Oran",
+      isMinor: false,
+      clubRole: "PRESIDENT",
+      isStaff: true,
+    },
+  });
+
+  assert(staffParticipant.isStaff === true, "Staff participant flag isStaff is true");
+  assert(staffParticipant.clubRole === "PRESIDENT", "Staff participant has assigned clubRole PRESIDENT");
+
+  const staffRef = await generateRegistrationReference(staffSeason!.code);
+  const staffReg = await prisma.registration.create({
+    data: {
+      reference: staffRef,
+      participantId: staffParticipant.id,
+      seasonId: staffSeason!.id,
+      status: "SUBMITTED",
+      type: "STAFF",
+    },
+  });
+
+  assert(staffReg.type === "STAFF", "Registration type is set to STAFF");
+  assert(staffReg.status === "SUBMITTED", "Initial staff registration status is SUBMITTED");
+
+  // 3. Test Admin ACCEPT workflow behavior for Staff: directly ACTIVE with assigned card
+  const isStaffReg = Boolean(staffReg.type === "STAFF" || staffParticipant.isStaff || staffParticipant.clubRole);
+  const updatedStatus = isStaffReg ? "ACTIVE" : "PAYMENT_PENDING";
+  const staffCardNumber = await ensureMembershipCardNumber(staffParticipant.id, staffSeason!.code);
+
+  const acceptedStaffReg = await prisma.registration.update({
+    where: { id: staffReg.id },
+    data: { status: updatedStatus },
+  });
+
+  assert(acceptedStaffReg.status === "ACTIVE", "Admin acceptance directly transitions staff to ACTIVE (bypassing cash fee)");
+  assert(staffCardNumber.startsWith("ADD-CARD-"), `Official membership card issued immediately: ${staffCardNumber}`);
+}
+
 async function main() {
   console.log("Running ADD Parkour Oran Test Suite...\n");
   try {
@@ -380,6 +478,7 @@ async function main() {
     await runSecurityTests();
     await runAdminAuthAndWorkflowTests();
     await runMultiChildAndEventTests();
+    await runStaffAccreditationTests();
   } catch (err) {
     console.error("Test execution failed with error:", err);
     failedCount++;

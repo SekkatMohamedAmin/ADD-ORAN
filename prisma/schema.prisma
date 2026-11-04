@@ -58,6 +58,8 @@ model Participant {
   address               String?
   bloodType             String?                 // A+, A-, B+, B-, AB+, AB-, O+, O-, Unknown
   isMinor               Boolean                 @default(false)
+  clubRole              String?                 // "PRESIDENT" | "VICE_PRESIDENT" | "SG" | "TRESORIER" | "MEMBRE_BUREAU" | "RESPONSABLE_PARKOUR" | "RESPONSABLE_TRAIL" | "RESPONSABLE_ESCALADE" | "COACH"
+  isStaff               Boolean                 @default(false)
   rfidCardId            String?
   membershipCardNumber  String?
   deletedAt             DateTime?
@@ -72,6 +74,8 @@ model Participant {
   @@index([phone])
   @@index([lastName, firstName])
   @@index([deletedAt])
+  @@index([clubRole])
+  @@index([isStaff])
 }
 
 model Discipline {
@@ -95,6 +99,7 @@ model Registration {
   participantId            String
   participant              Participant              @relation(fields: [participantId], references: [id], onDelete: Cascade)
   status                   String                   @default("SUBMITTED") // DRAFT, SUBMITTED, UNDER_REVIEW, NEEDS_CORRECTION, ACCEPTED, REJECTED, PAYMENT_PENDING, PAID, ACTIVE, ARCHIVED
+  type                     String                   @default("ADHERENT") // ADHERENT | STAFF
   correctionReason         String?
   correctionFields         String?                  // JSON array string of keys (e.g. ["PHOTO", "MEDICAL_CERTIFICATE"])
   engagementAccepted       Boolean                  @default(false)
@@ -120,6 +125,7 @@ model Registration {
   @@index([status])
   @@index([reference])
   @@index([deletedAt])
+  @@index([type])
 }
 
 model RegistrationDiscipline {

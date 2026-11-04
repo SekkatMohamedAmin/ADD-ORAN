@@ -18,6 +18,7 @@ import {
   X,
   Trash2,
 } from "lucide-react";
+import { getClubRoleDefinition } from "@/lib/clubRoles";
 import { getStoredAdminSeason, setStoredAdminSeason } from "@/lib/adminSeason";
 
 export default function AdminRegistrationsPage() {
@@ -36,6 +37,7 @@ export default function AdminRegistrationsPage() {
   const [discipline, setDiscipline] = useState("");
   const [season, setSeason] = useState(() => getStoredAdminSeason() || "");
   const [duplicatesOnly, setDuplicatesOnly] = useState(false);
+  const [typeFilter, setTypeFilter] = useState("");
 
   const fetchRegistrations = async () => {
     setLoading(true);
@@ -47,6 +49,7 @@ export default function AdminRegistrationsPage() {
       if (status) queryParams.status = status;
       if (discipline) queryParams.discipline = discipline;
       if (season) queryParams.season = season;
+      if (typeFilter) queryParams.type = typeFilter;
 
       const query = new URLSearchParams(queryParams);
 
@@ -97,7 +100,7 @@ export default function AdminRegistrationsPage() {
       fetchRegistrations();
     }, 300);
     return () => clearTimeout(timer);
-  }, [search, status, discipline, season, duplicatesOnly]);
+  }, [search, status, discipline, season, duplicatesOnly, typeFilter]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -109,6 +112,7 @@ export default function AdminRegistrationsPage() {
     setStatus("");
     setDiscipline("");
     setDuplicatesOnly(false);
+    setTypeFilter("");
   };
 
   return (
@@ -216,6 +220,17 @@ export default function AdminRegistrationsPage() {
               <option value="escalade-montagne">Escalade</option>
               <option value="trail">Trail</option>
             </select>
+
+            {/* Profile Type Filter */}
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="bg-[#1C1C24] border border-white/10 rounded-xl px-3 py-2.5 text-xs text-[#F5F5F2] focus:border-[#E52421] focus:outline-none font-mono"
+            >
+              <option value="">Tous profils (Adhérents & Staff)</option>
+              <option value="STAFF">★ Staff & Bureau Exécutif</option>
+              <option value="ADHERENT">Adhérents sportifs</option>
+            </select>
           </div>
 
           {/* Duplicates Toggle */}
@@ -293,6 +308,9 @@ export default function AdminRegistrationsPage() {
               ) : (
                 registrations.map((reg: any) => {
                   const hasPaid = reg.payments && reg.payments.length > 0;
+                  const isStaff = Boolean(reg.type === "STAFF" || reg.participant?.isStaff || reg.participant?.clubRole);
+                  const roleDef = getClubRoleDefinition(reg.participant?.clubRole);
+
                   return (
                     <tr
                       key={reg.id}
@@ -313,11 +331,18 @@ export default function AdminRegistrationsPage() {
 
                       {/* Participant */}
                       <td className="py-3.5 px-4">
-                        <div className="font-display font-bold text-sm text-[#F5F5F2]">
-                          {reg.participant.firstName} {reg.participant.lastName}
+                        <div className="font-display font-bold text-sm text-[#F5F5F2] flex items-center gap-1.5 flex-wrap">
+                          <span>{reg.participant.firstName} {reg.participant.lastName}</span>
+                          {isStaff && (
+                            <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[9px] font-mono font-black uppercase">
+                              ★ {roleDef ? roleDef.labelFr : "Staff"}
+                            </span>
+                          )}
                         </div>
                         <div className="font-mono text-[10px] text-[#9E9EA8]">
-                          {reg.participant.isMinor ? (
+                          {isStaff ? (
+                            <span className="text-amber-400 font-semibold">{roleDef?.cardHeaderBadge || "Direction"}</span>
+                          ) : reg.participant.isMinor ? (
                             <span className="text-[#FFD21F]">Mineur</span>
                           ) : (
                             <span>Majeur</span>
@@ -334,14 +359,20 @@ export default function AdminRegistrationsPage() {
                       {/* Disciplines */}
                       <td className="py-3.5 px-4">
                         <div className="flex flex-wrap gap-1">
-                          {reg.disciplines.map((d: any) => (
-                            <span
-                              key={d.id}
-                              className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] font-mono uppercase text-[#F5F5F2]"
-                            >
-                              {d.discipline.nameFr}
+                          {isStaff ? (
+                            <span className="px-2 py-0.5 rounded bg-amber-500/10 border border-amber-400/30 text-[10px] font-mono uppercase text-amber-300 font-bold">
+                              ★ {roleDef ? roleDef.cardBadgeTitle : "CADRE"}
                             </span>
-                          ))}
+                          ) : (
+                            reg.disciplines.map((d: any) => (
+                              <span
+                                key={d.id}
+                                className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] font-mono uppercase text-[#F5F5F2]"
+                              >
+                                {d.discipline.nameFr}
+                              </span>
+                            ))
+                          )}
                         </div>
                       </td>
 
@@ -352,7 +383,11 @@ export default function AdminRegistrationsPage() {
 
                       {/* Payment */}
                       <td className="py-3.5 px-4 font-mono text-[11px]">
-                        {hasPaid ? (
+                        {isStaff ? (
+                          <span className="px-2 py-0.5 rounded bg-amber-500/10 border border-amber-400/30 text-amber-300 font-mono text-[10px] font-semibold">
+                            Exonéré (Staff)
+                          </span>
+                        ) : hasPaid ? (
                           <span className="text-[#10B981] font-bold">
                             {reg.payments[0].amount} DA (Espèces)
                           </span>
