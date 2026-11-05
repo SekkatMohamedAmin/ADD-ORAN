@@ -944,29 +944,14 @@ export default function MembershipCard({
       </div>
 
       {/* ========================================================================= */}
-      {/* 2. PRINT-ONLY VIEW: Flat High-Res ISO CR80 PVC Output                      */}
-      {/* Completely hidden on screen; only rendered by the browser print engine    */}
+      {/* 2. PRINT-ONLY VIEW: Flat High-Res ISO CR80 PVC Output (Clean - 0 Extra Text)*/}
       {/* ========================================================================= */}
       <div className="pvc-print-layout">
-        <div className="w-[210mm] min-h-[297mm] p-[12mm] mx-auto bg-white text-black flex flex-col items-center justify-center space-y-[10mm]">
-          {/* Header */}
-          <div className="text-center space-y-1 border-b border-gray-300 pb-3 w-full">
-            <h2 className="text-[12pt] font-black uppercase font-display tracking-tight text-black">
-              Académie ADD Oran // Carte d&apos;Adhérent Officielle
-            </h2>
-            <p className="text-[8pt] font-mono text-gray-600">
-              Format standard ISO/IEC 7810 ID-1 (CR-80) • 85.60 mm × 53.98 mm • Échelle 100% (Taille réelle)
-            </p>
-            <p className="text-[7.5pt] font-mono text-gray-500">
-              Adhérent : {participant.firstName} {participant.lastName} • Réf : {cardNumber}
-            </p>
-          </div>
-
-          {/* Cards Pair: Recto & Verso with Crop Marks */}
+        <div className="w-[210mm] min-h-[297mm] p-[12mm] mx-auto bg-white text-black flex flex-col items-center justify-center">
+          {/* Cards Pair: Recto & Verso (Zero Extra Text for PVC Card Machine) */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-[12mm] py-[4mm]">
             {/* RECTO */}
             <div className="relative">
-              <CropMarks />
               <div className="w-[85.6mm] h-[53.98mm] rounded-[3.18mm] overflow-hidden shadow-sm">
                 <CardRectoFace
                   participant={participant}
@@ -979,14 +964,10 @@ export default function MembershipCard({
                   isPrintVersion
                 />
               </div>
-              <div className="text-center font-mono text-[7pt] text-gray-500 mt-2">
-                ▲ FACE 1 : RECTO (85.60 × 53.98 mm)
-              </div>
             </div>
 
             {/* VERSO */}
             <div className="relative">
-              <CropMarks />
               <div className="w-[85.6mm] h-[53.98mm] rounded-[3.18mm] overflow-hidden shadow-sm">
                 <CardVersoFace
                   participant={participant}
@@ -994,22 +975,7 @@ export default function MembershipCard({
                   isPrintVersion
                 />
               </div>
-              <div className="text-center font-mono text-[7pt] text-gray-500 mt-2">
-                ▲ FACE 2 : VERSO (85.60 × 53.98 mm)
-              </div>
             </div>
-          </div>
-
-          {/* 50mm Calibration Ruler */}
-          <div className="pt-4 border-t border-gray-200 flex flex-col items-center space-y-2">
-            <div className="w-[50mm] border-b-2 border-black flex justify-between text-[7pt] font-mono font-bold">
-              <span>| 0mm</span>
-              <span className="text-[6.5pt] text-gray-600">50 mm (Règle d&apos;étalonnage 100%)</span>
-              <span>50mm |</span>
-            </div>
-            <p className="text-[7pt] text-gray-500 font-mono text-center max-w-md">
-              Pour une impression sur carte plastique ou badgeuse : vérifiez que la règle mesure 50 mm. Cochez l&apos;option « Graphismes d&apos;arrière-plan » dans la boîte de dialogue d&apos;impression.
-            </p>
           </div>
         </div>
       </div>
