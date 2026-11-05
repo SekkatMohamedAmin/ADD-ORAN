@@ -69,6 +69,8 @@ export interface ParticipantData {
   address?: string | null;
   bloodType?: string | null;
   isMinor: boolean;
+  clubRole?: string | null;
+  isStaff?: boolean;
   membershipCardNumber?: string | null;
   registrations: RegistrationItem[];
 }

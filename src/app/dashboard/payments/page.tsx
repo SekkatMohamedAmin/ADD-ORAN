@@ -21,6 +21,8 @@ import {
   Shield,
   Activity,
   Coins,
+  Crown,
+  Sparkles,
 } from "lucide-react";
 import {
   PricingConfig,
@@ -63,6 +65,13 @@ export default function DashboardPaymentsPage() {
     );
   }
 
+  // Check if staff / executive
+  const isStaff = Boolean(
+    selectedParticipant.isStaff ||
+    selectedParticipant.clubRole ||
+    (activeRegistration as any).type === "STAFF"
+  );
+
   // Compute live fees based on admin-defined pricing
   const currentChildFees: ParticipantFeeBreakdown = computeParticipantFees(
     selectedParticipant,
@@ -78,6 +87,28 @@ export default function DashboardPaymentsPage() {
   const latestPayment = payments[0] || null;
   const isPaid = activeRegistration.status === "ACTIVE" || Boolean(latestPayment);
 
+  // Calculate Overdue and Due Amounts
+  const overdueMonths = currentChildFees.monthlySchedule.filter((m) => m.isLate);
+  const totalOverdueDzd = overdueMonths.reduce((sum, m) => sum + m.monthlyAmountDzd, 0);
+  const currentMonth = currentChildFees.monthlySchedule.find((m) => m.isCurrent);
+
+  let dueStatus: "EXEMPT" | "OVERDUE" | "PENDING_INITIAL" | "UP_TO_DATE" = "UP_TO_DATE";
+  let dueAmountDzd = 0;
+
+  if (isStaff) {
+    dueStatus = "EXEMPT";
+    dueAmountDzd = 0;
+  } else if (currentChildFees.hasOverdueMonthly) {
+    dueStatus = "OVERDUE";
+    dueAmountDzd = totalOverdueDzd;
+  } else if (currentChildFees.totalPaidDzd === 0 && activeRegistration.status !== "ACTIVE") {
+    dueStatus = "PENDING_INITIAL";
+    dueAmountDzd = currentChildFees.annualTotalDzd + currentChildFees.monthlyTotalDzd;
+  } else {
+    dueStatus = "UP_TO_DATE";
+    dueAmountDzd = 0;
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fade-in">
       {/* Header */}
@@ -86,23 +117,28 @@ export default function DashboardPaymentsPage() {
           <div className="flex items-center gap-2 mb-1">
             <CreditCard className="w-5 h-5 text-[#FFD21F]" />
             <h1 className="text-2xl font-black font-display text-white">
-              Cotisations & Reçus de Paiement
+              Cotisations & Calendrier des Règlements
             </h1>
           </div>
           <p className="text-xs text-white/50 font-mono">
             {isFamilyAccount
-              ? `Espace Financier Famille • ${participants.length} adhérent(s) enregistrés • Saison 2026`
-              : `Gestion financière pour ${selectedParticipant.firstName} ${selectedParticipant.lastName} • Saison 2026`}
+              ? `Espace Financier Famille • ${participants.length} adhérent(s) enregistrés • Saison ${activeRegistration.season?.code || "2026"}`
+              : `Gestion financière pour ${selectedParticipant.firstName} ${selectedParticipant.lastName} • Saison ${activeRegistration.season?.code || "2026"}`}
           </p>
         </div>
 
         {/* Global Payment Status Pill */}
-        {currentChildFees.hasOverdueMonthly ? (
+        {isStaff ? (
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-400/40 self-start sm:self-auto">
+            <Crown className="w-4 h-4 text-amber-300" />
+            <span>★ Exonéré (Dirigeant / Staff)</span>
+          </span>
+        ) : dueStatus === "OVERDUE" ? (
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-mono font-bold bg-red-500/20 text-red-400 border border-red-500/30 self-start sm:self-auto animate-pulse">
             <AlertTriangle className="w-4 h-4" />
             <span>Paiement en Retard</span>
           </span>
-        ) : isPaid ? (
+        ) : dueStatus === "UP_TO_DATE" ? (
           <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 self-start sm:self-auto">
             <CheckCircle2 className="w-4 h-4" />
             <span>Cotisation à Jour</span>
@@ -115,21 +151,121 @@ export default function DashboardPaymentsPage() {
         )}
       </div>
 
-      {/* OVERDUE LATE PAYMENT ALERT BANNER */}
-      {currentChildFees.hasOverdueMonthly && (
-        <div className="p-5 rounded-3xl bg-red-500/10 border border-red-500/30 text-red-200 text-xs space-y-2 flex items-start gap-3 shadow-xl">
-          <AlertTriangle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-          <div className="space-y-1">
-            <h4 className="font-bold text-red-300 text-sm">
-              Attention : Paiement en retard pour {currentChildFees.overdueMonthLabel || "le mois en cours"}
-            </h4>
-            <p className="leading-relaxed text-red-200/90">
-              Le règlement de la mensualité de{" "}
-              <strong className="text-white font-mono font-bold">
-                {currentChildFees.monthlyTotalDzd.toLocaleString()} DZD
-              </strong>{" "}
-              devait être effectué avant le {pricing.paymentDeadlineDay} du mois. Veuillez régulariser la cotisation en espèces au siège du club à Oran pour maintenir la validité des accès aux séances d&apos;entraînement.
+      {/* ========================================================================= */}
+      {/* 1. DUE PAYMENT / SITUATION FINANCIÈRE HERO CARD                           */}
+      {/* ========================================================================= */}
+      {isStaff ? (
+        <div className="p-6 rounded-3xl bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-500/15 border border-amber-400/40 shadow-xl flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-400/40 text-amber-300 flex items-center justify-center shrink-0">
+              <Crown className="w-6 h-6" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="font-bold text-white text-base flex items-center gap-2">
+                <span>Accréditation Dirigeant & Encadrement Club</span>
+                <span className="text-xs px-2 py-0.5 rounded bg-amber-400/20 text-amber-300 font-mono font-bold">
+                  ★ {selectedParticipant.clubRole || "BUREAU"}
+                </span>
+              </h3>
+              <p className="text-xs text-amber-200/90 leading-relaxed">
+                En tant que membre officiel du Bureau ou encadrant technique de l&apos;Académie ADD Oran, vous êtes dispensé(e) des cotisations sportives. Votre carte officielle est active et disponible.
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : dueStatus === "OVERDUE" ? (
+        <div className="p-6 rounded-3xl bg-gradient-to-r from-red-500/20 via-red-900/10 to-red-500/15 border-2 border-red-500/40 shadow-2xl space-y-4 animate-in fade-in">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-red-500/20 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-red-500/20 border border-red-500/30 text-red-400 flex items-center justify-center shrink-0 animate-bounce">
+                <AlertTriangle className="w-6 h-6" />
+              </div>
+              <div>
+                <span className="text-[11px] font-mono uppercase tracking-wider text-red-300 font-bold block">
+                  Échéance(s) impayée(s) détectée(s)
+                </span>
+                <h3 className="text-xl sm:text-2xl font-black text-white font-display">
+                  Cotisation en Retard : {dueAmountDzd.toLocaleString()} DZD
+                </h3>
+              </div>
+            </div>
+
+            <div className="text-right font-mono">
+              <span className="text-[11px] text-red-300/80 block">Date limite mensuelle :</span>
+              <strong className="text-white text-sm">Le {pricing.paymentDeadlineDay} de chaque mois</strong>
+            </div>
+          </div>
+
+          <div className="text-xs text-red-200/90 space-y-2">
+            <p className="leading-relaxed">
+              Le règlement des mensualités suivantes n&apos;a pas été enregistré :{" "}
+              <strong className="text-white font-mono">
+                {overdueMonths.map((m) => m.label).join(", ")}
+              </strong>.
             </p>
+            <p className="text-gray-300 leading-relaxed">
+              Pour conserver la validité de l&apos;assurance sportive et l&apos;accès prioritaire aux séances d&apos;entraînement, merci de vous rapprocher de la permanence du club à Oran pour régulariser ce montant en espèces.
+            </p>
+          </div>
+        </div>
+      ) : dueStatus === "PENDING_INITIAL" ? (
+        <div className="p-6 rounded-3xl bg-gradient-to-r from-amber-500/20 via-yellow-900/10 to-amber-500/15 border border-amber-500/40 shadow-2xl space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-500/20 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/30 text-amber-400 flex items-center justify-center shrink-0">
+                <Clock className="w-6 h-6" />
+              </div>
+              <div>
+                <span className="text-[11px] font-mono uppercase tracking-wider text-amber-300 font-bold block">
+                  Règlement d&apos;adhésion initial attendu
+                </span>
+                <h3 className="text-xl sm:text-2xl font-black text-white font-display">
+                  Montant dû à l&apos;inscription : {dueAmountDzd.toLocaleString()} DZD
+                </h3>
+              </div>
+            </div>
+
+            <div className="text-right font-mono">
+              <span className="text-[11px] text-amber-300/80 block">Comprend :</span>
+              <span className="text-white text-xs">
+                Assurance ({currentChildFees.annualTotalDzd} DZD) + 1er mois ({currentChildFees.monthlyTotalDzd} DZD)
+              </span>
+            </div>
+          </div>
+
+          <p className="text-xs text-amber-200/90 leading-relaxed">
+            Votre dossier a été pré-validé. Veuillez effectuer le règlement en espèces au club pour activer définitivement votre profil et récupérer votre reçu officiel.
+          </p>
+        </div>
+      ) : (
+        /* Up To Date View */
+        <div className="p-6 rounded-3xl bg-gradient-to-r from-emerald-500/15 via-teal-900/10 to-emerald-500/10 border border-emerald-500/30 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center shrink-0">
+              <CheckCircle2 className="w-6 h-6" />
+            </div>
+            <div>
+              <span className="text-[11px] font-mono uppercase tracking-wider text-emerald-300 font-bold block">
+                Situation financière conforme
+              </span>
+              <h3 className="text-lg sm:text-xl font-bold text-white font-display">
+                Votre compte est parfaitement à jour !
+              </h3>
+              <p className="text-xs text-gray-300 mt-0.5">
+                Toutes les échéances échues ont été réglées. Prochaine mensualité :{" "}
+                <strong className="text-emerald-300">
+                  {currentMonth ? currentMonth.label : "Mois prochain"}
+                </strong>{" "}
+                avant le {pricing.paymentDeadlineDay} du mois.
+              </p>
+            </div>
+          </div>
+
+          <div className="text-right font-mono bg-black/30 p-3 rounded-2xl border border-white/5">
+            <span className="text-[10px] text-gray-400 uppercase block">Total versé cette saison</span>
+            <span className="text-lg font-bold text-emerald-400">
+              {currentChildFees.totalPaidDzd.toLocaleString()} DZD
+            </span>
           </div>
         </div>
       )}
@@ -164,7 +300,7 @@ export default function DashboardPaymentsPage() {
                 {familyFees.totalAnnualDueDzd.toLocaleString()} DZD
               </span>
               <span className="text-[10px] text-gray-400 block font-sans">
-                Frais d&apos;assurance et sports annuels cumulés
+                Frais d&apos;assurance et adhésions annuelles cumulés
               </span>
             </div>
 
@@ -174,12 +310,12 @@ export default function DashboardPaymentsPage() {
                 {familyFees.totalMonthlyDueDzd.toLocaleString()} DZD <span className="text-xs font-mono text-white/60">/ mois</span>
               </span>
               <span className="text-[10px] text-gray-400 block font-sans">
-                Somme des mensualités de tous vos enfants
+                Somme des mensualités de cours
               </span>
             </div>
 
             <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 space-y-1">
-              <span className="text-[11px] text-white/50 uppercase block">Règlements Reçus</span>
+              <span className="text-[11px] text-white/50 uppercase block">Règlements Enregistrés</span>
               <span className="text-xl sm:text-2xl font-black text-white font-display">
                 {familyFees.totalPaidDzd.toLocaleString()} DZD
               </span>
@@ -222,7 +358,106 @@ export default function DashboardPaymentsPage() {
         </div>
       )}
 
-      {/* MAIN FINANCIAL CARD FOR CURRENT SELECTED PARTICIPANT */}
+      {/* ========================================================================= */}
+      {/* 2. PAYMENT SCHEDULE & CALENDAR (MONTHLY BREAKDOWN & DUE TRACKING)         */}
+      {/* ========================================================================= */}
+      <div className="p-6 sm:p-8 rounded-3xl bg-[#111116] border border-white/10 shadow-xl space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
+          <div>
+            <h3 className="font-bold text-base sm:text-lg text-white flex items-center gap-2.5">
+              <Calendar className="w-5 h-5 text-[#FFD21F]" />
+              <span>Calendrier des Règlements Mensuels (Saison {activeRegistration.season?.code || "2026"})</span>
+            </h3>
+            <p className="text-xs text-white/50 mt-1">
+              Échéancier complet pour {selectedParticipant.firstName}. Échéance de règlement fixée au {pricing.paymentDeadlineDay} de chaque mois.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3 text-xs font-mono text-gray-400">
+            <span className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+              Réglé
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#FFD21F]" />
+              En cours
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
+              En retard
+            </span>
+          </div>
+        </div>
+
+        {/* Schedule grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3.5">
+          {currentChildFees.monthlySchedule.map((m, idx) => {
+            let badgeBg = "bg-white/[0.02] border-white/5 text-gray-400";
+            let statusLabel = "À venir";
+
+            // Find matching payment for this month if paid
+            const monthLabelLower = m.label.toLowerCase();
+            const matchingPayment = payments.find((pay) =>
+              pay.paymentPurpose && pay.paymentPurpose.toLowerCase().includes(monthLabelLower)
+            ) || (m.isPaid ? payments[Math.min(idx, payments.length - 1)] : null);
+
+            if (isStaff || m.isPaid) {
+              badgeBg = "bg-emerald-500/10 border-emerald-500/30 text-emerald-300";
+              statusLabel = "Validé ✓";
+            } else if (m.isLate) {
+              badgeBg = "bg-red-500/15 border-red-500/40 text-red-300 animate-pulse";
+              statusLabel = "En retard !";
+            } else if (m.isCurrent) {
+              badgeBg = "bg-[#FFD21F]/15 border-[#FFD21F]/40 text-[#FFD21F]";
+              statusLabel = "Mois en cours";
+            }
+
+            return (
+              <div
+                key={m.id}
+                className={`p-4 rounded-2xl border flex flex-col justify-between gap-3 transition ${badgeBg}`}
+              >
+                <div>
+                  <span className="text-xs font-bold block text-white">{m.label}</span>
+                  <span className="text-[11px] font-mono opacity-80 block mt-0.5">
+                    {isStaff ? "Exonéré" : m.monthlyAmountDzd > 0 ? `${m.monthlyAmountDzd.toLocaleString()} DZD` : "Inclus"}
+                  </span>
+                </div>
+
+                <div className="space-y-1.5 pt-2 border-t border-white/5">
+                  <div className="flex items-center justify-between text-[10px] font-mono uppercase font-bold">
+                    <span>{statusLabel}</span>
+                    {isStaff || m.isPaid ? (
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    ) : m.isLate ? (
+                      <AlertTriangle className="w-3.5 h-3.5 text-red-400 shrink-0" />
+                    ) : (
+                      <Clock className="w-3.5 h-3.5 text-gray-500 shrink-0" />
+                    )}
+                  </div>
+
+                  {/* Receipt link if paid */}
+                  {matchingPayment && (
+                    <Link
+                      href={`/receipt/${matchingPayment.receiptNumber}`}
+                      target="_blank"
+                      className="text-[10px] font-mono text-emerald-400 hover:underline flex items-center gap-1 block"
+                      title="Consulter le reçu officiel"
+                    >
+                      <Receipt className="w-3 h-3" />
+                      <span>{matchingPayment.receiptNumber}</span>
+                    </Link>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* 3. DYNAMIC PRICING BREAKDOWN & PAYMENT INSTRUCTIONS                       */}
+      {/* ========================================================================= */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left 2 Cols: Dynamic Pricing Breakdown */}
         <div className="lg:col-span-2 p-6 sm:p-8 rounded-3xl bg-[#111116] border border-white/10 shadow-xl space-y-6">
@@ -232,24 +467,30 @@ export default function DashboardPaymentsPage() {
                 Fiche Tarifaire • {selectedParticipant.firstName} {selectedParticipant.lastName}
               </span>
               <div className="text-2xl sm:text-3xl font-display font-black text-white mt-1">
-                {currentChildFees.annualTotalDzd > 0 && (
-                  <span className="text-emerald-400">
-                    {currentChildFees.annualTotalDzd.toLocaleString()} DZD{" "}
-                    <span className="text-xs font-mono text-white/60">Annuel</span>
-                  </span>
-                )}
-                {currentChildFees.annualTotalDzd > 0 && currentChildFees.monthlyTotalDzd > 0 && (
-                  <span className="text-white/40 text-xl mx-2">+</span>
-                )}
-                {currentChildFees.monthlyTotalDzd > 0 && (
-                  <span className="text-[#FFD21F]">
-                    {currentChildFees.monthlyTotalDzd.toLocaleString()} DZD{" "}
-                    <span className="text-xs font-mono text-white/60">/ mois</span>
-                  </span>
+                {isStaff ? (
+                  <span className="text-amber-300">0 DZD <span className="text-xs font-mono text-white/60">(Exonéré Dirigeant)</span></span>
+                ) : (
+                  <>
+                    {currentChildFees.annualTotalDzd > 0 && (
+                      <span className="text-emerald-400">
+                        {currentChildFees.annualTotalDzd.toLocaleString()} DZD{" "}
+                        <span className="text-xs font-mono text-white/60">Annuel</span>
+                      </span>
+                    )}
+                    {currentChildFees.annualTotalDzd > 0 && currentChildFees.monthlyTotalDzd > 0 && (
+                      <span className="text-white/40 text-xl mx-2">+</span>
+                    )}
+                    {currentChildFees.monthlyTotalDzd > 0 && (
+                      <span className="text-[#FFD21F]">
+                        {currentChildFees.monthlyTotalDzd.toLocaleString()} DZD{" "}
+                        <span className="text-xs font-mono text-white/60">/ mois</span>
+                      </span>
+                    )}
+                  </>
                 )}
               </div>
               <p className="text-xs text-white/60 mt-1">
-                Tarifs officiels fixés par l&apos;administration du club ADD Oran pour les disciplines choisies.
+                Tarifs officiels appliqués par l&apos;administration du club ADD Oran pour les activités choisies.
               </p>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-[#FFD21F]">
@@ -283,7 +524,7 @@ export default function DashboardPaymentsPage() {
 
                   <div className="text-right font-mono">
                     <span className="font-bold text-white text-sm">
-                      {item.priceDzd.toLocaleString()} DZD
+                      {isStaff ? "0 DZD" : `${item.priceDzd.toLocaleString()} DZD`}
                     </span>
                     <span className="text-[10px] text-gray-400 block">
                       {item.frequency === "annual" ? "1x par an" : "/ mois"}
@@ -297,7 +538,7 @@ export default function DashboardPaymentsPage() {
             <div className="pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs font-mono bg-black/30 p-3 rounded-xl">
               <span className="text-gray-300 font-bold">TOTAL À L&apos;INSCRIPTION :</span>
               <span className="text-emerald-400 font-black text-sm">
-                {(currentChildFees.annualTotalDzd + currentChildFees.monthlyTotalDzd).toLocaleString()} DZD
+                {isStaff ? "0 DZD" : `${(currentChildFees.annualTotalDzd + currentChildFees.monthlyTotalDzd).toLocaleString()} DZD`}
                 {" "}<span className="text-[10px] font-normal text-gray-400">(Assurance + 1er mois)</span>
               </span>
             </div>
@@ -354,7 +595,9 @@ export default function DashboardPaymentsPage() {
               <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 text-center space-y-2">
                 <Receipt className="w-8 h-8 text-white/20 mx-auto" />
                 <p className="text-xs text-white/50">
-                  Aucun reçu n&apos;est encore émis pour ce dossier. Le reçu sera disponible dès l&apos;encaissement.
+                  {isStaff
+                    ? "Profil exonéré de frais : aucun reçu de paiement n'est exigé."
+                    : "Aucun reçu n'est encore émis pour ce dossier. Le reçu sera disponible dès l'encaissement."}
                 </p>
               </div>
             )}
@@ -368,81 +611,9 @@ export default function DashboardPaymentsPage() {
         </div>
       </div>
 
-      {/* PAYMENT SCHEDULE & CALENDAR (MONTHLY BREAKDOWN) */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-[#111116] border border-white/10 shadow-xl space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
-          <div>
-            <h3 className="font-bold text-base sm:text-lg text-white flex items-center gap-2.5">
-              <Calendar className="w-5 h-5 text-[#FFD21F]" />
-              <span>Calendrier & Échéancier de Règlement (Saison 2025/2026)</span>
-            </h3>
-            <p className="text-xs text-white/50 mt-1">
-              Suivi mensuel des règlements pour {selectedParticipant.firstName}. Échéance le {pricing.paymentDeadlineDay} de chaque mois.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3 text-xs font-mono text-gray-400">
-            <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
-              Réglé
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#FFD21F]" />
-              En cours
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
-              En retard
-            </span>
-          </div>
-        </div>
-
-        {/* Schedule grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-          {currentChildFees.monthlySchedule.map((m) => {
-            let badgeBg = "bg-white/[0.02] border-white/5 text-gray-400";
-            let statusLabel = "À venir";
-
-            if (m.isPaid) {
-              badgeBg = "bg-emerald-500/10 border-emerald-500/30 text-emerald-400";
-              statusLabel = "Validé ✓";
-            } else if (m.isLate) {
-              badgeBg = "bg-red-500/15 border-red-500/40 text-red-400 animate-pulse";
-              statusLabel = "En retard !";
-            } else if (m.isCurrent) {
-              badgeBg = "bg-[#FFD21F]/15 border-[#FFD21F]/40 text-[#FFD21F]";
-              statusLabel = "Mois en cours";
-            }
-
-            return (
-              <div
-                key={m.id}
-                className={`p-3.5 rounded-2xl border flex flex-col justify-between gap-2 transition ${badgeBg}`}
-              >
-                <div>
-                  <span className="text-xs font-bold block text-white">{m.label}</span>
-                  <span className="text-[11px] font-mono opacity-80">
-                    {m.monthlyAmountDzd > 0 ? `${m.monthlyAmountDzd.toLocaleString()} DZD` : "Inclus"}
-                  </span>
-                </div>
-
-                <div className="pt-2 border-t border-white/5 flex items-center justify-between text-[10px] font-mono uppercase font-bold">
-                  <span>{statusLabel}</span>
-                  {m.isPaid ? (
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                  ) : m.isLate ? (
-                    <AlertTriangle className="w-3.5 h-3.5 text-red-400" />
-                  ) : (
-                    <Clock className="w-3.5 h-3.5 text-gray-500" />
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* PAYMENT HISTORY TRANSACTIONS */}
+      {/* ========================================================================= */}
+      {/* 4. PAYMENT HISTORY TRANSACTIONS                                           */}
+      {/* ========================================================================= */}
       <div className="p-6 sm:p-8 rounded-3xl bg-[#111116] border border-white/10 shadow-xl space-y-4">
         <h3 className="font-bold text-base text-white flex items-center gap-2">
           <FileCheck className="w-5 h-5 text-[#FFD21F]" />
@@ -451,7 +622,9 @@ export default function DashboardPaymentsPage() {
 
         {payments.length === 0 ? (
           <p className="text-xs text-white/50 py-4">
-            Aucun historique de paiement pour cette saison.
+            {isStaff
+              ? "Profil Dirigeant / Staff : Exonéré des frais d'adhésion sportive."
+              : "Aucun historique de paiement enregistré pour cette saison."}
           </p>
         ) : (
           <div className="divide-y divide-white/5">
@@ -482,7 +655,7 @@ export default function DashboardPaymentsPage() {
                     href={`/receipt/${p.receiptNumber}`}
                     target="_blank"
                     className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-colors"
-                    title="Voir le reçu"
+                    title="Voir et imprimer le reçu"
                   >
                     <ExternalLink className="w-4 h-4" />
                   </Link>

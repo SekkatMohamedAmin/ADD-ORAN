@@ -11,3 +11,4 @@ try {
 } catch (err) {
   process.exit(err.status || 1);
 }
+

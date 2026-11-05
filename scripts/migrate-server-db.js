@@ -66,3 +66,4 @@ try {
   console.error("[migrate-server-db] Error:", err.message);
   process.exit(1);
 }
+

@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
   try {
     const admin = await requireAdmin();
     const body = await request.json();
-    const { registrationId, amount, paymentPurpose, notes } = body;
+    const { registrationId, amount, paymentPurpose, notes, paidAt } = body;
 
     if (!registrationId || !amount) {
       return NextResponse.json(
@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
           status: "PAID",
           recordedById: admin.id,
           notes: notes || null,
-          paidAt: new Date(),
+          paidAt: paidAt ? new Date(paidAt) : new Date(),
         },
       });
 
