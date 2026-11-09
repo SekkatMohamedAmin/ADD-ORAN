@@ -567,11 +567,17 @@ export function CardVersoFace({
         </div>
         <div className="text-center space-y-1">
           <div
-            className={`font-display font-extrabold tracking-widest text-[#F5F5F2] uppercase ${
-              isPrintVersion ? "text-[6.5pt]" : "text-[10.5px] sm:text-[12px]"
+            className={`font-display font-extrabold tracking-widest uppercase ${
+              isPrintVersion ? "text-[6.5pt]" : "text-[11px] sm:text-[12.5px]"
             }`}
+            style={{
+              fontFamily: 'var(--font-display), "Syne", "Big Shoulders", Impact, sans-serif',
+            }}
           >
-            Être fort pour être utile
+            <span className="text-[#F5F5F2]">Être </span>
+            <span className="text-[#E52421] font-black">fort</span>
+            <span className="text-[#F5F5F2]"> pour être </span>
+            <span className="text-[#E52421] font-black">utile</span>
           </div>
           {isStaff && (
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/50 text-amber-300 font-mono text-[5.5pt] sm:text-[7.5px] font-black tracking-wider uppercase">

@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+@theme {
+  --font-display: var(--font-display), "Syne", "Big Shoulders", Impact, sans-serif;
+  --font-editorial: var(--font-editorial), "DM Serif Display", Georgia, serif;
+  --font-body: var(--font-body), "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: var(--font-mono), "Space Mono", monospace;
+}
+
 :root {
   /* Club Color Identity: Red + Yellow + Night + Off-White */
   --club-red: #E52421;
