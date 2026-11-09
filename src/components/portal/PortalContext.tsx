@@ -41,11 +41,15 @@ export interface RegistrationItem {
   status: string;
   correctionReason?: string | null;
   correctionFields?: string | null;
-  submittedAt: string;
+  submittedAt?: string;
+  createdAt?: string;
   season: {
     id: string;
     code: string;
     label: string;
+    startDate?: string | Date | null;
+    endDate?: string | Date | null;
+    isActive?: boolean;
   };
   disciplines: DisciplineItem[];
   documents: DocumentItem[];

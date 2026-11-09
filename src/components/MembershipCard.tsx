@@ -552,31 +552,31 @@ export function CardVersoFace({
         }`}
       />
 
-      {/* Center: Sleek vivid red club logo watermark */}
+      {/* Center: Authentic club logo (no hue alteration) + Motto */}
       <div className="flex-1 flex flex-col items-center justify-center my-auto pointer-events-none select-none space-y-2.5">
-        <div className="relative flex items-center justify-center drop-shadow-[0_0_18px_rgba(229,36,33,0.45)]">
+        <div className="relative flex items-center justify-center">
           <Image
-            src="/images/club/logo-red.svg"
+            src="/images/club/logo.svg"
             alt="Club ADD Oran"
-            width={isPrintVersion ? 46 : 64}
-            height={isPrintVersion ? 46 : 64}
+            width={isPrintVersion ? 52 : 72}
+            height={isPrintVersion ? 52 : 72}
             className="object-contain"
             priority
             unoptimized
           />
         </div>
         <div className="text-center space-y-1">
-          <div className="font-display font-black tracking-widest text-[#E52421] uppercase text-[9px] sm:text-[11px] drop-shadow-sm">
-            Club Art Du Déplacement • Parkour Oran
+          <div
+            className={`font-display font-extrabold tracking-widest text-[#F5F5F2] uppercase ${
+              isPrintVersion ? "text-[6.5pt]" : "text-[10.5px] sm:text-[12px]"
+            }`}
+          >
+            Être fort pour être utile
           </div>
-          {isStaff ? (
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/50 text-amber-300 font-mono text-[6.5pt] sm:text-[8px] font-black tracking-wider uppercase">
-              <Sparkles className="w-2.5 h-2.5 text-amber-300" />
-              <span>ACCRÉDITATION OFFICIELLE • {roleDef ? roleDef.cardBadgeTitle : "DIRIGEANT / CADRE"}</span>
-            </div>
-          ) : (
-            <div className="text-gray-400 font-mono text-[7px] sm:text-[8.5px] tracking-wider uppercase">
-              Académie Sportive & Culturelle d&apos;Oran
+          {isStaff && (
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-400/50 text-amber-300 font-mono text-[5.5pt] sm:text-[7.5px] font-black tracking-wider uppercase">
+              <Sparkles className="w-2 h-2 text-amber-300" />
+              <span>ACCRÉDITATION • {roleDef ? roleDef.cardBadgeTitle : "DIRIGEANT / CADRE"}</span>
             </div>
           )}
         </div>

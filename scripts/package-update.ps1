@@ -46,10 +46,14 @@ foreach ($f in $includeFiles) {
 
 # Add .next directory
 Write-Host "`nAdding .next build..." -ForegroundColor Gray
-$nextFiles = Get-ChildItem -Path ".next" -Recurse -File
+$nextFiles = Get-ChildItem -Path ".next" -Recurse -File | Where-Object { $_.FullName -notmatch "lock" -and $_.FullName -notmatch "\\dev\\" }
 foreach ($file in $nextFiles) {
-    $rel = $file.FullName.Substring($base.Length + 1).Replace('\', '/')
-    [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $file.FullName, $rel, [System.IO.Compression.CompressionLevel]::Fastest) | Out-Null
+    try {
+        $rel = $file.FullName.Substring($base.Length + 1).Replace('\', '/')
+        [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $file.FullName, $rel, [System.IO.Compression.CompressionLevel]::Fastest) | Out-Null
+    } catch {
+        # Skip transient files locked by dev server
+    }
 }
 Write-Host "  + [Dir]  .next ($($nextFiles.Count) files)" -ForegroundColor Green
 

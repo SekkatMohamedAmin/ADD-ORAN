@@ -124,7 +124,8 @@ async function runIntegrationTests() {
   assert(participant.isMinor === false, "Adult participant record created");
 
   // 3. Register with disciplines
-  const season = await prisma.season.findFirst({ where: { code: "2026" } });
+  const season = (await prisma.season.findFirst({ where: { isActive: true } })) || (await prisma.season.findFirst());
+  assert(season !== null, "Active or available season found in database");
   const reference = await generateRegistrationReference(season!.code);
 
   const registration = await prisma.registration.create({
@@ -188,12 +189,12 @@ async function runIntegrationTests() {
     data: { status: "ACTIVE" },
   });
 
-  assert(payment.receiptNumber.startsWith("ADD-PAY-2026-"), "Payment receipt generated with valid prefix");
+  assert(payment.receiptNumber.startsWith(`ADD-PAY-${season!.code}-`), "Payment receipt generated with valid prefix");
   assert(activated.status === "ACTIVE", "Payment transitions registration to ACTIVE member status");
 
   // 8. Electronic Membership Card Generation
   const cardNum = await ensureMembershipCardNumber(participant.id, season!.code);
-  assert(/^ADD-CARD-2026-\d{4}$/.test(cardNum), `Membership card successfully assigned: ${cardNum}`);
+  assert(new RegExp(`^ADD-CARD-${season!.code}-\\d{4}$`).test(cardNum), `Membership card successfully assigned: ${cardNum}`);
   const cardNumIdempotent = await ensureMembershipCardNumber(participant.id, season!.code);
   assert(cardNum === cardNumIdempotent, "Membership card assignment is idempotent");
 
@@ -262,10 +263,11 @@ async function runAdminAuthAndWorkflowTests() {
   assert(participantUser?.role !== "ADMIN", "Participant role is strictly non-admin");
 
   // 3. Sequential receipt uniqueness and format
-  const season = await prisma.season.findFirst({ where: { code: "2026" } });
+  const season = (await prisma.season.findFirst({ where: { isActive: true } })) || (await prisma.season.findFirst());
+  assert(season !== null, "Active or available season found in database");
   const rec1 = await generateReceiptNumber(season!.code);
   const rec2 = await generateReceiptNumber(season!.code);
-  assert(rec1.startsWith("ADD-PAY-2026-"), "Receipt number adheres to format ADD-PAY-2026-XXXXXX");
+  assert(rec1.startsWith(`ADD-PAY-${season!.code}-`), "Receipt number adheres to format ADD-PAY-XXXX-XXXXXX");
   assert(rec1 !== rec2, "Receipt numbers are strictly sequential and unique across transactions");
 
   // 4. Invariant: Archiving preserves records instead of deleting

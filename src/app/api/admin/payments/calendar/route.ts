@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getPricingConfig } from "@/lib/pricing";
+import { getPricingConfig, generateSeasonMonths } from "@/lib/pricing";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
     // 1. Resolve Season
     const activeSeason = await prisma.season.findFirst({ where: { isActive: true } });
-    const effectiveSeasonCode = seasonCode && seasonCode !== "ALL" ? seasonCode : (activeSeason?.code || "2026");
+    const effectiveSeasonCode = seasonCode && seasonCode !== "ALL" ? seasonCode : (activeSeason?.code || "2027");
 
     const pricing = await getPricingConfig();
     const currentDate = new Date();
@@ -66,6 +66,8 @@ export async function GET(request: NextRequest) {
     });
 
     const seasons = await prisma.season.findMany({ orderBy: { code: "desc" } });
+    const targetSeason = seasons.find((s) => s.code === effectiveSeasonCode) || activeSeason || seasons[0];
+    const columnMonths = generateSeasonMonths(targetSeason);
 
     // 4. Compute payment calendar data per adherent
     let totalCollectedDzd = 0;
@@ -78,30 +80,24 @@ export async function GET(request: NextRequest) {
     const calendarItems = registrations.map((reg) => {
       const p = reg.participant;
       const isStaff = Boolean(p.isStaff || p.clubRole || reg.type === "STAFF");
-
-      // Calculate annual and monthly fees for this participant
       const chosenSlugs = new Set(reg.disciplines.map((d) => d.discipline.slug));
+
+      // Calculate fee totals for this registration
       let annualTotalDzd = 0;
       let monthlyTotalDzd = 0;
 
       if (!isStaff) {
-        if (pricing.insurance.enabled && pricing.insurance.priceDzd > 0) {
-          if (pricing.insurance.frequency === "annual") {
-            annualTotalDzd += pricing.insurance.priceDzd;
-          } else {
-            monthlyTotalDzd += pricing.insurance.priceDzd;
-          }
+        if (pricing.insurance.enabled) {
+          if (pricing.insurance.frequency === "annual") annualTotalDzd += pricing.insurance.priceDzd;
+          else monthlyTotalDzd += pricing.insurance.priceDzd;
         }
 
         for (const slug of Array.from(chosenSlugs)) {
-          const disc = pricing.disciplines[slug];
-          if (disc && disc.enabled) {
-            if (disc.frequency === "annual") {
-              annualTotalDzd += disc.priceDzd;
-            } else {
-              monthlyTotalDzd += disc.priceDzd;
-            }
-          } else {
+          const dConfig = pricing.disciplines[slug];
+          if (dConfig && dConfig.enabled) {
+            if (dConfig.frequency === "annual") annualTotalDzd += dConfig.priceDzd;
+            else monthlyTotalDzd += dConfig.priceDzd;
+          } else if (slug === "parkour") {
             monthlyTotalDzd += 1500;
           }
         }
@@ -109,12 +105,18 @@ export async function GET(request: NextRequest) {
 
       expectedMonthlyRevenueDzd += monthlyTotalDzd;
 
-      // Payments made by this adherent
-      const payments = reg.payments || [];
-      const totalPaidDzd = payments.reduce((sum, pay) => sum + pay.amount, 0);
+      // Payments made
+      const payments = reg.payments;
+      const totalPaidDzd = payments.reduce((acc, curr) => acc + curr.amount, 0);
       totalCollectedDzd += totalPaidDzd;
 
-      // Monthly Schedule Allocation
+      // Monthly Schedule Allocation based strictly on this registration's actual season
+      const regSeason = reg.season || targetSeason;
+      const regSeasonMonths = generateSeasonMonths(regSeason);
+
+      const seasonStartDate = regSeason?.startDate ? new Date(regSeason.startDate) : null;
+      const regDate = reg.createdAt ? new Date(reg.createdAt) : null;
+
       let remainingPaymentCredit = totalPaidDzd;
       const annualCovered = remainingPaymentCredit >= annualTotalDzd;
       remainingPaymentCredit = Math.max(0, remainingPaymentCredit - annualTotalDzd);
@@ -123,10 +125,27 @@ export async function GET(request: NextRequest) {
       let hasOverdue = false;
       const overdueMonths: string[] = [];
 
-      const schedule = pricing.seasonMonths.map((m, mIndex) => {
+      const schedule = regSeasonMonths.map((m, mIndex) => {
         const isPast = m.year < currentYear || (m.year === currentYear && m.month < currentMonthNum);
         const isCurrent = m.year === currentYear && m.month === currentMonthNum;
         const isFuture = m.year > currentYear || (m.year === currentYear && m.month > currentMonthNum);
+
+        // Check if month is before season start or before enrollment
+        let isMonthBeforeJoining = false;
+        if (seasonStartDate && !isNaN(seasonStartDate.getTime())) {
+          const sYear = seasonStartDate.getFullYear();
+          const sMonth = seasonStartDate.getMonth() + 1;
+          if (m.year < sYear || (m.year === sYear && m.month < sMonth)) {
+            isMonthBeforeJoining = true;
+          }
+        }
+        if (regDate && !isNaN(regDate.getTime())) {
+          const rYear = regDate.getFullYear();
+          const rMonth = regDate.getMonth() + 1;
+          if (m.year < rYear || (m.year === rYear && m.month < rMonth)) {
+            isMonthBeforeJoining = true;
+          }
+        }
 
         let isPaid = false;
         let matchedPayment: any = null;
@@ -153,7 +172,8 @@ export async function GET(request: NextRequest) {
         }
 
         let isLate = false;
-        if (!isStaff && !isPaid && monthlyTotalDzd > 0) {
+        // Only mark late if after joining, unpaid, and past or current after deadline
+        if (!isStaff && !isPaid && monthlyTotalDzd > 0 && !isMonthBeforeJoining) {
           if (isPast) {
             isLate = true;
           } else if (isCurrent && currentDay > pricing.paymentDeadlineDay) {
@@ -237,10 +257,9 @@ export async function GET(request: NextRequest) {
       success: true,
       currentSeasonCode: effectiveSeasonCode,
       seasons,
-      months: pricing.seasonMonths,
-      paymentDeadlineDay: pricing.paymentDeadlineDay,
-      stats: {
-        totalMembers: calendarItems.length,
+      months: columnMonths,
+      summary: {
+        totalAdherents: calendarItems.length,
         upToDateCount,
         overdueCount,
         pendingCount,
@@ -248,12 +267,12 @@ export async function GET(request: NextRequest) {
         totalCollectedDzd,
         expectedMonthlyRevenueDzd,
       },
-      adherents: filteredItems,
+      items: filteredItems,
     });
   } catch (error: any) {
     console.error("Admin payments calendar GET error:", error);
     return NextResponse.json(
-      { error: error?.message || "Erreur serveur lors de la récupération du calendrier." },
+      { error: error?.message || "Erreur lors du chargement du calendrier de paiements" },
       { status: 500 }
     );
   }
