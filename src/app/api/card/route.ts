@@ -5,9 +5,6 @@ import { prisma } from "@/lib/prisma";
 export async function GET(request: NextRequest) {
   try {
     const user = await getSessionUser();
-    if (!user) {
-      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
-    }
 
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
@@ -16,10 +13,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Identifiant manquant" }, { status: 400 });
     }
 
-    // Try finding by participant id, membershipCardNumber, or registration id
+    const trimmedId = id.trim();
+
+    // 1. Try finding by participant id or membershipCardNumber
     let participant = await prisma.participant.findFirst({
       where: {
-        OR: [{ id }, { membershipCardNumber: id }],
+        OR: [{ id: trimmedId }, { membershipCardNumber: trimmedId }],
       },
       include: {
         documents: {
@@ -42,10 +41,12 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    // Fallback: check if id is a registration id
+    // 2. Fallback: check if id is a registration reference OR registration id
     if (!participant) {
-      const reg = await prisma.registration.findUnique({
-        where: { id },
+      const reg = await prisma.registration.findFirst({
+        where: {
+          OR: [{ id: trimmedId }, { reference: trimmedId }],
+        },
         include: {
           participant: {
             include: {
@@ -76,13 +77,12 @@ export async function GET(request: NextRequest) {
     }
 
     if (!participant) {
-      return NextResponse.json({ error: "Adhérent introuvable" }, { status: 404 });
+      return NextResponse.json({ error: "Adhérent ou carte introuvable" }, { status: 404 });
     }
 
-    // Check authorization: must be the participant owner OR an ADMIN
-    if (participant.userId !== user.id && user.role !== "ADMIN") {
-      return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
-    }
+    const isOwner = user ? participant.userId === user.id : false;
+    const isAdmin = user ? user.role === "ADMIN" : false;
+    const isOwnerOrAdmin = isOwner || isAdmin;
 
     const activeRegistration = participant.registrations?.[0] || null;
     const photoDocId =
@@ -98,7 +98,7 @@ export async function GET(request: NextRequest) {
         dateOfBirth: participant.dateOfBirth.toISOString(),
         bloodType: participant.bloodType,
         isMinor: participant.isMinor,
-        phone: participant.phone,
+        phone: isOwnerOrAdmin ? participant.phone : null, // Masked for public QR scans
         emergencyPhone: null,
         membershipCardNumber: participant.membershipCardNumber,
         rfidCardId: participant.rfidCardId,
@@ -107,6 +107,7 @@ export async function GET(request: NextRequest) {
       },
       registration: activeRegistration
         ? {
+            id: activeRegistration.id,
             reference: activeRegistration.reference,
             status: activeRegistration.status,
             type: activeRegistration.type,
@@ -126,6 +127,7 @@ export async function GET(request: NextRequest) {
           }
         : null,
       photoDocId,
+      isOwnerOrAdmin,
     });
   } catch (error) {
     console.error("Card fetch error:", error);

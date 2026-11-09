@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import QRCode from "qrcode";
 import { getClubRoleDefinition } from "@/lib/clubRoles";
 import {
@@ -499,11 +500,19 @@ export function CardRectoFace({
           isPrintVersion={isPrintVersion}
         />
 
-        {/* Real QR Code */}
-        <RealQrCodeSvg
-          value={`https://registration.addpkoran.com/card/${registration?.reference || cardNumber}`}
-          size={isPrintVersion ? 32 : 38}
-        />
+        {/* Real QR Code - Interactive verification link */}
+        <Link
+          href={`/card/${encodeURIComponent(registration?.reference || cardNumber)}`}
+          target="_blank"
+          onClick={(e) => e.stopPropagation()}
+          title="Vérifier la carte en ligne"
+          className="hover:scale-105 transition-transform"
+        >
+          <RealQrCodeSvg
+            value={`https://registration.addpkoran.com/card/${encodeURIComponent(registration?.reference || cardNumber)}`}
+            size={isPrintVersion ? 32 : 38}
+          />
+        </Link>
       </div>
     </div>
   );

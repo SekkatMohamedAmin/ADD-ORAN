@@ -10,10 +10,6 @@ export async function GET(
 ) {
   try {
     const user = await getSessionUser();
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     const { id } = await context.params;
 
     const documentRecord = await prisma.document.findUnique({
@@ -27,13 +23,22 @@ export async function GET(
       return NextResponse.json({ error: "Document not found" }, { status: 404 });
     }
 
-    // Check authorization: Owner or Admin
-    const isOwner = documentRecord.participant.userId === user.id;
-    const isAdmin = user.role === "ADMIN";
+    const isPhoto = documentRecord.type === "PHOTO";
 
-    if (!isOwner && !isAdmin) {
-      return NextResponse.json({ error: "Forbidden access to private document" }, { status: 403 });
+    // For sensitive private documents (medical certificates, ID cards, parental auth), strictly enforce authentication
+    if (!isPhoto) {
+      if (!user) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+      const isOwner = documentRecord.participant.userId === user.id;
+      const isAdmin = user.role === "ADMIN";
+      if (!isOwner && !isAdmin) {
+        return NextResponse.json({ error: "Forbidden access to private document" }, { status: 403 });
+      }
     }
+
+    const isOwner = user ? documentRecord.participant.userId === user.id : false;
+    const isAdmin = user ? user.role === "ADMIN" : false;
 
     // Read file from private storage
     const fileBuffer = await storage.read(documentRecord.storagePath);
@@ -42,7 +47,7 @@ export async function GET(
     }
 
     // Audit log if admin viewed participant document
-    if (isAdmin && !isOwner) {
+    if (isAdmin && !isOwner && user) {
       await logAudit({
         action: "DOCUMENT_VIEWED",
         userId: user.id,
