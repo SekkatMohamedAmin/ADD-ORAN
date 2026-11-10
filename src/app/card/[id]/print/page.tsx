@@ -13,7 +13,7 @@ import {
   FileCheck2,
   Sparkles,
 } from "lucide-react";
-import { CardRectoFace, CardVersoFace, CropMarks } from "@/components/MembershipCard";
+import { CardRectoFace, CardVersoFace, CropMarks, condenseDisciplineName } from "@/components/MembershipCard";
 
 export default function CardPrintPage({
   params,
@@ -112,9 +112,11 @@ export default function CardPrintPage({
 
   const photoUrl = photoDocId ? `/api/documents/${photoDocId}` : null;
 
-  const disciplines = registration?.disciplines?.map(
+  const rawDisciplines = registration?.disciplines?.map(
     (d: any) => d.discipline.nameFr || d.discipline.slug?.toUpperCase() || "PARKOUR"
-  ) || ["PARKOUR", "FREERUN"];
+  ) || ["PARKOUR"];
+
+  const disciplines: string[] = Array.from(new Set(rawDisciplines.map(condenseDisciplineName)));
 
   return (
     <div className="min-h-screen bg-[#0A0A0D] py-6 px-4 sm:px-6 text-[#F5F5F2] selection:bg-[#E52421] selection:text-white print:bg-white print:p-0 print:m-0 print:min-h-0 print:w-auto">

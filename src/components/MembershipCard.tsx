@@ -212,6 +212,46 @@ export function RealBarcodeCode128({
 }
 
 /**
+ * Condenses discipline names uniformly for physical CR80 cards and digital badges.
+ * Maps verbose database labels ("Escalade & sports de montagne", "Trail Running", etc.)
+ * to crisp, standardized badges ("ESCALADE", "TRAIL", "PARKOUR") so all cards remain
+ * strictly uniform and never overflow vertically.
+ */
+export function condenseDisciplineName(nameOrSlug?: string | null): string {
+  if (!nameOrSlug) return "PARKOUR";
+  const s = String(nameOrSlug).trim();
+  const lower = s.toLowerCase();
+
+  if (
+    lower.includes("parkour") ||
+    lower.includes("freerun") ||
+    lower.includes("déplacement") ||
+    lower.includes("deplacement") ||
+    lower === "pk"
+  ) {
+    return "PARKOUR";
+  }
+  if (
+    lower.includes("escalade") ||
+    lower.includes("montagne") ||
+    lower.includes("climb")
+  ) {
+    return "ESCALADE";
+  }
+  if (
+    lower.includes("trail") ||
+    lower.includes("course") ||
+    lower.includes("running")
+  ) {
+    return "TRAIL";
+  }
+
+  // Fallback: extract the first token and limit length
+  const firstWord = s.split(/[\s&/_-]+/)[0] || s;
+  return firstWord.length > 9 ? firstWord.slice(0, 9).toUpperCase() : firstWord.toUpperCase();
+}
+
+/**
  * RECTO CARD FACE
  */
 export function CardRectoFace({
@@ -235,6 +275,12 @@ export function CardRectoFace({
 }) {
   const roleDef = getClubRoleDefinition(participant.clubRole);
   const isStaff = Boolean(participant.isStaff || participant.clubRole || registration?.type === "STAFF");
+
+  // Always sanitize, condense, and deduplicate disciplines uniformly
+  const condensedDisciplines = useMemo(() => {
+    if (!disciplines || disciplines.length === 0) return ["PARKOUR"];
+    return Array.from(new Set(disciplines.map(condenseDisciplineName)));
+  }, [disciplines]);
 
   return (
     <div
@@ -327,15 +373,15 @@ export function CardRectoFace({
       </div>
 
       {/* CARD MIDDLE BODY: PHOTO + ATHLETE DETAILS */}
-      <div className="relative z-10 grid grid-cols-12 gap-2.5 items-center my-auto">
+      <div className="relative z-10 grid grid-cols-12 gap-2.5 items-center my-auto min-h-0 overflow-hidden">
         {/* Photo Frame (4 cols) */}
-        <div className="col-span-4 flex flex-col items-center">
+        <div className="col-span-4 flex flex-col items-center justify-center">
           <div
             className={`relative rounded-xl overflow-hidden bg-[#1C1C24] border-2 ${
               isStaff ? "border-amber-400/70 shadow-amber-500/20" : "border-white/20"
-            } shadow-lg ${
+            } shadow-lg shrink-0 ${
               isPrintVersion
-                ? "w-[18mm] h-[22.5mm] rounded-[2mm]"
+                ? "w-[18mm] h-[22mm] rounded-[2mm]"
                 : "w-24 h-28"
             }`}
           >
@@ -366,13 +412,13 @@ export function CardRectoFace({
           {/* Category Pill */}
           <span
             style={{ fontFamily: "'Courier New', Courier, monospace" }}
-            className={`mt-1 font-black uppercase rounded tracking-wider border shadow-inner ${
+            className={`mt-1 font-black uppercase rounded tracking-wider border shadow-inner shrink-0 ${
               isStaff
                 ? "border-amber-400/40 bg-amber-500/15 text-amber-300"
                 : "border-white/15 bg-[#14141B] text-gray-200"
             } ${
               isPrintVersion
-                ? "px-[1.5mm] py-[0.25mm] text-[4.8pt]"
+                ? "px-[1.5mm] py-[0.25mm] text-[4.5pt]"
                 : "px-2 py-0.5 text-[8px]"
             }`}
           >
@@ -381,9 +427,9 @@ export function CardRectoFace({
         </div>
 
         {/* Member Details (8 cols) */}
-        <div className="col-span-8 space-y-1.5 pl-1">
-          {/* Member Full Name - reduced font, responsive, no truncation */}
-          <div>
+        <div className={`col-span-8 ${isPrintVersion ? "space-y-1" : "space-y-1.5"} pl-1 min-w-0`}>
+          {/* Member Full Name - reduced font, responsive, truncated if excessively long */}
+          <div className="min-w-0">
             <span
               className={`uppercase font-mono tracking-wider block font-bold ${
                 isStaff ? "text-amber-400" : "text-gray-400"
@@ -394,29 +440,30 @@ export function CardRectoFace({
               {isStaff ? (roleDef ? `★ ${roleDef.labelFr}` : "★ Cadre / Dirigeant") : "Adhérent(e)"}
             </span>
             <div
-              className={`text-white font-extrabold uppercase font-display tracking-tight break-words ${
+              className={`text-white font-extrabold uppercase font-display tracking-tight truncate ${
                 isPrintVersion
                   ? "text-[7.5pt] leading-tight"
                   : "text-xs sm:text-[13px] leading-snug"
               }`}
+              title={`${participant.firstName} ${participant.lastName}`}
             >
               {participant.firstName} {participant.lastName}
             </div>
           </div>
 
-          {/* Details Grid: Birth Date, Blood Type, Phone (N° Carte REMOVED) */}
-          <div className="grid grid-cols-2 gap-x-2 gap-y-1 pt-0.5">
+          {/* Details Grid: Birth Date, Blood Type, Phone */}
+          <div className={`grid grid-cols-2 gap-x-2 ${isPrintVersion ? "gap-y-0.5" : "gap-y-1"} pt-0.5`}>
             <div>
               <span
                 className={`text-gray-400 uppercase font-mono block ${
-                  isPrintVersion ? "text-[4.5pt]" : "text-[8px]"
+                  isPrintVersion ? "text-[4.2pt]" : "text-[8px]"
                 }`}
               >
                 Né(e) le
               </span>
               <span
                 className={`font-mono text-gray-200 font-semibold ${
-                  isPrintVersion ? "text-[6.5pt]" : "text-[10px]"
+                  isPrintVersion ? "text-[6.2pt]" : "text-[10px]"
                 }`}
               >
                 {birthDateFormatted}
@@ -426,14 +473,14 @@ export function CardRectoFace({
             <div>
               <span
                 className={`text-gray-400 uppercase font-mono block ${
-                  isPrintVersion ? "text-[4.5pt]" : "text-[8px]"
+                  isPrintVersion ? "text-[4.2pt]" : "text-[8px]"
                 }`}
               >
                 Groupe Sanguin
               </span>
               <span
                 className={`inline-flex items-center gap-1 font-mono font-bold text-red-400 ${
-                  isPrintVersion ? "text-[6.5pt]" : "text-[10px]"
+                  isPrintVersion ? "text-[6.2pt]" : "text-[10px]"
                 }`}
               >
                 <Heart className="w-2 h-2 fill-red-500 text-red-500" />
@@ -444,14 +491,14 @@ export function CardRectoFace({
             <div className="col-span-2">
               <span
                 className={`text-gray-400 uppercase font-mono block ${
-                  isPrintVersion ? "text-[4.5pt]" : "text-[8px]"
+                  isPrintVersion ? "text-[4.2pt]" : "text-[8px]"
                 }`}
               >
                 Téléphone
               </span>
               <span
                 className={`font-mono text-gray-300 ${
-                  isPrintVersion ? "text-[6.5pt]" : "text-[10px]"
+                  isPrintVersion ? "text-[6.2pt]" : "text-[10px]"
                 }`}
               >
                 {participant.phone}
@@ -459,28 +506,36 @@ export function CardRectoFace({
             </div>
           </div>
 
-          {/* Disciplines / Role pills */}
-          <div className="pt-0.5">
-            <div className="flex flex-wrap gap-1">
+          {/* Disciplines / Role pills - Strict Single Row & Adaptive Condensation */}
+          <div className="pt-0.5 shrink-0 min-w-0">
+            <div className="flex flex-nowrap items-center gap-1 overflow-hidden">
               {isStaff ? (
                 <span
-                  className={`bg-amber-500/15 border border-amber-400/40 text-amber-300 font-black rounded tracking-wider uppercase font-display flex items-center gap-1 ${
+                  className={`bg-amber-500/15 border border-amber-400/40 text-amber-300 font-black rounded tracking-wider uppercase font-display flex items-center gap-1 shrink-0 ${
                     isPrintVersion
-                      ? "px-[1.5mm] py-[0.25mm] text-[5pt]"
-                      : "px-1.5 py-0.5 text-[8.5px]"
+                      ? "px-[1.5mm] py-[0.25mm] text-[4.8pt]"
+                      : "px-2 py-0.5 text-[8.5px]"
                   }`}
                 >
                   <Sparkles className="w-2.5 h-2.5 text-amber-300 shrink-0" />
                   {roleDef ? `${roleDef.cardBadgeTitle}` : "BUREAU CLUB"}
                 </span>
               ) : (
-                disciplines.slice(0, 3).map((disc, idx) => (
+                condensedDisciplines.map((disc, idx) => (
                   <span
                     key={idx}
-                    className={`bg-white/5 border border-white/10 text-gray-200 font-bold rounded tracking-wider uppercase font-display ${
-                      isPrintVersion
-                        ? "px-[1.5mm] py-[0.25mm] text-[5pt]"
-                        : "px-1.5 py-0.5 text-[8.5px]"
+                    className={`shrink-0 font-display font-extrabold tracking-wider uppercase rounded border ${
+                      condensedDisciplines.length >= 3
+                        ? isPrintVersion
+                          ? "px-[1.2mm] py-[0.2mm] text-[4.2pt] bg-white/5 border-white/15 text-gray-200"
+                          : "px-1.5 py-0.5 text-[7.5px] bg-white/5 border-white/15 text-gray-200"
+                        : condensedDisciplines.length === 2
+                        ? isPrintVersion
+                          ? "px-[1.5mm] py-[0.25mm] text-[4.6pt] bg-white/5 border-white/15 text-gray-200"
+                          : "px-2 py-0.5 text-[8px] bg-white/5 border-white/15 text-gray-200"
+                        : isPrintVersion
+                        ? "px-[1.8mm] py-[0.3mm] text-[5pt] bg-white/5 border-white/15 text-gray-200"
+                        : "px-2.5 py-0.5 text-[8.5px] bg-white/5 border-white/15 text-gray-200"
                     }`}
                   >
                     {disc}
@@ -493,7 +548,11 @@ export function CardRectoFace({
       </div>
 
       {/* CARD BOTTOM BAR: REAL CODE 128 BARCODE & QR VALIDATION */}
-      <div className="relative z-10 pt-1.5 border-t border-white/10 flex items-center justify-between gap-2 shrink-0">
+      <div
+        className={`relative z-10 ${
+          isPrintVersion ? "pt-1 border-t border-white/10" : "pt-1.5 border-t border-white/10"
+        } flex items-center justify-between gap-2 shrink-0`}
+      >
         {/* Real Functional Code 128 Barcode */}
         <RealBarcodeCode128
           value={registration?.reference || cardNumber}
@@ -506,11 +565,11 @@ export function CardRectoFace({
           target="_blank"
           onClick={(e) => e.stopPropagation()}
           title="Vérifier la carte en ligne"
-          className="hover:scale-105 transition-transform"
+          className="hover:scale-105 transition-transform shrink-0"
         >
           <RealQrCodeSvg
             value={`https://registration.addpkoran.com/card/${encodeURIComponent(registration?.reference || cardNumber)}`}
-            size={isPrintVersion ? 32 : 38}
+            size={isPrintVersion ? 30 : 36}
           />
         </Link>
       </div>
@@ -649,9 +708,11 @@ export default function MembershipCard({
 
   const photoUrl = photoDocId ? `/api/documents/${photoDocId}` : null;
 
-  const disciplines = registration?.disciplines?.map(
+  const rawDisciplines = registration?.disciplines?.map(
     (d) => d.discipline.nameFr || d.discipline.slug?.toUpperCase() || "PARKOUR"
-  ) || ["PARKOUR", "FREERUN"];
+  ) || ["PARKOUR"];
+
+  const disciplines: string[] = Array.from(new Set(rawDisciplines.map(condenseDisciplineName)));
 
   // Full 360 spin animation
   const handleSpin360 = () => {
