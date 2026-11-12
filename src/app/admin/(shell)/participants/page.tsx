@@ -313,15 +313,29 @@ export default function ParticipantsPage() {
                 );
                 const isStaff = Boolean(member.isStaff || member.clubRole);
                 const roleDef = getClubRoleDefinition(member.clubRole);
+                const photoDocId =
+                  member.documents?.find((d) => d.type === "PHOTO")?.id ||
+                  member.registrations?.flatMap((r) => r.documents || []).find((d) => d.type === "PHOTO")?.id ||
+                  null;
 
                 return (
                   <tr key={member.id} className="hover:bg-white/[0.02] transition">
                     {/* Identity & Phone */}
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-[#1C1C24] border border-white/5 flex items-center justify-center font-bold text-white text-xs">
-                          {member.firstName.charAt(0)}
-                          {member.lastName.charAt(0)}
+                        <div className="w-10 h-10 rounded-xl overflow-hidden bg-[#1C1C24] border border-white/10 shrink-0 flex items-center justify-center">
+                          {photoDocId ? (
+                            <img
+                              src={`/api/documents/${photoDocId}`}
+                              alt={`${member.firstName} ${member.lastName}`}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <span className="font-bold text-white text-xs">
+                              {member.firstName.charAt(0)}
+                              {member.lastName.charAt(0)}
+                            </span>
+                          )}
                         </div>
                         <div>
                           <div className="font-bold text-white text-sm flex items-center gap-1.5 flex-wrap">
