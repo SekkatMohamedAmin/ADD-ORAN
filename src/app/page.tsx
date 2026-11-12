@@ -8,6 +8,8 @@ import { HeroCarousel } from "@/components/HeroCarousel";
 import { LastSeasonSection } from "@/components/public/LastSeasonSection";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { LazyImage } from "@/components/ui/LazyImage";
+import { DisciplineCarousel } from "@/components/ui/DisciplineCarousel";
+import { useHomeDisciplineImages } from "@/lib/homeImagesClient";
 import { KineticHeading } from "@/components/animations/KineticHeading";
 import { RevealImage } from "@/components/animations/RevealImage";
 import { AccentLine } from "@/components/animations/AccentLine";
@@ -16,6 +18,7 @@ import { ArrowUpRight } from "lucide-react";
 
 export default function HomePage() {
   const { t, isRtl } = useLanguage();
+  const disciplineImages = useHomeDisciplineImages();
 
   return (
     <div className="min-h-screen flex flex-col bg-[#0A0A0D] text-[#F5F5F2] selection:bg-[#E52421] selection:text-[#F5F5F2]">
@@ -55,7 +58,7 @@ export default function HomePage() {
                       accentColor="#E52421"
                       personality="lateral"
                       scrub={true}
-                      className="text-6xl sm:text-8xl lg:text-9xl"
+                      className="text-4xl sm:text-6xl lg:text-7xl"
                     />
                   </div>
 
@@ -79,20 +82,13 @@ export default function HomePage() {
                   </ScrollReveal>
                 </div>
 
-                {/* Right: Dramatic Real Action Photograph with Cinematic Reveal & Lateral Parallax */}
+                {/* Right: Dynamic Image Carousel */}
                 <div className="lg:col-span-6">
-                  <RevealImage parallaxDirection="lateral" parallaxDistance={22}>
-                    <div className="relative w-full h-[420px] sm:h-[540px] rounded-3xl overflow-hidden shadow-2xl border border-white/10 group">
-                      <LazyImage
-                        src="/images/disciplines/discipline-parkour.jpg"
-                        alt={t.disciplines.parkour.name}
-                        fill
-                        sizes="(max-width: 1024px) 100vw, 50vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-700 select-none"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0D]/70 via-transparent to-transparent pointer-events-none" />
-                    </div>
-                  </RevealImage>
+                  <DisciplineCarousel
+                    images={disciplineImages.parkour}
+                    accentColor="#E52421"
+                    disciplineName={t.disciplines.parkour.name}
+                  />
                 </div>
               </div>
             </div>
@@ -111,20 +107,13 @@ export default function HomePage() {
 
             <div className="max-w-7xl mx-auto relative z-10">
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                {/* Left: Sheer Rock Action Photo with Vertical Parallax */}
+                {/* Left: Dynamic Image Carousel */}
                 <div className="lg:col-span-6 order-2 lg:order-1">
-                  <RevealImage parallaxDirection="vertical" parallaxDistance={28}>
-                    <div className="relative w-full h-[440px] sm:h-[580px] rounded-3xl overflow-hidden shadow-2xl border border-white/10 group">
-                      <LazyImage
-                        src="/images/disciplines/discipline-climbing.jpg"
-                        alt={t.disciplines.escalade.name}
-                        fill
-                        sizes="(max-width: 1024px) 100vw, 50vw"
-                        className="object-cover object-top group-hover:scale-105 transition-transform duration-700 select-none"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#121217]/70 via-transparent to-transparent pointer-events-none" />
-                    </div>
-                  </RevealImage>
+                  <DisciplineCarousel
+                    images={disciplineImages.climbing}
+                    accentColor="#FFD21F"
+                    disciplineName={t.disciplines.escalade.name}
+                  />
                 </div>
 
                 {/* Right: Towering Text & Narrative with Vertical Kinetic Personality */}
@@ -142,7 +131,7 @@ export default function HomePage() {
                       accentColor="#FFD21F"
                       personality="vertical"
                       scrub={true}
-                      className="text-6xl sm:text-8xl lg:text-9xl"
+                      className="text-4xl sm:text-6xl lg:text-7xl"
                     />
                   </div>
 
@@ -197,7 +186,7 @@ export default function HomePage() {
                       accentColor="#FF3030"
                       personality="horizontal"
                       scrub={true}
-                      className="text-6xl sm:text-8xl lg:text-9xl"
+                      className="text-4xl sm:text-6xl lg:text-7xl"
                     />
                   </div>
 
@@ -221,20 +210,13 @@ export default function HomePage() {
                   </ScrollReveal>
                 </div>
 
-                {/* Right: High-Speed Trail Runner Shot with Horizontal Parallax */}
+                {/* Right: Dynamic Image Carousel */}
                 <div className="lg:col-span-6">
-                  <RevealImage parallaxDirection="horizontal" parallaxDistance={24}>
-                    <div className="relative w-full h-[420px] sm:h-[540px] rounded-3xl overflow-hidden shadow-2xl border border-white/10 group">
-                      <LazyImage
-                        src="/images/disciplines/discipline-trail.jpg"
-                        alt={t.disciplines.trail.name}
-                        fill
-                        sizes="(max-width: 1024px) 100vw, 50vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-700 select-none"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0D]/70 via-transparent to-transparent pointer-events-none" />
-                    </div>
-                  </RevealImage>
+                  <DisciplineCarousel
+                    images={disciplineImages.trail}
+                    accentColor="#FF3030"
+                    disciplineName={t.disciplines.trail.name}
+                  />
                 </div>
               </div>
             </div>
@@ -262,7 +244,7 @@ export default function HomePage() {
                     accentColor="#E52421"
                     personality="editorial"
                     scrub={true}
-                    className="text-5xl sm:text-7xl"
+                    className="text-3xl sm:text-5xl lg:text-6xl"
                   />
                 </div>
 
@@ -344,7 +326,7 @@ export default function HomePage() {
               accentColor="#E52421"
               personality="editorial"
               scrub={true}
-              className="text-7xl sm:text-9xl"
+              className="text-5xl sm:text-7xl lg:text-8xl"
             />
 
             {/* Localized Functional CTA with Micro-Interaction */}

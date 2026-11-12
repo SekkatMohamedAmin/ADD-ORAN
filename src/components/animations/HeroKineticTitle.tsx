@@ -124,7 +124,7 @@ export function HeroKineticTitle({
     <h1
       ref={containerRef}
       dir="ltr"
-      className="font-display text-7xl sm:text-8xl lg:text-[10rem] font-black uppercase tracking-tight text-[#F5F5F2] leading-[0.85] drop-shadow-lg mb-6 select-none text-left [direction:ltr]"
+      className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-tight text-[#F5F5F2] leading-[0.9] drop-shadow-lg mb-6 select-none text-left [direction:ltr]"
     >
       {/* Line 1: Character Split Reveal */}
       <span className="block overflow-hidden pb-1 text-left [direction:ltr]">

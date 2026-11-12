@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600..900;1,9..144,600..900&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -5,9 +6,11 @@
   --font-editorial: var(--font-editorial), "DM Serif Display", Georgia, serif;
   --font-body: var(--font-body), "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: var(--font-mono), "Space Mono", monospace;
+  --font-fraunces: "Fraunces", Georgia, serif;
 }
 
 :root {
+  --font-fraunces: "Fraunces", Georgia, serif;
   /* Club Color Identity: Red + Yellow + Night + Off-White */
   --club-red: #E52421;
   --bright-red: #FF3030;
