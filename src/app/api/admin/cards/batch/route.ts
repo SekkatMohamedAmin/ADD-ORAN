@@ -43,11 +43,14 @@ export async function GET(request: NextRequest) {
     }
 
     if (typeFilter === "STAFF") {
-      regWhere.OR = [{ type: "STAFF" }, { participant: { isStaff: true } }];
+      regWhere.OR = [
+        { participant: { isStaff: true } },
+        { participant: { clubRole: { not: null } } },
+      ];
     } else if (typeFilter === "MEMBER") {
       regWhere.AND = [
-        { type: { not: "STAFF" } },
         { participant: { isStaff: false } },
+        { participant: { clubRole: null } },
       ];
     }
 
@@ -131,7 +134,9 @@ export async function GET(request: NextRequest) {
           registration: {
             reference: reg.reference,
             status: reg.status,
-            type: reg.type,
+            type:
+              (reg as any).type ||
+              (reg.participant.isStaff || reg.participant.clubRole ? "STAFF" : "ADULT"),
             season: reg.season,
             disciplines: reg.disciplines,
           },
