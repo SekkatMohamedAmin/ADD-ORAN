@@ -19,14 +19,14 @@ export async function GET(request: NextRequest) {
     });
 
     const activeSeason = seasons.find((s) => s.isActive) || seasons[0] || null;
-    const targetSeasonCode =
+    const targetSeason =
       seasonCode === "current"
-        ? activeSeason?.code || ""
+        ? activeSeason
         : seasonCode === "all"
-        ? ""
-        : seasonCode;
+        ? null
+        : seasons.find((s) => s.code === seasonCode) || null;
 
-    // Build registration filter
+    // Build registration filter cleanly (avoiding complex nested orderBy)
     const regWhere: any = {
       deletedAt: null,
       participant: {
@@ -34,8 +34,8 @@ export async function GET(request: NextRequest) {
       },
     };
 
-    if (targetSeasonCode) {
-      regWhere.season = { code: targetSeasonCode };
+    if (targetSeason) {
+      regWhere.seasonId = targetSeason.id;
     }
 
     if (statusFilter && statusFilter !== "all") {
@@ -68,11 +68,7 @@ export async function GET(request: NextRequest) {
 
     const registrations = await prisma.registration.findMany({
       where: regWhere,
-      orderBy: [
-        { participant: { isStaff: "desc" } },
-        { participant: { lastName: "asc" } },
-        { participant: { firstName: "asc" } },
-      ],
+      orderBy: { createdAt: "desc" },
       include: {
         season: {
           select: {
@@ -105,31 +101,58 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    const cards = registrations.map((reg) => ({
-      registrationId: reg.id,
-      participant: {
-        id: reg.participant.id,
-        firstName: reg.participant.firstName,
-        lastName: reg.participant.lastName,
-        dateOfBirth: reg.participant.dateOfBirth.toISOString(),
-        bloodType: reg.participant.bloodType,
-        isMinor: reg.participant.isMinor,
-        phone: reg.participant.phone,
-        emergencyPhone: null,
-        membershipCardNumber: reg.participant.membershipCardNumber,
-        rfidCardId: reg.participant.rfidCardId,
-        clubRole: reg.participant.clubRole,
-        isStaff: reg.participant.isStaff,
-      },
-      registration: {
-        reference: reg.reference,
-        status: reg.status,
-        type: reg.type,
-        season: reg.season,
-        disciplines: reg.disciplines,
-      },
-      photoDocId: reg.participant.documents[0]?.id || null,
-    }));
+    const cards = registrations
+      .filter((reg) => Boolean(reg.participant))
+      .map((reg) => {
+        const dob = reg.participant.dateOfBirth;
+        const dobIso =
+          dob instanceof Date
+            ? dob.toISOString()
+            : typeof dob === "string"
+            ? dob
+            : new Date().toISOString();
+
+        return {
+          registrationId: reg.id,
+          participant: {
+            id: reg.participant.id,
+            firstName: reg.participant.firstName,
+            lastName: reg.participant.lastName,
+            dateOfBirth: dobIso,
+            bloodType: reg.participant.bloodType,
+            isMinor: reg.participant.isMinor,
+            phone: reg.participant.phone,
+            emergencyPhone: null,
+            membershipCardNumber: reg.participant.membershipCardNumber,
+            rfidCardId: reg.participant.rfidCardId,
+            clubRole: reg.participant.clubRole,
+            isStaff: reg.participant.isStaff,
+          },
+          registration: {
+            reference: reg.reference,
+            status: reg.status,
+            type: reg.type,
+            season: reg.season,
+            disciplines: reg.disciplines,
+          },
+          photoDocId: reg.participant.documents?.[0]?.id || null,
+        };
+      })
+      .sort((a, b) => {
+        const staffDiff =
+          Number(Boolean(b.participant.isStaff)) -
+          Number(Boolean(a.participant.isStaff));
+        if (staffDiff !== 0) return staffDiff;
+        const lastCmp = (a.participant.lastName || "").localeCompare(
+          b.participant.lastName || "",
+          "fr"
+        );
+        if (lastCmp !== 0) return lastCmp;
+        return (a.participant.firstName || "").localeCompare(
+          b.participant.firstName || "",
+          "fr"
+        );
+      });
 
     return NextResponse.json({
       success: true,
@@ -142,16 +165,13 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Batch cards API error:", error);
-    if (
-      (error as Error).message === "UNAUTHORIZED" ||
-      (error as Error).message === "FORBIDDEN"
-    ) {
+    const errMsg = (error as Error)?.message || "Erreur inconnue";
+    if (errMsg === "UNAUTHORIZED" || errMsg === "FORBIDDEN") {
       return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
     }
     return NextResponse.json(
-      { error: "Erreur lors du chargement des cartes" },
+      { error: `Erreur lors du chargement des cartes: ${errMsg}` },
       { status: 500 }
     );
   }
 }
-
