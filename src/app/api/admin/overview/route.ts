@@ -11,42 +11,35 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const seasonCode = searchParams.get("season")?.trim();
 
-    // 1. Get requested or active season
+    // 1. Fetch all seasons once and resolve active/requested season in memory
+    const seasons = await prisma.season.findMany({
+      orderBy: { code: "desc" },
+    });
+
     const currentSeason = seasonCode
-      ? await prisma.season.findUnique({ where: { code: seasonCode } })
-      : await prisma.season.findFirst({ where: { isActive: true } });
+      ? seasons.find((s) => s.code === seasonCode)
+      : seasons.find((s) => s.isActive) || seasons[0];
 
     if (!currentSeason) {
       return NextResponse.json({ error: "Aucune saison active" }, { status: 404 });
     }
 
-    // 2. Aggregate counts using database queries
+    // 2. Aggregate all status counts in a single SQL GROUP BY + 4 parallel queries (5 total instead of 14)
     const [
-      totalCount,
-      submittedCount,
-      underReviewCount,
-      needsCorrectionCount,
-      acceptedCount,
-      paymentPendingCount,
-      paidCount,
-      activeCount,
-      archivedCount,
+      statusGroups,
       duplicatesCount,
       paymentsSum,
       recentAuditLogs,
       recentRegistrations,
-      seasons,
     ] = await Promise.all([
-      prisma.registration.count({ where: { seasonId: currentSeason.id, deletedAt: null } }),
-      prisma.registration.count({ where: { seasonId: currentSeason.id, status: "SUBMITTED", deletedAt: null } }),
-      prisma.registration.count({ where: { seasonId: currentSeason.id, status: "UNDER_REVIEW", deletedAt: null } }),
-      prisma.registration.count({ where: { seasonId: currentSeason.id, status: "NEEDS_CORRECTION", deletedAt: null } }),
-      prisma.registration.count({ where: { seasonId: currentSeason.id, status: "ACCEPTED", deletedAt: null } }),
-      prisma.registration.count({ where: { seasonId: currentSeason.id, status: "PAYMENT_PENDING", deletedAt: null } }),
-      prisma.registration.count({ where: { seasonId: currentSeason.id, status: "PAID", deletedAt: null } }),
-      prisma.registration.count({ where: { seasonId: currentSeason.id, status: "ACTIVE", deletedAt: null } }),
-      prisma.registration.count({ where: { seasonId: currentSeason.id, status: "ARCHIVED", deletedAt: null } }),
-      prisma.registration.count({ where: { seasonId: currentSeason.id, isMarkedDuplicate: true, deletedAt: null } }),
+      prisma.registration.groupBy({
+        by: ["status"],
+        where: { seasonId: currentSeason.id, deletedAt: null },
+        _count: { _all: true },
+      }),
+      prisma.registration.count({
+        where: { seasonId: currentSeason.id, isMarkedDuplicate: true, deletedAt: null },
+      }),
       prisma.payment.aggregate({
         where: { seasonId: currentSeason.id, status: "PAID" },
         _sum: { amount: true },
@@ -74,26 +67,46 @@ export async function GET(request: NextRequest) {
         take: 5,
         orderBy: { createdAt: "desc" },
         include: {
-          participant: true,
+          participant: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              phone: true,
+              isMinor: true,
+              isStaff: true,
+              clubRole: true,
+            },
+          },
           disciplines: {
-            include: { discipline: true },
+            include: {
+              discipline: {
+                select: { id: true, nameFr: true, slug: true },
+              },
+            },
           },
         },
       }),
-      prisma.season.findMany({
-        orderBy: { code: "desc" },
-      }),
     ]);
+
+    const countByStatus = new Map<string, number>();
+    let totalCount = 0;
+    for (const row of statusGroups) {
+      countByStatus.set(row.status, row._count._all);
+      totalCount += row._count._all;
+    }
 
     const stats = {
       total: totalCount,
-      pendingReview: submittedCount + underReviewCount,
-      needsCorrection: needsCorrectionCount,
-      accepted: acceptedCount,
-      paymentPending: paymentPendingCount,
-      paid: paidCount,
-      active: activeCount,
-      archived: archivedCount,
+      pendingReview:
+        (countByStatus.get("SUBMITTED") || 0) +
+        (countByStatus.get("UNDER_REVIEW") || 0),
+      needsCorrection: countByStatus.get("NEEDS_CORRECTION") || 0,
+      accepted: countByStatus.get("ACCEPTED") || 0,
+      paymentPending: countByStatus.get("PAYMENT_PENDING") || 0,
+      paid: countByStatus.get("PAID") || 0,
+      active: countByStatus.get("ACTIVE") || 0,
+      archived: countByStatus.get("ARCHIVED") || 0,
       duplicates: duplicatesCount,
       totalRevenueDzd: paymentsSum._sum.amount || 0,
       totalPaymentsCount: paymentsSum._count || 0,
