@@ -137,3 +137,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: "Erreur serveur lors du vidage de la corbeille" }, { status: 500 });
   }
 }
+
+export async function POST(request: NextRequest) {
+  return DELETE(request);
+}

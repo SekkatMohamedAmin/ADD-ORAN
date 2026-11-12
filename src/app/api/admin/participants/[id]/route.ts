@@ -257,3 +257,10 @@ export async function DELETE(
   }
 }
 
+export async function POST(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  return DELETE(request, context);
+}
+

@@ -173,7 +173,10 @@ export default function AdminTrashPage() {
           ? `/api/admin/participants/${itemToPurge.id}?permanent=true`
           : `/api/admin/registrations/${itemToPurge.id}?permanent=true`;
 
-      const res = await fetch(endpoint, { method: "DELETE" });
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "X-HTTP-Method-Override": "DELETE" },
+      });
       const data = await res.json();
       if (res.ok) {
         setSuccessMsg(`${itemToPurge.title} a été définitivement supprimé.`);
@@ -195,7 +198,10 @@ export default function AdminTrashPage() {
     setErrorMsg(null);
     setSuccessMsg(null);
     try {
-      const res = await fetch("/api/admin/trash", { method: "DELETE" });
+      const res = await fetch("/api/admin/trash", {
+        method: "POST",
+        headers: { "X-HTTP-Method-Override": "DELETE" },
+      });
       const data = await res.json();
       if (res.ok) {
         setSuccessMsg(data.message || "La corbeille a été vidée.");

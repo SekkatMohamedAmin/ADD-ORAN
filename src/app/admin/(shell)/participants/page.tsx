@@ -142,7 +142,8 @@ export default function ParticipantsPage() {
     setDeleting(true);
     try {
       const res = await fetch(`/api/admin/participants/${memberToDelete.id}`, {
-        method: "DELETE",
+        method: "POST",
+        headers: { "X-HTTP-Method-Override": "DELETE" },
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur de suppression.");

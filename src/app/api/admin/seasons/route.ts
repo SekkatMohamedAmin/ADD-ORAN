@@ -53,6 +53,16 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const override =
+    request.nextUrl.searchParams.get("_method") ||
+    request.headers.get("x-http-method-override");
+  if (override?.toUpperCase() === "PATCH") {
+    return PATCH(request);
+  }
+  if (override?.toUpperCase() === "DELETE") {
+    return DELETE(request);
+  }
+
   try {
     const admin = await requireAdmin();
     const body = await request.json();

@@ -221,3 +221,16 @@ export async function DELETE(
     );
   }
 }
+
+export async function POST(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  const override =
+    request.nextUrl.searchParams.get("_method") ||
+    request.headers.get("x-http-method-override");
+  if (override?.toUpperCase() === "DELETE") {
+    return DELETE(request, context);
+  }
+  return PATCH(request, context);
+}

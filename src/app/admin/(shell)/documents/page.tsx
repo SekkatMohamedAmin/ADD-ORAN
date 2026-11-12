@@ -121,8 +121,8 @@ export default function DocumentsPage() {
 
     try {
       const res = await fetch("/api/admin/documents", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-HTTP-Method-Override": "PATCH" },
         body: JSON.stringify({ documentId, status, rejectionReason }),
       });
 

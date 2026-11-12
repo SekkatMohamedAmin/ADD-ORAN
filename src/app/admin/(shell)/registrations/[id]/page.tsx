@@ -194,8 +194,8 @@ export default function RegistrationDetailPage({
     setEditPaymentLoading(true);
     try {
       const res = await fetch(`/api/admin/payments/${paymentToEdit.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-HTTP-Method-Override": "PATCH" },
         body: JSON.stringify({
           amount: parseFloat(editPaymentForm.amount),
           paymentPurpose: editPaymentForm.paymentPurpose,
@@ -219,7 +219,8 @@ export default function RegistrationDetailPage({
     setDeletePaymentLoading(true);
     try {
       const res = await fetch(`/api/admin/payments/${paymentToDelete.id}`, {
-        method: "DELETE",
+        method: "POST",
+        headers: { "X-HTTP-Method-Override": "DELETE" },
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur lors de la suppression.");
@@ -240,7 +241,8 @@ export default function RegistrationDetailPage({
     setDeleting(true);
     try {
       const res = await fetch(`/api/admin/registrations/${id}`, {
-        method: "DELETE",
+        method: "POST",
+        headers: { "X-HTTP-Method-Override": "DELETE" },
       });
       if (res.ok) {
         router.push("/admin/registrations");
@@ -347,8 +349,8 @@ export default function RegistrationDetailPage({
       if (status === "INVALID" && !reason) return;
 
       const res = await fetch(`/api/admin/documents`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-HTTP-Method-Override": "PATCH" },
         body: JSON.stringify({ documentId: docId, status, rejectionReason: reason }),
       });
 

@@ -78,7 +78,8 @@ export default function AdminRegistrationsPage() {
     setDeleting(true);
     try {
       const res = await fetch(`/api/admin/registrations/${registrationToDelete.id}`, {
-        method: "DELETE",
+        method: "POST",
+        headers: { "X-HTTP-Method-Override": "DELETE" },
       });
       if (res.ok) {
         setRegistrationToDelete(null);

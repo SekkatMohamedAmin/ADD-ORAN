@@ -343,8 +343,8 @@ export default function PaymentsPage() {
     setEditLoading(true);
     try {
       const res = await fetch(`/api/admin/payments/${paymentToEdit.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-HTTP-Method-Override": "PATCH" },
         body: JSON.stringify({
           amount: parseFloat(editForm.amount),
           paymentPurpose: editForm.paymentPurpose,
@@ -369,7 +369,8 @@ export default function PaymentsPage() {
     setDeleteLoading(true);
     try {
       const res = await fetch(`/api/admin/payments/${paymentToDelete.id}`, {
-        method: "DELETE",
+        method: "POST",
+        headers: { "X-HTTP-Method-Override": "DELETE" },
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur lors de la suppression.");

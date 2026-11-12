@@ -115,8 +115,8 @@ export default function SeasonsPage() {
 
     try {
       const res = await fetch("/api/admin/seasons", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-HTTP-Method-Override": "PATCH" },
         body: JSON.stringify({ id: seasonId, isActive: true }),
       });
 
@@ -144,7 +144,8 @@ export default function SeasonsPage() {
     try {
       setDeleteLoading(true);
       const res = await fetch(`/api/admin/seasons?id=${seasonToDelete.id}`, {
-        method: "DELETE",
+        method: "POST",
+        headers: { "X-HTTP-Method-Override": "DELETE" },
       });
 
       const data = await res.json();
