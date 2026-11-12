@@ -635,11 +635,11 @@ export function CardVersoFace({
         </div>
         <div className="text-center space-y-1">
           <div
-            className={`font-display font-extrabold tracking-widest uppercase ${
-              isPrintVersion ? "text-[6.5pt]" : "text-[11px] sm:text-[12.5px]"
+            className={`font-extrabold tracking-wide uppercase ${
+              isPrintVersion ? "text-[6.8pt]" : "text-[12px] sm:text-[13.5px]"
             }`}
             style={{
-              fontFamily: 'var(--font-display), "Syne", "Big Shoulders", Impact, sans-serif',
+              fontFamily: 'var(--font-fraunces), "Fraunces", Georgia, serif',
             }}
           >
             <span className="text-[#F5F5F2]">Être </span>
@@ -668,7 +668,7 @@ export function CardVersoFace({
         </div>
         <div>
           <span className="text-[#00D4FF] font-bold tracking-wider hover:underline">
-            registration.addpkoran.com
+            www.addpkoran.com
           </span>
         </div>
       </div>
