@@ -26,6 +26,7 @@ import {
   ChevronDown,
   Shield,
   Trash2,
+  Printer,
 } from "lucide-react";
 
 interface AdminLayoutClientProps {
@@ -90,6 +91,11 @@ export function AdminLayoutClient({ children, adminUser }: AdminLayoutClientProp
           label: t.admin.nav.participants,
           href: "/admin/participants",
           icon: Users,
+        },
+        {
+          label: "Cartes PVC (Batch)",
+          href: "/admin/cards/batch",
+          icon: Printer,
         },
       ],
     },

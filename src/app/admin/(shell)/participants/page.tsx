@@ -18,6 +18,7 @@ import {
   Activity as FiActivity,
   ArrowRight as FiArrowRight,
   CreditCard as FiCreditCard,
+  Printer as FiPrinter,
   CheckCircle2 as FiCheckCircle,
   Trash2 as FiTrash2,
   AlertTriangle as FiAlertTriangle,
@@ -183,7 +184,14 @@ export default function ParticipantsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href="/admin/cards/batch"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#E52421] hover:bg-[#ff2d2a] text-white rounded-xl text-xs font-mono font-bold shadow-md shadow-[#E52421]/20 transition"
+          >
+            <FiPrinter className="w-3.5 h-3.5" />
+            <span>Impression Batch (ZIP / PDF)</span>
+          </Link>
           <Link
             href="/admin/trash"
             className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-xl text-xs font-mono font-bold transition"
