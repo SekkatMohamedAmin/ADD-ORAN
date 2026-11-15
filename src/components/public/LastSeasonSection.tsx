@@ -174,18 +174,18 @@ export function LastSeasonSection() {
               <span>{season.year}</span>
             </div>
 
-            {/* Giant Kinetic Typography Header (Rule 15: LAST and SEASON. reveal separately) */}
+            {/* Kinetic Typography Header */}
             <KineticHeading
               line1="LAST"
               line2="SEASON."
               accentColor="#E52421"
               personality="editorial"
               scrub={true}
-              className="text-6xl sm:text-8xl lg:text-9xl mb-2"
+              className="text-2xl sm:text-3xl lg:text-4xl mb-2"
             />
 
             <ScrollReveal variant="fade-up" delay={100}>
-              <p className="font-body text-base text-[#9E9EA8] mt-6 max-w-lg leading-relaxed">
+              <p className="font-body text-sm sm:text-base text-[#9E9EA8] mt-4 max-w-lg leading-relaxed">
                 {t.home.lastSeasonSubtitle}
               </p>
             </ScrollReveal>

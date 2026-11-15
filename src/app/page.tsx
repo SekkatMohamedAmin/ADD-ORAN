@@ -51,27 +51,27 @@ export default function HomePage() {
                   </div>
 
                   {/* Kinetic English Campaign Statement with Lateral Personality */}
-                  <div className="mb-6">
+                  <div className="mb-4">
                     <KineticHeading
                       line1="MOVE"
                       line2="DIFFERENT."
                       accentColor="#E52421"
                       personality="lateral"
                       scrub={true}
-                      className="text-4xl sm:text-6xl lg:text-7xl"
+                      className="text-2xl sm:text-3xl lg:text-4xl"
                     />
                   </div>
 
                   {/* Localized Functional Description */}
                   <ScrollReveal variant="fade-up" delay={100}>
-                    <p className="font-body text-base text-[#9E9EA8] mb-8 max-w-md leading-relaxed">
+                    <p className="font-body text-sm sm:text-base text-[#9E9EA8] mb-6 max-w-md leading-relaxed">
                       {t.disciplines.parkour.desc}
                     </p>
 
                     <div className="flex items-center gap-4">
                       <Link
                         href="/register"
-                        className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded bg-[#E52421] hover:bg-[#FF3030] text-[#F5F5F2] font-display font-black text-base uppercase tracking-wider transition-all shadow-lg hover:scale-[1.02] active:scale-95 group"
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded bg-[#E52421] hover:bg-[#FF3030] text-[#F5F5F2] font-display font-bold text-sm uppercase tracking-wider transition-all shadow-md hover:scale-[1.02] active:scale-95 group"
                       >
                         <span className="group-hover:translate-x-0.5 transition-transform duration-200">
                           {t.common.register}
@@ -124,27 +124,27 @@ export default function HomePage() {
                   </div>
 
                   {/* Kinetic English Campaign Statement */}
-                  <div className="mb-6">
+                  <div className="mb-4">
                     <KineticHeading
                       line1="MOVE"
                       line2="HIGHER."
                       accentColor="#FFD21F"
                       personality="vertical"
                       scrub={true}
-                      className="text-4xl sm:text-6xl lg:text-7xl"
+                      className="text-2xl sm:text-3xl lg:text-4xl"
                     />
                   </div>
 
                   {/* Localized Functional Description */}
                   <ScrollReveal variant="fade-up" delay={100}>
-                    <p className="font-body text-base text-[#9E9EA8] mb-8 max-w-md leading-relaxed">
+                    <p className="font-body text-sm sm:text-base text-[#9E9EA8] mb-6 max-w-md leading-relaxed">
                       {t.disciplines.escalade.desc}
                     </p>
 
                     <div className="flex items-center gap-4">
                       <Link
                         href="/register"
-                        className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded bg-[#FFD21F] hover:bg-[#FFB800] text-[#0A0A0D] font-display font-black text-base uppercase tracking-wider transition-all shadow-lg hover:scale-[1.02] active:scale-95 group"
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded bg-[#FFD21F] hover:bg-[#FFB800] text-[#0A0A0D] font-display font-bold text-sm uppercase tracking-wider transition-all shadow-md hover:scale-[1.02] active:scale-95 group"
                       >
                         <span className="group-hover:translate-x-0.5 transition-transform duration-200">
                           {t.common.register}
@@ -179,27 +179,27 @@ export default function HomePage() {
                   </div>
 
                   {/* Kinetic English Campaign Statement with Horizontal Personality */}
-                  <div className="mb-6">
+                  <div className="mb-4">
                     <KineticHeading
                       line1="RUN"
                       line2="FURTHER."
                       accentColor="#FF3030"
                       personality="horizontal"
                       scrub={true}
-                      className="text-4xl sm:text-6xl lg:text-7xl"
+                      className="text-2xl sm:text-3xl lg:text-4xl"
                     />
                   </div>
 
                   {/* Localized Functional Description */}
                   <ScrollReveal variant="fade-up" delay={100}>
-                    <p className="font-body text-base text-[#9E9EA8] mb-8 max-w-md leading-relaxed">
+                    <p className="font-body text-sm sm:text-base text-[#9E9EA8] mb-6 max-w-md leading-relaxed">
                       {t.disciplines.trail.desc}
                     </p>
 
                     <div className="flex items-center gap-4">
                       <Link
                         href="/register"
-                        className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded bg-[#E52421] hover:bg-[#FF3030] text-[#F5F5F2] font-display font-black text-base uppercase tracking-wider transition-all shadow-lg hover:scale-[1.02] active:scale-95 group"
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded bg-[#E52421] hover:bg-[#FF3030] text-[#F5F5F2] font-display font-bold text-sm uppercase tracking-wider transition-all shadow-md hover:scale-[1.02] active:scale-95 group"
                       >
                         <span className="group-hover:translate-x-0.5 transition-transform duration-200">
                           {t.common.register}
@@ -244,18 +244,18 @@ export default function HomePage() {
                     accentColor="#E52421"
                     personality="editorial"
                     scrub={true}
-                    className="text-3xl sm:text-5xl lg:text-6xl"
+                    className="text-2xl sm:text-3xl lg:text-4xl"
                   />
                 </div>
 
                 <ScrollReveal variant="fade-up" delay={100}>
-                  <blockquote className="font-editorial italic text-2xl sm:text-3xl text-[#F5F5F2] border-l-2 border-[#E52421] pl-6 leading-snug">
+                  <blockquote className="font-editorial italic text-lg sm:text-xl text-[#F5F5F2] border-l-2 border-[#E52421] pl-5 leading-snug">
                     « Être fort pour être utile. »
                   </blockquote>
                 </ScrollReveal>
 
                 <ScrollReveal variant="fade-up" delay={150}>
-                  <p className="font-body text-base text-[#9E9EA8] leading-relaxed max-w-lg">
+                  <p className="font-body text-sm sm:text-base text-[#9E9EA8] leading-relaxed max-w-lg">
                     {t.home.aboutLead}
                   </p>
                 </ScrollReveal>
@@ -264,7 +264,7 @@ export default function HomePage() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 border-t border-white/10">
                   <ScrollReveal variant="fade-up" delay={200}>
                     <div>
-                      <div className="text-[#E52421] font-display font-bold text-lg uppercase mb-1">
+                      <div className="text-[#E52421] font-display font-bold text-base uppercase mb-1">
                         {t.home.valuesArtTitle}
                       </div>
                       <div className="text-[#9E9EA8] text-xs leading-relaxed">
@@ -275,7 +275,7 @@ export default function HomePage() {
 
                   <ScrollReveal variant="fade-up" delay={250}>
                     <div>
-                      <div className="text-[#FFD21F] font-display font-bold text-lg uppercase mb-1">
+                      <div className="text-[#FFD21F] font-display font-bold text-base uppercase mb-1">
                         {t.home.valuesDisciplineTitle}
                       </div>
                       <div className="text-[#9E9EA8] text-xs leading-relaxed">
@@ -286,7 +286,7 @@ export default function HomePage() {
 
                   <ScrollReveal variant="fade-up" delay={300}>
                     <div>
-                      <div className="text-[#FF3030] font-display font-bold text-lg uppercase mb-1">
+                      <div className="text-[#FF3030] font-display font-bold text-base uppercase mb-1">
                         {t.home.valuesCommunityTitle}
                       </div>
                       <div className="text-[#9E9EA8] text-xs leading-relaxed">
@@ -326,20 +326,20 @@ export default function HomePage() {
               accentColor="#E52421"
               personality="editorial"
               scrub={true}
-              className="text-5xl sm:text-7xl lg:text-8xl"
+              className="text-3xl sm:text-4xl lg:text-5xl"
             />
 
             {/* Localized Functional CTA with Micro-Interaction */}
             <ScrollReveal variant="fade-up" delay={150}>
-              <div className="pt-8 flex flex-wrap items-center justify-center gap-6">
+              <div className="pt-6 flex flex-wrap items-center justify-center gap-6">
                 <Link
                   href="/register"
-                  className="inline-flex items-center gap-3 px-10 py-5 rounded font-display font-black text-xl text-[#F5F5F2] uppercase tracking-wider bg-[#E52421] hover:bg-[#FF3030] shadow-2xl hover:scale-105 transition-all duration-300 active:scale-95 group"
+                  className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded font-display font-bold text-base text-[#F5F5F2] uppercase tracking-wider bg-[#E52421] hover:bg-[#FF3030] shadow-xl hover:scale-105 transition-all duration-300 active:scale-95 group"
                 >
                   <span className="group-hover:translate-x-1 transition-transform duration-200">
                     {t.home.heroCta}
                   </span>
-                  <ArrowUpRight className={`w-6 h-6 group-hover:translate-x-1.5 group-hover:-translate-y-1.5 transition-transform duration-200 ${isRtl ? "rtl-flip" : ""}`} />
+                  <ArrowUpRight className={`w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-200 ${isRtl ? "rtl-flip" : ""}`} />
                 </Link>
               </div>
             </ScrollReveal>

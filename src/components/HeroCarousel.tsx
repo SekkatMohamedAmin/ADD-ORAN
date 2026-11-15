@@ -225,7 +225,7 @@ export function HeroCarousel() {
           <div ref={ctaGroupRef} className="flex flex-wrap items-center gap-4 pt-4">
             <Link
               href="/register"
-              className="inline-flex items-center gap-3 px-8 py-4 rounded bg-[#E52421] hover:bg-[#FF3030] text-[#F5F5F2] font-display font-black text-xl uppercase tracking-wider shadow-2xl transition-all duration-300 hover:scale-[1.02] active:scale-95 group"
+              className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded bg-[#E52421] hover:bg-[#FF3030] text-[#F5F5F2] font-display font-bold text-base uppercase tracking-wider shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-95 group"
             >
               <span className="group-hover:translate-x-0.5 transition-transform duration-200">
                 {t.home.heroCta}

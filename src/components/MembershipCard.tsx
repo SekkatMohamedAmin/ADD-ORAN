@@ -330,7 +330,7 @@ export function CardRectoFace({
           <div>
             <h4
               className={`text-white font-extrabold uppercase font-display tracking-tight leading-tight ${
-                isPrintVersion ? "text-[8pt]" : "text-[12px]"
+                isPrintVersion ? "text-[7.2pt]" : "text-[11px]"
               }`}
             >
               Club Art Du Déplacement
@@ -338,7 +338,7 @@ export function CardRectoFace({
             <div className="flex items-center gap-1.5">
               <span
                 className={`text-[#E52421] font-black uppercase font-display tracking-wider ${
-                  isPrintVersion ? "text-[7.5pt]" : "text-[11px]"
+                  isPrintVersion ? "text-[6.8pt]" : "text-[10px]"
                 }`}
               >
                 Parkour Oran
@@ -443,8 +443,8 @@ export function CardRectoFace({
             <div
               className={`text-white font-extrabold uppercase font-display tracking-tight truncate ${
                 isPrintVersion
-                  ? "text-[7.5pt] leading-tight"
-                  : "text-xs sm:text-[13px] leading-snug"
+                  ? "text-[7pt] leading-tight"
+                  : "text-[11.5px] sm:text-xs leading-snug"
               }`}
               title={`${participant.firstName} ${participant.lastName}`}
             >
@@ -637,7 +637,7 @@ export function CardVersoFace({
         <div className="text-center space-y-1">
           <div
             className={`font-extrabold tracking-wide uppercase ${
-              isPrintVersion ? "text-[6.8pt]" : "text-[12px] sm:text-[13.5px]"
+              isPrintVersion ? "text-[6.2pt]" : "text-[10.5px] sm:text-[11.5px]"
             }`}
             style={{
               fontFamily: 'var(--font-fraunces), "Fraunces", Georgia, serif',

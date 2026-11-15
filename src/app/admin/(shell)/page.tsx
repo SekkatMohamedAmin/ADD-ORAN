@@ -152,7 +152,7 @@ export default function AdminDashboardPage() {
               <span className="w-2 h-2 rounded-full bg-[#E52421] animate-pulse" />
               <span>Système de Gestion du Club // En Direct</span>
             </div>
-            <h2 className="font-display text-2xl sm:text-3xl font-black uppercase text-white tracking-tight leading-tight">
+            <h2 className="font-display text-xl sm:text-2xl font-black uppercase text-white tracking-tight leading-tight">
               Club Art Du Déplacement <span className="text-[#FFD21F]">Parkour Oran</span>
             </h2>
             <p className="font-body text-xs text-[#9E9EA8] leading-relaxed">
@@ -252,7 +252,7 @@ export default function AdminDashboardPage() {
             </span>
             <ClipboardList className="w-4 h-4 text-[#9E9EA8] group-hover:text-[#F5F5F2] transition-colors" />
           </div>
-          <div className="font-display text-3xl sm:text-4xl font-black text-[#F5F5F2]">
+          <div className="font-display text-2xl sm:text-3xl font-black text-[#F5F5F2]">
             {stats.total ?? 0}
           </div>
           <div className="text-[11px] font-mono text-[#9E9EA8]">
@@ -271,7 +271,7 @@ export default function AdminDashboardPage() {
             </span>
             <AlertCircle className="w-4 h-4 text-[#FFD21F]" />
           </div>
-          <div className="font-display text-3xl sm:text-4xl font-black text-[#FFD21F]">
+          <div className="font-display text-2xl sm:text-3xl font-black text-[#FFD21F]">
             {stats.pendingReview ?? 0}
           </div>
           <div className="text-[11px] font-mono text-[#9E9EA8]">
@@ -290,7 +290,7 @@ export default function AdminDashboardPage() {
             </span>
             <ShieldCheck className="w-4 h-4 text-[#10B981]" />
           </div>
-          <div className="font-display text-3xl sm:text-4xl font-black text-[#10B981]">
+          <div className="font-display text-2xl sm:text-3xl font-black text-[#10B981]">
             {stats.active ?? 0}
           </div>
           <div className="text-[11px] font-mono text-[#9E9EA8]">
@@ -309,7 +309,7 @@ export default function AdminDashboardPage() {
             </span>
             <CreditCard className="w-4 h-4 text-[#FFD21F]" />
           </div>
-          <div className="font-display text-3xl sm:text-4xl font-black text-[#F5F5F2]">
+          <div className="font-display text-2xl sm:text-3xl font-black text-[#F5F5F2]">
             {(stats.totalRevenueDzd ?? 0).toLocaleString()} <span className="text-sm font-mono text-[#FFD21F]">DA</span>
           </div>
           <div className="text-[11px] font-mono text-[#9E9EA8]">
