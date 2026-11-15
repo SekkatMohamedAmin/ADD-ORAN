@@ -414,7 +414,7 @@ export default function RegistrationDetailPage({
           </Link>
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-extrabold text-white tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
                 {p.firstName} {p.lastName}
               </h1>
               <StatusBadge status={registration.status} />
@@ -1461,7 +1461,7 @@ export default function RegistrationDetailPage({
               {/* Header */}
               <div className="flex justify-between items-start border-b border-white/10 pb-4 print:border-black">
                 <div>
-                  <h1 className="text-xl font-extrabold tracking-tight text-white print:text-black">
+                  <h1 className="text-xl font-bold tracking-tight text-white print:text-black">
                     CLUB ART DU DÉPLACEMENT PARKOUR ORAN
                   </h1>
                   <p className="text-xs text-gray-400 print:text-gray-600">
@@ -1558,7 +1558,7 @@ export default function RegistrationDetailPage({
               <FiAlertTriangle className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-display font-black text-lg text-white">
+              <h3 className="text-base font-bold text-white">
                 Mettre la candidature à la corbeille ?
               </h3>
               <p className="text-xs text-gray-400 mt-2 leading-relaxed">
@@ -1609,7 +1609,7 @@ export default function RegistrationDetailPage({
                   <FiEdit2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-display font-black text-lg text-white">
+                  <h3 className="text-base font-bold text-white">
                     Modifier le versement
                   </h3>
                   <p className="font-mono text-xs text-blue-400">
@@ -1714,7 +1714,7 @@ export default function RegistrationDetailPage({
               <FiAlertTriangle className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-display font-black text-lg text-white">
+              <h3 className="text-base font-bold text-white">
                 Supprimer ce versement ?
               </h3>
               <p className="text-xs text-gray-300 mt-2 leading-relaxed">

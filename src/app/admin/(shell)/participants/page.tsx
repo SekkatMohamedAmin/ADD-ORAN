@@ -175,7 +175,7 @@ export default function ParticipantsPage() {
       {/* Top Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight flex items-center gap-3">
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-3">
             <FiUsers className="w-6 h-6 text-[#E52421]" />
             Répertoire des Adhérents
           </h1>
@@ -259,7 +259,7 @@ export default function ParticipantsPage() {
 
           <button
             type="submit"
-            className="px-5 py-2.5 bg-[#E52421] hover:bg-[#FF3030] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition shadow-lg shadow-[#E52421]/20 font-display"
+            className="px-5 py-2.5 bg-[#E52421] hover:bg-[#FF3030] text-white text-xs font-semibold rounded-xl transition shadow-md shadow-[#E52421]/20"
           >
             Filtrer
           </button>
@@ -341,7 +341,7 @@ export default function ParticipantsPage() {
                           <div className="font-bold text-white text-sm flex items-center gap-1.5 flex-wrap">
                             <span>{member.firstName} {member.lastName}</span>
                             {isStaff && (
-                              <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[9px] font-mono font-black uppercase">
+                              <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[9px] font-mono font-bold uppercase">
                                 ★ {roleDef ? roleDef.labelFr : "Staff"}
                               </span>
                             )}
@@ -523,7 +523,7 @@ export default function ParticipantsPage() {
               <FiAlertTriangle className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-display font-black text-lg text-white">
+              <h3 className="text-base font-bold text-white">
                 Mettre l&apos;adhérent à la corbeille ?
               </h3>
               <p className="text-xs text-gray-400 mt-2 leading-relaxed">

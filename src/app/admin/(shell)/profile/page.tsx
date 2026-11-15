@@ -113,7 +113,7 @@ export default function AdminProfilePage() {
     <div className="space-y-6 max-w-3xl mx-auto pb-16">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-extrabold text-white tracking-tight flex items-center gap-3">
+        <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-3">
           <FiUser className="w-6 h-6 text-[#E52421]" />
           Mon Compte Administrateur
         </h1>

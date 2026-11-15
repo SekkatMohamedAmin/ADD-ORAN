@@ -215,7 +215,7 @@ export default function ParticipantProfilePage({
             </Link>
             <div>
               <div className="flex items-center gap-3">
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
                   {member.firstName} {member.lastName}
                 </h1>
                 {member.isMinor ? (
@@ -385,7 +385,7 @@ export default function ParticipantProfilePage({
               <button
                 type="button"
                 onClick={() => setShowCardModal(true)}
-                className="w-full py-2.5 bg-[#E52421]/15 hover:bg-[#E52421]/25 text-[#E52421] hover:text-[#FF3030] rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition border border-[#E52421]/25 shadow-sm font-display tracking-wider uppercase cursor-pointer"
+                className="w-full py-2.5 bg-[#E52421]/15 hover:bg-[#E52421]/25 text-[#E52421] hover:text-[#FF3030] rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition border border-[#E52421]/25 shadow-sm cursor-pointer"
               >
                 <FiCreditCard className="w-4 h-4" />
                 Afficher la carte d'adhérent
@@ -428,7 +428,7 @@ export default function ParticipantProfilePage({
               <button
                 type="button"
                 onClick={() => setShowResetPasswordModal(true)}
-                className="w-full py-2.5 bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 hover:text-amber-300 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition border border-amber-500/25 shadow-sm font-display tracking-wider uppercase cursor-pointer"
+                className="w-full py-2.5 bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 hover:text-amber-300 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition border border-amber-500/25 shadow-sm cursor-pointer"
               >
                 <FiKey className="w-4 h-4" />
                 Réinitialiser le mot de passe
@@ -532,7 +532,7 @@ export default function ParticipantProfilePage({
               <FiAlertTriangle className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-display font-black text-lg text-white">
+              <h3 className="text-base font-bold text-white">
                 Mettre cet adhérent à la corbeille ?
               </h3>
               <p className="text-xs text-gray-400 mt-2 leading-relaxed">

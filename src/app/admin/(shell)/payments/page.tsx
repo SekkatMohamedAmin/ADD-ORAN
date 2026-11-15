@@ -400,7 +400,7 @@ export default function PaymentsPage() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
         <div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight flex items-center gap-3">
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-3">
             <FiDollarSign className="w-6 h-6 text-[#FFD21F]" />
             Caisse & Calendrier des Cotisations
           </h1>
@@ -414,7 +414,7 @@ export default function PaymentsPage() {
           <button
             type="button"
             onClick={() => handleOpenEncaissement()}
-            className="px-4 py-2.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-600 hover:from-emerald-500 hover:to-teal-500 text-white font-display font-black text-xs uppercase tracking-wider rounded-xl transition shadow-lg shadow-emerald-500/25 flex items-center gap-2 cursor-pointer active:scale-95"
+            className="px-4 py-2.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-xs rounded-xl transition shadow-md shadow-emerald-500/25 flex items-center gap-2 cursor-pointer active:scale-95"
           >
             <FiPlus className="w-4 h-4" />
             <span>Encaisser un paiement</span>
@@ -424,7 +424,7 @@ export default function PaymentsPage() {
             <span className="text-[10px] uppercase font-bold text-gray-400 block tracking-wider">
               Recettes :
             </span>
-            <strong className="text-sm font-extrabold text-[#FFD21F] font-mono">
+            <strong className="text-sm font-bold text-[#FFD21F] font-mono">
               {(calendarStats.totalCollectedDzd || totalRevenue).toLocaleString()} DZD
             </strong>
           </div>
@@ -475,7 +475,7 @@ export default function PaymentsPage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3">
             <div className="p-4 rounded-2xl bg-[#141419] border border-white/5 space-y-1">
               <span className="text-[10px] font-mono uppercase text-gray-400 block">Total Inscrits</span>
-              <span className="text-xl font-black text-white font-display block">
+              <span className="text-xl font-bold text-white block">
                 {calendarStats.totalMembers}
               </span>
               <span className="text-[10px] text-gray-500">Adhérents & Dirigeants</span>
@@ -483,7 +483,7 @@ export default function PaymentsPage() {
 
             <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 space-y-1">
               <span className="text-[10px] font-mono uppercase text-emerald-300 block">À jour</span>
-              <span className="text-xl font-black text-emerald-400 font-display block">
+              <span className="text-xl font-bold text-emerald-400 block">
                 {calendarStats.upToDateCount}
               </span>
               <span className="text-[10px] text-emerald-300/80">
@@ -495,7 +495,7 @@ export default function PaymentsPage() {
 
             <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 space-y-1">
               <span className="text-[10px] font-mono uppercase text-red-300 block">En retard</span>
-              <span className="text-xl font-black text-red-400 font-display block">
+              <span className="text-xl font-bold text-red-400 block">
                 {calendarStats.overdueCount}
               </span>
               <span className="text-[10px] text-red-300/80">Mensualités impayées</span>
@@ -503,7 +503,7 @@ export default function PaymentsPage() {
 
             <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 space-y-1">
               <span className="text-[10px] font-mono uppercase text-amber-300 block">1er versement en attente</span>
-              <span className="text-xl font-black text-amber-400 font-display block">
+              <span className="text-xl font-bold text-amber-400 block">
                 {calendarStats.pendingCount}
               </span>
               <span className="text-[10px] text-amber-300/80">Non encore encaissé</span>
@@ -511,7 +511,7 @@ export default function PaymentsPage() {
 
             <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 space-y-1 col-span-2 sm:col-span-1">
               <span className="text-[10px] font-mono uppercase text-gray-400 block">Membres Staff</span>
-              <span className="text-xl font-black text-[#FFD21F] font-display block">
+              <span className="text-xl font-bold text-[#FFD21F] block">
                 {calendarStats.exemptStaffCount}
               </span>
               <span className="text-[10px] text-gray-500">Exonérés de cotisation</span>
@@ -650,7 +650,7 @@ export default function PaymentsPage() {
                     <tr key={item.registrationId} className="hover:bg-white/[0.02] transition-colors group">
                       {/* Adherent Info (Sticky Col) */}
                       <td className="py-3 px-4 sticky left-0 bg-[#141419] group-hover:bg-[#181820] z-10">
-                        <div className="font-display font-bold text-white text-sm tracking-tight flex items-center gap-1.5">
+                        <div className="font-semibold text-white text-sm tracking-tight flex items-center gap-1.5">
                           <span>{item.fullName}</span>
                           {item.isStaff && (
                             <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[9px] font-mono font-bold uppercase">
@@ -933,7 +933,7 @@ export default function PaymentsPage() {
                   <FiPlus className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-display font-black text-lg text-white">
+                  <h3 className="text-base font-bold text-white">
                     Encaisser un paiement
                   </h3>
                   <p className="text-xs text-emerald-400 font-mono">
@@ -960,7 +960,7 @@ export default function PaymentsPage() {
                   <FiCheck className="w-8 h-8" />
                 </div>
                 <div className="space-y-1">
-                  <h4 className="text-xl font-bold text-white font-display">
+                  <h4 className="text-lg font-bold text-white">
                     Paiement Encaissé avec Succès !
                   </h4>
                   <p className="text-xs text-gray-400">
@@ -1263,7 +1263,7 @@ export default function PaymentsPage() {
             <div className="border border-white/20 p-6 rounded-xl space-y-6 print:border-black print:p-6 print:space-y-4">
               <div className="flex justify-between items-start border-b border-white/10 pb-4 print:border-black">
                 <div>
-                  <h1 className="text-xl font-extrabold tracking-tight text-white print:text-black">
+                  <h1 className="text-xl font-bold tracking-tight text-white print:text-black">
                     CLUB ART DU DÉPLACEMENT PARKOUR ORAN
                   </h1>
                   <p className="text-xs text-gray-400 print:text-gray-600">
@@ -1368,7 +1368,7 @@ export default function PaymentsPage() {
                   <FiEdit2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-display font-black text-lg text-white">
+                  <h3 className="text-base font-bold text-white">
                     Modifier le paiement
                   </h3>
                   <p className="font-mono text-xs text-blue-400">
@@ -1497,7 +1497,7 @@ export default function PaymentsPage() {
               <FiAlertTriangle className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-display font-black text-lg text-white">
+              <h3 className="text-base font-bold text-white">
                 Supprimer ce versement ?
               </h3>
               <p className="text-xs text-gray-300 mt-2 leading-relaxed">

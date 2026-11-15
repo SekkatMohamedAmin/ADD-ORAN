@@ -121,7 +121,7 @@ export default function AdminRegistrationsPage() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
         <div>
-          <h1 className="font-display text-2xl sm:text-3xl font-black uppercase tracking-tight text-[#F5F5F2]">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#F5F5F2]">
             {t.admin.registrations}
           </h1>
           <p className="font-mono text-xs text-[#9E9EA8] mt-1">
@@ -249,7 +249,7 @@ export default function AdminRegistrationsPage() {
           <div className="flex items-center gap-2">
             <button
               type="submit"
-              className="px-4 py-2.5 rounded-xl bg-[#E52421] hover:bg-[#FF3030] text-[#F5F5F2] font-display font-black text-xs uppercase tracking-wider transition-all"
+              className="px-4 py-2.5 rounded-xl bg-[#E52421] hover:bg-[#FF3030] text-[#F5F5F2] font-semibold text-xs transition-all shadow-md"
             >
               Filtrer
             </button>
@@ -332,10 +332,10 @@ export default function AdminRegistrationsPage() {
 
                       {/* Participant */}
                       <td className="py-3.5 px-4">
-                        <div className="font-display font-bold text-sm text-[#F5F5F2] flex items-center gap-1.5 flex-wrap">
+                        <div className="font-semibold text-sm text-[#F5F5F2] flex items-center gap-1.5 flex-wrap">
                           <span>{reg.participant.firstName} {reg.participant.lastName}</span>
                           {isStaff && (
-                            <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[9px] font-mono font-black uppercase">
+                            <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[9px] font-mono font-bold uppercase">
                               ★ {roleDef ? roleDef.labelFr : "Staff"}
                             </span>
                           )}
@@ -443,7 +443,7 @@ export default function AdminRegistrationsPage() {
               <AlertTriangle className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-display font-black text-lg text-white">
+              <h3 className="text-base font-bold text-white">
                 Mettre la candidature à la corbeille ?
               </h3>
               <p className="text-xs text-gray-400 mt-2 leading-relaxed">

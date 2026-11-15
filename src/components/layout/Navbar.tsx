@@ -114,7 +114,7 @@ export function Navbar() {
               />
             </div>
             <div className="flex flex-col">
-              <span className="font-display font-black text-lg tracking-wider text-[#F5F5F2] uppercase group-hover:text-[#FFD21F] transition-colors leading-none">
+              <span className="font-display font-bold text-base sm:text-lg tracking-wider text-[#F5F5F2] uppercase group-hover:text-[#FFD21F] transition-colors leading-none">
                 ADD ORAN
               </span>
               <span className="font-mono text-[10px] tracking-widest text-[#9E9EA8] uppercase mt-1">
@@ -124,13 +124,13 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-6 lg:gap-8">
+          <nav className="hidden md:flex items-center gap-5 lg:gap-7">
             {isParticipant ? (
               /* Custom User Space Navigation Items */
               <>
                 <Link
                   href="/dashboard#card"
-                  className="flex items-center gap-2 font-display text-sm font-black uppercase tracking-wider text-[#FFD21F] hover:text-white transition-colors group"
+                  className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#FFD21F] hover:text-white transition-colors group"
                 >
                   <CreditCard className="w-4 h-4 text-[#FFD21F] group-hover:scale-110 transition-transform" />
                   <span>{t.nav.myCard}</span>
@@ -138,7 +138,7 @@ export function Navbar() {
 
                 <Link
                   href="/dashboard#subscriptions"
-                  className="flex items-center gap-2 font-display text-sm font-bold uppercase tracking-wider text-[#9E9EA8] hover:text-[#FFD21F] transition-colors group"
+                  className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-[#9E9EA8] hover:text-[#FFD21F] transition-colors group"
                 >
                   <Activity className="w-4 h-4 text-[#E52421] group-hover:scale-110 transition-transform" />
                   <span>{t.nav.mySubscriptions}</span>
@@ -146,7 +146,7 @@ export function Navbar() {
 
                 <Link
                   href="/dashboard#events"
-                  className="flex items-center gap-2 font-display text-sm font-bold uppercase tracking-wider text-[#9E9EA8] hover:text-[#FFD21F] transition-colors group"
+                  className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-[#9E9EA8] hover:text-[#FFD21F] transition-colors group"
                 >
                   <Calendar className="w-4 h-4 text-[#00D4FF] group-hover:scale-110 transition-transform" />
                   <span>{t.nav.upcomingEvents}</span>
@@ -154,7 +154,7 @@ export function Navbar() {
 
                 <Link
                   href="/#disciplines"
-                  className="font-display text-sm font-bold uppercase tracking-wider text-[#9E9EA8] hover:text-[#FFD21F] transition-colors"
+                  className="text-xs sm:text-sm font-medium text-[#9E9EA8] hover:text-[#FFD21F] transition-colors"
                 >
                   {t.nav.disciplines}
                 </Link>
@@ -164,26 +164,26 @@ export function Navbar() {
               <>
                 <Link
                   href="/admin"
-                  className="flex items-center gap-2 font-display text-sm font-black uppercase tracking-wider text-[#E52421] hover:text-[#FF3030] transition-colors"
+                  className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#E52421] hover:text-[#FF3030] transition-colors"
                 >
                   <Shield className="w-4 h-4" />
                   <span>Tableau de Bord</span>
                 </Link>
                 <Link
                   href="/admin/participants"
-                  className="font-display text-sm font-bold uppercase tracking-wider text-[#9E9EA8] hover:text-[#FFD21F] transition-colors"
+                  className="text-xs sm:text-sm font-medium text-[#9E9EA8] hover:text-[#FFD21F] transition-colors"
                 >
                   Adhérents
                 </Link>
                 <Link
                   href="/admin/registrations"
-                  className="font-display text-sm font-bold uppercase tracking-wider text-[#9E9EA8] hover:text-[#FFD21F] transition-colors"
+                  className="text-xs sm:text-sm font-medium text-[#9E9EA8] hover:text-[#FFD21F] transition-colors"
                 >
                   Inscriptions
                 </Link>
                 <Link
                   href="/#disciplines"
-                  className="font-display text-sm font-bold uppercase tracking-wider text-[#9E9EA8] hover:text-[#FFD21F] transition-colors"
+                  className="text-xs sm:text-sm font-medium text-[#9E9EA8] hover:text-[#FFD21F] transition-colors"
                 >
                   {t.nav.disciplines}
                 </Link>
@@ -193,25 +193,25 @@ export function Navbar() {
               <>
                 <Link
                   href="/#disciplines"
-                  className="font-display text-sm font-bold uppercase tracking-wider text-[#9E9EA8] hover:text-[#FFD21F] transition-colors"
+                  className="text-xs sm:text-sm font-medium text-[#9E9EA8] hover:text-[#FFD21F] transition-colors"
                 >
                   {t.nav.disciplines}
                 </Link>
                 <Link
                   href="/#last-season"
-                  className="font-display text-sm font-bold uppercase tracking-wider text-[#9E9EA8] hover:text-[#FFD21F] transition-colors"
+                  className="text-xs sm:text-sm font-medium text-[#9E9EA8] hover:text-[#FFD21F] transition-colors"
                 >
                   {t.home.lastSeasonTitle}
                 </Link>
                 <Link
                   href="/#about"
-                  className="font-display text-sm font-bold uppercase tracking-wider text-[#9E9EA8] hover:text-[#FFD21F] transition-colors"
+                  className="text-xs sm:text-sm font-medium text-[#9E9EA8] hover:text-[#FFD21F] transition-colors"
                 >
                   {t.nav.about}
                 </Link>
                 <Link
                   href="/register"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-[#E52421] hover:bg-[#FF3030] text-[#F5F5F2] font-display font-black text-sm uppercase tracking-wider transition-all duration-200 shadow-md group"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#E52421] hover:bg-[#FF3030] text-[#F5F5F2] font-semibold text-xs sm:text-sm transition-all duration-200 shadow-md group"
                 >
                   <span>{t.nav.registration}</span>
                   <ArrowUpRight
@@ -236,11 +236,11 @@ export function Navbar() {
                   className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-[#FFD21F]/30 hover:border-[#FFD21F]/60 transition-all group"
                   title="Accéder à mon espace adhérent"
                 >
-                  <div className="w-7 h-7 rounded-lg bg-[#FFD21F]/20 border border-[#FFD21F]/40 text-[#FFD21F] flex items-center justify-center font-display font-black text-xs">
+                  <div className="w-7 h-7 rounded-lg bg-[#FFD21F]/20 border border-[#FFD21F]/40 text-[#FFD21F] flex items-center justify-center font-bold text-xs">
                     {currentUser?.participant?.firstName?.[0] || "A"}
                   </div>
                   <div className="flex flex-col text-left">
-                    <span className="font-display font-black text-xs text-white uppercase leading-none group-hover:text-[#FFD21F] transition-colors">
+                    <span className="font-semibold text-xs text-white uppercase leading-none group-hover:text-[#FFD21F] transition-colors">
                       {currentUser?.participant?.firstName || "Adhérent"}
                     </span>
                     <span className="font-mono text-[9px] text-emerald-400 font-bold flex items-center gap-1 mt-0.5">
@@ -326,11 +326,11 @@ export function Navbar() {
               {/* Member Greeting Banner */}
               <div className="p-3 bg-white/5 border border-[#FFD21F]/30 rounded-2xl flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-[#FFD21F]/20 border border-[#FFD21F]/40 text-[#FFD21F] flex items-center justify-center font-display font-black text-sm">
+                  <div className="w-9 h-9 rounded-xl bg-[#FFD21F]/20 border border-[#FFD21F]/40 text-[#FFD21F] flex items-center justify-center font-bold text-sm">
                     {currentUser?.participant?.firstName?.[0] || "A"}
                   </div>
                   <div>
-                    <div className="font-display font-black text-sm text-white uppercase">
+                    <div className="font-semibold text-sm text-white">
                       {currentUser?.participant?.firstName} {currentUser?.participant?.lastName}
                     </div>
                     <div className="font-mono text-[10px] text-emerald-400 flex items-center gap-1">
@@ -345,7 +345,7 @@ export function Navbar() {
               <Link
                 href="/dashboard#card"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-[#FFD21F]/10 border border-[#FFD21F]/30 text-[#FFD21F] font-display font-black text-base uppercase tracking-wider"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-[#FFD21F]/10 border border-[#FFD21F]/30 text-[#FFD21F] font-semibold text-sm"
               >
                 <CreditCard className="w-5 h-5 text-[#FFD21F]" />
                 <span>{t.nav.myCard}</span>
@@ -426,7 +426,7 @@ export function Navbar() {
               <Link
                 href="/register"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 rounded font-display font-black text-lg text-[#F5F5F2] bg-[#E52421] hover:bg-[#FF3030] text-center uppercase tracking-wider transition-colors shadow-md"
+                className="block px-4 py-2.5 rounded-xl font-semibold text-base text-[#F5F5F2] bg-[#E52421] hover:bg-[#FF3030] text-center transition-colors shadow-md"
               >
                 {t.nav.registration}
               </Link>

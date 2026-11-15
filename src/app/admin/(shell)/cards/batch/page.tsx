@@ -378,7 +378,7 @@ export default function BatchCardsPrintPage() {
             >
               <FiArrowLeft className="w-4 h-4" />
             </Link>
-            <h1 className="text-2xl font-extrabold text-white tracking-tight flex items-center gap-2.5">
+            <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
               <FiPrinter className="w-6 h-6 text-[#E52421]" />
               Impression Batch des Cartes PVC (CR-80)
             </h1>
@@ -399,7 +399,7 @@ export default function BatchCardsPrintPage() {
             type="button"
             disabled={selectedCards.length === 0 || exportingMode !== null}
             onClick={() => handleBatchExport("merged_pdf")}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-bold transition disabled:opacity-40 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-semibold transition disabled:opacity-40 cursor-pointer"
             title="Toutes les cartes Recto/Verso à la suite dans un seul fichier PDF CR-80"
           >
             <FiFileText className="w-4 h-4 text-[#FFD21F]" />
@@ -410,7 +410,7 @@ export default function BatchCardsPrintPage() {
             type="button"
             disabled={selectedCards.length === 0 || exportingMode !== null}
             onClick={() => handleBatchExport("zip")}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#E52421] hover:bg-[#ff2d2a] text-white text-xs font-extrabold uppercase tracking-wider shadow-lg shadow-[#E52421]/25 transition disabled:opacity-40 cursor-pointer active:scale-95"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#E52421] hover:bg-[#ff2d2a] text-white text-xs font-semibold shadow-md shadow-[#E52421]/25 transition disabled:opacity-40 cursor-pointer active:scale-95"
             title="Télécharge un dossier compressé ZIP contenant un PDF CR-80 par personne"
           >
             <FiArchive className="w-4 h-4" />
@@ -725,7 +725,7 @@ export default function BatchCardsPrintPage() {
                   <FiLoader className="w-5 h-5 text-[#E52421] animate-spin" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-extrabold text-white uppercase tracking-wide">
+                  <h3 className="text-sm font-semibold text-white uppercase tracking-wide">
                     {exportingMode === "zip"
                       ? "Création de l'archive ZIP..."
                       : "Création du PDF multi-pages..."}

@@ -153,7 +153,7 @@ export default function AdminPricesPage() {
               <div className="w-10 h-10 rounded-2xl bg-[#FFD21F]/15 text-[#FFD21F] flex items-center justify-center border border-[#FFD21F]/30">
                 <Coins className="w-5 h-5" />
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
                 Tarifs & Grille de Cotisations
               </h1>
             </div>
@@ -166,7 +166,7 @@ export default function AdminPricesPage() {
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="px-6 py-3 bg-[#E52421] hover:bg-[#FF3030] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition shadow-lg shadow-[#E52421]/20 flex items-center gap-2 cursor-pointer disabled:opacity-50 font-display"
+            className="px-5 py-2.5 bg-[#E52421] hover:bg-[#FF3030] text-white text-xs font-semibold rounded-xl transition shadow-md shadow-[#E52421]/20 flex items-center gap-2 cursor-pointer disabled:opacity-50"
           >
             {saving ? (
               <>
@@ -355,7 +355,7 @@ export default function AdminPricesPage() {
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-extrabold text-white flex items-center gap-2">
+                    <span className="text-sm font-semibold text-white flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-[#E52421]" />
                       {disc.name}
                     </span>
@@ -642,7 +642,7 @@ export default function AdminPricesPage() {
               <span className="text-xs uppercase font-mono tracking-wider text-gray-400 block">
                 Total Familial Calculé ({simChildren.length} adhérents)
               </span>
-              <div className="text-2xl sm:text-3xl font-display font-black text-white mt-1">
+              <div className="text-xl sm:text-2xl font-bold text-white mt-1">
                 {simTotalAnnual > 0 && (
                   <span className="text-emerald-400">
                     {simTotalAnnual.toLocaleString()} DZD <span className="text-xs font-mono text-white/60">au total annuel</span>
@@ -671,7 +671,7 @@ export default function AdminPricesPage() {
           <button
             type="submit"
             disabled={saving}
-            className="px-8 py-3.5 bg-[#E52421] hover:bg-[#FF3030] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition shadow-lg shadow-[#E52421]/20 flex items-center gap-2 cursor-pointer disabled:opacity-50 font-display"
+            className="px-6 py-3 bg-[#E52421] hover:bg-[#FF3030] text-white text-xs font-semibold rounded-xl transition shadow-md shadow-[#E52421]/20 flex items-center gap-2 cursor-pointer disabled:opacity-50"
           >
             {saving ? (
               <>

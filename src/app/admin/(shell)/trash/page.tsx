@@ -252,7 +252,7 @@ export default function AdminTrashPage() {
               <Trash2 className="w-5 h-5" />
             </div>
             <div>
-              <h1 className="font-display text-2xl sm:text-3xl font-black uppercase tracking-tight text-[#F5F5F2]">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#F5F5F2]">
                 Corbeille & Restauration
               </h1>
               <p className="font-mono text-xs text-[#9E9EA8] mt-0.5">
@@ -390,7 +390,7 @@ export default function AdminTrashPage() {
           <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
             <CheckCircle2 className="w-6 h-6" />
           </div>
-          <h3 className="font-display font-bold text-base text-white">
+          <h3 className="text-base font-semibold text-white">
             La corbeille est vide
           </h3>
           <p className="text-xs text-gray-400 max-w-sm">
@@ -435,12 +435,12 @@ export default function AdminTrashPage() {
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex items-center gap-3">
-                            <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center font-display font-black text-amber-400 text-sm">
+                            <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center font-bold text-amber-400 text-sm">
                               {p.firstName[0]}
                               {p.lastName[0]}
                             </div>
                             <div>
-                              <h4 className="font-display font-bold text-sm text-white">
+                              <h4 className="font-semibold text-sm text-white">
                                 {p.firstName} {p.lastName}
                               </h4>
                               <p className="font-mono text-[11px] text-gray-400 flex items-center gap-1.5 mt-0.5">
@@ -551,7 +551,7 @@ export default function AdminTrashPage() {
                             <div className="font-mono text-sm font-bold text-[#FFD21F]">
                               {r.reference}
                             </div>
-                            <div className="font-display font-bold text-sm text-white mt-1">
+                            <div className="font-semibold text-sm text-white mt-1">
                               {r.participant?.firstName} {r.participant?.lastName}
                             </div>
                             <div className="font-mono text-[11px] text-gray-400 mt-0.5">
@@ -617,7 +617,7 @@ export default function AdminTrashPage() {
               <AlertTriangle className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-display font-black text-lg text-white">
+              <h3 className="text-base font-bold text-white">
                 Supprimer définitivement ?
               </h3>
               <p className="text-xs text-gray-400 mt-2 leading-relaxed">
@@ -659,7 +659,7 @@ export default function AdminTrashPage() {
               <AlertTriangle className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-display font-black text-lg text-white">
+              <h3 className="text-base font-bold text-white">
                 Vider entièrement la corbeille ?
               </h3>
               <p className="text-xs text-gray-400 mt-2 leading-relaxed">

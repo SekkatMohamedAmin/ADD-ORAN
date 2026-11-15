@@ -158,7 +158,7 @@ export default function DocumentsPage() {
       {/* Top Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight flex items-center gap-3">
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-3">
             <FiFileText className="w-6 h-6 text-[#E52421]" />
             Contrôle & Validation des Justificatifs
           </h1>
@@ -172,25 +172,25 @@ export default function DocumentsPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="p-4 bg-[#141419] border border-white/5 rounded-2xl">
           <span className="text-xs text-gray-400 block mb-1">Total Pièces</span>
-          <strong className="text-xl font-extrabold text-white font-mono">{stats.total}</strong>
+          <strong className="text-xl font-bold text-white font-mono">{stats.total}</strong>
         </div>
         <div className="p-4 bg-[#141419] border border-white/5 rounded-2xl">
           <span className="text-xs text-gray-400 block mb-1 flex items-center gap-1.5">
             <FiClock className="w-3.5 h-3.5 text-[#FFD21F]" /> En Attente
           </span>
-          <strong className="text-xl font-extrabold text-[#FFD21F] font-mono">{stats.pending}</strong>
+          <strong className="text-xl font-bold text-[#FFD21F] font-mono">{stats.pending}</strong>
         </div>
         <div className="p-4 bg-[#141419] border border-white/5 rounded-2xl">
           <span className="text-xs text-gray-400 block mb-1 flex items-center gap-1.5">
             <FiCheckCircle className="w-3.5 h-3.5 text-emerald-400" /> Validées
           </span>
-          <strong className="text-xl font-extrabold text-emerald-400 font-mono">{stats.valid}</strong>
+          <strong className="text-xl font-bold text-emerald-400 font-mono">{stats.valid}</strong>
         </div>
         <div className="p-4 bg-[#141419] border border-white/5 rounded-2xl">
           <span className="text-xs text-gray-400 block mb-1 flex items-center gap-1.5">
             <FiXCircle className="w-3.5 h-3.5 text-[#E52421]" /> Rejetées
           </span>
-          <strong className="text-xl font-extrabold text-[#E52421] font-mono">{stats.invalid}</strong>
+          <strong className="text-xl font-bold text-[#E52421] font-mono">{stats.invalid}</strong>
         </div>
       </div>
 

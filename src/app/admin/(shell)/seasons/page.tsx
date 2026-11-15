@@ -169,7 +169,7 @@ export default function SeasonsPage() {
       {/* Top Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight flex items-center gap-3">
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-3">
             <FiCalendar className="w-6 h-6 text-[#E52421]" />
             Gestion des Saisons Sportives
           </h1>
@@ -209,7 +209,7 @@ export default function SeasonsPage() {
                     <span className="px-2.5 py-1 bg-[#1C1C24] text-gray-300 font-mono text-xs font-bold rounded-md">
                       CODE {season.code}
                     </span>
-                    <h3 className="text-lg font-extrabold text-white mt-2">{season.label}</h3>
+                    <h3 className="text-base font-bold text-white mt-2">{season.label}</h3>
                   </div>
 
                   {season.isActive ? (

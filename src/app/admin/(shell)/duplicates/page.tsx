@@ -120,7 +120,7 @@ export default function DuplicatesPage() {
       {/* Top Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight flex items-center gap-3">
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-3">
             <FiCopy className="w-6 h-6 text-amber-400" />
             Contrôle des Doublons d'Inscription
           </h1>

@@ -226,10 +226,10 @@ export function AdminLayoutClient({ children, adminUser }: AdminLayoutClientProp
               />
             </div>
             <div className="flex flex-col">
-              <span className="font-display font-black text-base tracking-wider text-[#F5F5F2] uppercase group-hover:text-[#FFD21F] transition-colors leading-none">
+              <span className="font-display font-bold text-sm tracking-wider text-[#F5F5F2] uppercase group-hover:text-[#FFD21F] transition-colors leading-none">
                 ADD ORAN
               </span>
-              <span className="font-mono text-[9px] tracking-widest text-[#E52421] font-bold uppercase mt-1">
+              <span className="font-mono text-[9px] tracking-widest text-[#E52421] font-semibold uppercase mt-1">
                 ADMINISTRATION
               </span>
             </div>
@@ -250,7 +250,7 @@ export function AdminLayoutClient({ children, adminUser }: AdminLayoutClientProp
         <nav className="flex-1 overflow-y-auto px-3.5 py-4 space-y-6">
           {navSections.map((section, idx) => (
             <div key={idx} className="space-y-1">
-              <div className="px-3 text-[10px] font-mono font-bold tracking-widest uppercase text-[#9E9EA8]/70">
+              <div className="px-3 text-[10px] font-mono font-medium tracking-widest uppercase text-[#9E9EA8]/60">
                 {section.title}
               </div>
               <div className="space-y-0.5 pt-1">
@@ -262,10 +262,10 @@ export function AdminLayoutClient({ children, adminUser }: AdminLayoutClientProp
                       key={itemIdx}
                       href={item.href}
                       onClick={() => setSidebarOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl font-display font-bold text-xs uppercase tracking-wider transition-all duration-200 group cursor-pointer ${
+                      className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs transition-all duration-200 group cursor-pointer ${
                         active
-                          ? "bg-[#E52421]/15 text-[#E52421] border-l-2 border-[#E52421]"
-                          : "text-[#9E9EA8] hover:text-[#F5F5F2] hover:bg-white/5"
+                          ? "bg-[#E52421]/15 text-[#E52421] font-semibold border-l-2 border-[#E52421]"
+                          : "text-[#9E9EA8] hover:text-[#F5F5F2] hover:bg-white/5 font-medium"
                       }`}
                     >
                       <Icon
@@ -334,7 +334,7 @@ export function AdminLayoutClient({ children, adminUser }: AdminLayoutClientProp
             <div className="flex items-center gap-2 font-mono text-xs">
               <span className="text-[#9E9EA8] hidden sm:inline">Admin</span>
               <span className="text-[#9E9EA8]/40 hidden sm:inline">/</span>
-              <span className="text-[#F5F5F2] font-bold uppercase tracking-wider">
+              <span className="text-[#F5F5F2] font-semibold">
                 {navSections
                   .flatMap((s) => s.items)
                   .find((item) => isLinkActive(item.href, item.exact))?.label || "Console"}

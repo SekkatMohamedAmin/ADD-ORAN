@@ -129,7 +129,7 @@ export function PortalNavbar() {
               </div>
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
-                  <span className="font-display font-black tracking-tight text-white text-base">
+                  <span className="font-display font-bold tracking-tight text-white text-base">
                     ADD ORAN
                   </span>
                   <span className="hidden sm:inline-block px-1.5 py-0.5 rounded text-[10px] font-mono uppercase font-bold tracking-wider bg-[#E52421]/15 text-[#E52421] border border-[#E52421]/30">

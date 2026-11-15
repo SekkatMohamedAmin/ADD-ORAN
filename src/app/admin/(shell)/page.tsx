@@ -85,7 +85,7 @@ export default function AdminDashboardPage() {
          ======================================================== */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
         <div>
-          <h1 className="font-display text-2xl sm:text-3xl font-black uppercase tracking-tight text-[#F5F5F2]">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#F5F5F2]">
             {t.admin.dashboard}
           </h1>
           <p className="font-mono text-xs text-[#9E9EA8] mt-1">
@@ -152,7 +152,7 @@ export default function AdminDashboardPage() {
               <span className="w-2 h-2 rounded-full bg-[#E52421] animate-pulse" />
               <span>Système de Gestion du Club // En Direct</span>
             </div>
-            <h2 className="font-display text-xl sm:text-2xl font-black uppercase text-white tracking-tight leading-tight">
+            <h2 className="text-lg sm:text-xl font-bold uppercase text-white tracking-tight leading-tight">
               Club Art Du Déplacement <span className="text-[#FFD21F]">Parkour Oran</span>
             </h2>
             <p className="font-body text-xs text-[#9E9EA8] leading-relaxed">
@@ -163,14 +163,14 @@ export default function AdminDashboardPage() {
           <div className="flex flex-wrap items-center gap-3">
             <Link
               href="/admin/registrations?status=UNDER_REVIEW"
-              className="px-4 py-2.5 rounded-xl bg-[#E52421] hover:bg-[#FF3030] text-white font-display font-bold text-xs uppercase tracking-wider transition-all shadow-lg shadow-[#E52421]/20 flex items-center gap-2"
+              className="px-4 py-2.5 rounded-xl bg-[#E52421] hover:bg-[#FF3030] text-white font-semibold text-xs transition-all shadow-md shadow-[#E52421]/20 flex items-center gap-2"
             >
               <ClipboardList className="w-4 h-4" />
               <span>Examiner les dossiers</span>
             </Link>
             <Link
               href="/admin/payments"
-              className="px-4 py-2.5 rounded-xl bg-[#1C1C24] hover:bg-[#252530] text-[#F5F5F2] border border-white/10 font-display font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2"
+              className="px-4 py-2.5 rounded-xl bg-[#1C1C24] hover:bg-[#252530] text-[#F5F5F2] border border-white/10 font-semibold text-xs transition-all flex items-center gap-2"
             >
               <CreditCard className="w-4 h-4 text-[#FFD21F]" />
               <span>Caisse & Règlements</span>
@@ -191,7 +191,7 @@ export default function AdminDashboardPage() {
             >
               <AlertCircle className="w-5 h-5 text-[#FFD21F] shrink-0 mt-0.5" />
               <div>
-                <p className="font-display font-bold text-xs uppercase text-[#F5F5F2] group-hover:text-[#FFD21F] transition-colors">
+                <p className="font-semibold text-xs text-[#F5F5F2] group-hover:text-[#FFD21F] transition-colors">
                   {stats.pendingReview} dossier(s) en attente d&apos;examen
                 </p>
                 <p className="font-mono text-[11px] text-[#9E9EA8] mt-0.5">
@@ -208,7 +208,7 @@ export default function AdminDashboardPage() {
             >
               <AlertTriangle className="w-5 h-5 text-[#E52421] shrink-0 mt-0.5" />
               <div>
-                <p className="font-display font-bold text-xs uppercase text-[#F5F5F2] group-hover:text-[#E52421] transition-colors">
+                <p className="font-semibold text-xs text-[#F5F5F2] group-hover:text-[#E52421] transition-colors">
                   {stats.needsCorrection} dossier(s) en correction
                 </p>
                 <p className="font-mono text-[11px] text-[#9E9EA8] mt-0.5">
@@ -225,7 +225,7 @@ export default function AdminDashboardPage() {
             >
               <Copy className="w-5 h-5 text-[#FFD21F] shrink-0 mt-0.5" />
               <div>
-                <p className="font-display font-bold text-xs uppercase text-[#F5F5F2] group-hover:text-[#FFD21F] transition-colors">
+                <p className="font-semibold text-xs text-[#F5F5F2] group-hover:text-[#FFD21F] transition-colors">
                   {stats.duplicates} doublon(s) potentiel(s)
                 </p>
                 <p className="font-mono text-[11px] text-[#9E9EA8] mt-0.5">
@@ -252,7 +252,7 @@ export default function AdminDashboardPage() {
             </span>
             <ClipboardList className="w-4 h-4 text-[#9E9EA8] group-hover:text-[#F5F5F2] transition-colors" />
           </div>
-          <div className="font-display text-2xl sm:text-3xl font-black text-[#F5F5F2]">
+          <div className="text-2xl sm:text-3xl font-bold tracking-tight text-[#F5F5F2]">
             {stats.total ?? 0}
           </div>
           <div className="text-[11px] font-mono text-[#9E9EA8]">
@@ -271,7 +271,7 @@ export default function AdminDashboardPage() {
             </span>
             <AlertCircle className="w-4 h-4 text-[#FFD21F]" />
           </div>
-          <div className="font-display text-2xl sm:text-3xl font-black text-[#FFD21F]">
+          <div className="text-2xl sm:text-3xl font-bold tracking-tight text-[#FFD21F]">
             {stats.pendingReview ?? 0}
           </div>
           <div className="text-[11px] font-mono text-[#9E9EA8]">
@@ -290,7 +290,7 @@ export default function AdminDashboardPage() {
             </span>
             <ShieldCheck className="w-4 h-4 text-[#10B981]" />
           </div>
-          <div className="font-display text-2xl sm:text-3xl font-black text-[#10B981]">
+          <div className="text-2xl sm:text-3xl font-bold tracking-tight text-[#10B981]">
             {stats.active ?? 0}
           </div>
           <div className="text-[11px] font-mono text-[#9E9EA8]">
@@ -309,7 +309,7 @@ export default function AdminDashboardPage() {
             </span>
             <CreditCard className="w-4 h-4 text-[#FFD21F]" />
           </div>
-          <div className="font-display text-2xl sm:text-3xl font-black text-[#F5F5F2]">
+          <div className="text-2xl sm:text-3xl font-bold tracking-tight text-[#F5F5F2]">
             {(stats.totalRevenueDzd ?? 0).toLocaleString()} <span className="text-sm font-mono text-[#FFD21F]">DA</span>
           </div>
           <div className="text-[11px] font-mono text-[#9E9EA8]">
@@ -323,7 +323,7 @@ export default function AdminDashboardPage() {
          ======================================================== */}
       <div className="p-6 rounded-3xl bg-[#141419] border border-white/10 space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="font-display font-black text-base uppercase tracking-wider text-[#F5F5F2]">
+          <h2 className="text-sm font-semibold tracking-wide text-[#F5F5F2]">
             Répartition des Dossiers // Saison {currentSeason.code}
           </h2>
           <Link
@@ -338,31 +338,31 @@ export default function AdminDashboardPage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 pt-2">
           <div className="p-3 rounded-xl bg-[#1C1C24] border border-white/5 space-y-1">
             <span className="font-mono text-[10px] text-[#9E9EA8] uppercase">Soumis</span>
-            <p className="font-display font-bold text-xl text-[#F5F5F2]">{stats.pendingReview ?? 0}</p>
+            <p className="font-semibold text-lg text-[#F5F5F2]">{stats.pendingReview ?? 0}</p>
           </div>
           <div className="p-3 rounded-xl bg-[#1C1C24] border border-white/5 space-y-1">
             <span className="font-mono text-[10px] text-[#E52421] uppercase">Correction</span>
-            <p className="font-display font-bold text-xl text-[#E52421]">{stats.needsCorrection ?? 0}</p>
+            <p className="font-semibold text-lg text-[#E52421]">{stats.needsCorrection ?? 0}</p>
           </div>
           <div className="p-3 rounded-xl bg-[#1C1C24] border border-white/5 space-y-1">
             <span className="font-mono text-[10px] text-[#FFD21F] uppercase">Accepté</span>
-            <p className="font-display font-bold text-xl text-[#FFD21F]">{stats.accepted ?? 0}</p>
+            <p className="font-semibold text-lg text-[#FFD21F]">{stats.accepted ?? 0}</p>
           </div>
           <div className="p-3 rounded-xl bg-[#1C1C24] border border-white/5 space-y-1">
             <span className="font-mono text-[10px] text-[#FFB800] uppercase">Attente Pay</span>
-            <p className="font-display font-bold text-xl text-[#FFB800]">{stats.paymentPending ?? 0}</p>
+            <p className="font-semibold text-lg text-[#FFB800]">{stats.paymentPending ?? 0}</p>
           </div>
           <div className="p-3 rounded-xl bg-[#1C1C24] border border-white/5 space-y-1">
             <span className="font-mono text-[10px] text-[#10B981] uppercase">Payé</span>
-            <p className="font-display font-bold text-xl text-[#10B981]">{stats.paid ?? 0}</p>
+            <p className="font-semibold text-lg text-[#10B981]">{stats.paid ?? 0}</p>
           </div>
           <div className="p-3 rounded-xl bg-[#1C1C24] border border-white/5 space-y-1">
             <span className="font-mono text-[10px] text-[#10B981] uppercase">Actif</span>
-            <p className="font-display font-bold text-xl text-[#10B981]">{stats.active ?? 0}</p>
+            <p className="font-semibold text-lg text-[#10B981]">{stats.active ?? 0}</p>
           </div>
           <div className="p-3 rounded-xl bg-[#1C1C24] border border-white/5 space-y-1">
             <span className="font-mono text-[10px] text-[#9E9EA8] uppercase">Archivé</span>
-            <p className="font-display font-bold text-xl text-[#9E9EA8]">{stats.archived ?? 0}</p>
+            <p className="font-semibold text-lg text-[#9E9EA8]">{stats.archived ?? 0}</p>
           </div>
         </div>
       </div>
@@ -374,7 +374,7 @@ export default function AdminDashboardPage() {
         {/* Left: Dernières inscriptions soumises */}
         <div className="lg:col-span-7 p-6 rounded-3xl bg-[#141419] border border-white/10 space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-white/10">
-            <h3 className="font-display font-black text-sm uppercase tracking-wider text-[#F5F5F2] flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-[#F5F5F2] flex items-center gap-2">
               <ClipboardList className="w-4 h-4 text-[#E52421]" />
               <span>Dernières Inscriptions Reçues</span>
             </h3>
@@ -404,7 +404,7 @@ export default function AdminDashboardPage() {
                       </span>
                       <StatusBadge status={reg.status} size="sm" />
                     </div>
-                    <p className="font-display font-bold text-sm text-[#F5F5F2] truncate mt-1">
+                    <p className="font-medium text-sm text-[#F5F5F2] truncate mt-1">
                       {reg.participant.firstName} {reg.participant.lastName}
                     </p>
                     <p className="font-mono text-[10px] text-[#9E9EA8]">
@@ -433,7 +433,7 @@ export default function AdminDashboardPage() {
         {/* Right: Activité récente (Journal d'audit en direct) */}
         <div className="lg:col-span-5 p-6 rounded-3xl bg-[#141419] border border-white/10 space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-white/10">
-            <h3 className="font-display font-black text-sm uppercase tracking-wider text-[#F5F5F2] flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-[#F5F5F2] flex items-center gap-2">
               <History className="w-4 h-4 text-[#FFD21F]" />
               <span>Activité Récente // Audit</span>
             </h3>
