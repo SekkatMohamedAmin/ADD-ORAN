@@ -315,14 +315,18 @@ export function CardRectoFace({
             className={`relative shrink-0 bg-white border border-white/80 shadow-md flex items-center justify-center overflow-hidden ${
               isPrintVersion ? "w-[8.2mm] h-[8.2mm] rounded-[1.8mm] p-[0.6mm]" : "w-11 h-11 rounded-xl p-1"
             }`}
-            style={{ backgroundColor: "#FFFFFF" }}
+            style={{
+              backgroundColor: "#FFFFFF",
+              WebkitPrintColorAdjust: "exact",
+              printColorAdjust: "exact",
+            }}
           >
             <Image
               src="/images/club/logo.svg"
               alt="Logo Club ADD Oran"
               width={isPrintVersion ? 26 : 38}
               height={isPrintVersion ? 26 : 38}
-              className="object-contain"
+              className="w-full h-full object-contain"
               priority
               unoptimized
             />
@@ -623,13 +627,24 @@ export function CardVersoFace({
 
       {/* Center: Authentic club logo (no hue alteration) + Motto */}
       <div className="flex-1 flex flex-col items-center justify-center my-auto pointer-events-none select-none space-y-2.5">
-        <div className="relative flex items-center justify-center">
+        <div
+          className={`relative shrink-0 bg-white border border-white/90 shadow-md flex items-center justify-center overflow-hidden ${
+            isPrintVersion
+              ? "w-[15mm] h-[15mm] rounded-[3mm] p-[1.5mm]"
+              : "w-16 h-16 sm:w-20 sm:h-20 rounded-2xl p-2 sm:p-2.5 shadow-lg"
+          }`}
+          style={{
+            backgroundColor: "#FFFFFF",
+            WebkitPrintColorAdjust: "exact",
+            printColorAdjust: "exact",
+          }}
+        >
           <Image
             src="/images/club/logo.svg"
             alt="Club ADD Oran"
-            width={isPrintVersion ? 52 : 72}
-            height={isPrintVersion ? 52 : 72}
-            className="object-contain"
+            width={isPrintVersion ? 44 : 64}
+            height={isPrintVersion ? 44 : 64}
+            className="w-full h-full object-contain"
             priority
             unoptimized
           />
