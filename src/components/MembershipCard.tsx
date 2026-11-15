@@ -312,9 +312,10 @@ export function CardRectoFace({
       <div className="relative z-10 flex items-center justify-between gap-2 shrink-0">
         <div className="flex items-center gap-2.5">
           <div
-            className={`relative shrink-0 bg-white/5 border border-white/10 rounded-xl p-1 backdrop-blur-md shadow-inner flex items-center justify-center ${
-              isPrintVersion ? "w-[8mm] h-[8mm]" : "w-11 h-11"
+            className={`relative shrink-0 bg-white border border-white/80 shadow-md flex items-center justify-center overflow-hidden ${
+              isPrintVersion ? "w-[8.2mm] h-[8.2mm] rounded-[1.8mm] p-[0.6mm]" : "w-11 h-11 rounded-xl p-1"
             }`}
+            style={{ backgroundColor: "#FFFFFF" }}
           >
             <Image
               src="/images/club/logo.svg"

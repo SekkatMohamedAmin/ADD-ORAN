@@ -17,3 +17,4 @@ if (fs.existsSync(loaderPath)) {
     console.warn('[patch-next-font] Warning: Could not patch loader.js:', err.message);
   }
 }
+
