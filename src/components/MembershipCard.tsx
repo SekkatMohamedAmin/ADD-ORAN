@@ -312,21 +312,16 @@ export function CardRectoFace({
       <div className="relative z-10 flex items-center justify-between gap-2 shrink-0">
         <div className="flex items-center gap-2.5">
           <div
-            className={`relative shrink-0 bg-white border border-white/80 shadow-md flex items-center justify-center overflow-hidden ${
-              isPrintVersion ? "w-[8.2mm] h-[8.2mm] rounded-[1.8mm] p-[0.6mm]" : "w-11 h-11 rounded-xl p-1"
+            className={`relative shrink-0 bg-white/5 border border-white/10 rounded-xl p-1 backdrop-blur-md shadow-inner flex items-center justify-center ${
+              isPrintVersion ? "w-[8mm] h-[8mm]" : "w-11 h-11"
             }`}
-            style={{
-              backgroundColor: "#FFFFFF",
-              WebkitPrintColorAdjust: "exact",
-              printColorAdjust: "exact",
-            }}
           >
             <Image
               src="/images/club/logo.svg"
               alt="Logo Club ADD Oran"
               width={isPrintVersion ? 26 : 38}
               height={isPrintVersion ? 26 : 38}
-              className="w-full h-full object-contain"
+              className="object-contain"
               priority
               unoptimized
             />
@@ -627,24 +622,13 @@ export function CardVersoFace({
 
       {/* Center: Authentic club logo (no hue alteration) + Motto */}
       <div className="flex-1 flex flex-col items-center justify-center my-auto pointer-events-none select-none space-y-2.5">
-        <div
-          className={`relative shrink-0 bg-white border border-white/90 shadow-md flex items-center justify-center overflow-hidden ${
-            isPrintVersion
-              ? "w-[15mm] h-[15mm] rounded-[3mm] p-[1.5mm]"
-              : "w-16 h-16 sm:w-20 sm:h-20 rounded-2xl p-2 sm:p-2.5 shadow-lg"
-          }`}
-          style={{
-            backgroundColor: "#FFFFFF",
-            WebkitPrintColorAdjust: "exact",
-            printColorAdjust: "exact",
-          }}
-        >
+        <div className="relative flex items-center justify-center">
           <Image
             src="/images/club/logo.svg"
             alt="Club ADD Oran"
-            width={isPrintVersion ? 44 : 64}
-            height={isPrintVersion ? 44 : 64}
-            className="w-full h-full object-contain"
+            width={isPrintVersion ? 52 : 72}
+            height={isPrintVersion ? 52 : 72}
+            className="object-contain"
             priority
             unoptimized
           />
