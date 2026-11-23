@@ -405,11 +405,6 @@ export function CardRectoFace({
                 </span>
               </div>
             )}
-
-            {/* Security check tag overlay */}
-            <div className="absolute bottom-1 right-1 bg-emerald-500 text-white rounded-full p-0.5 shadow-md">
-              <CheckCircle2 className="w-2.5 h-2.5" />
-            </div>
           </div>
 
           {/* Category Pill */}
@@ -424,7 +419,7 @@ export function CardRectoFace({
                 : "px-1.5 py-0.5 text-[7px]"
             }`}
           >
-            {isStaff ? "★ DIRIGEANT" : (participant.isMinor ? "Mineur (<18)" : "Majeur (18+)")}
+            {isStaff ? "★ DIRIGEANT" : (participant.isMinor ? "MINEUR" : "MAJEUR")}
           </span>
         </div>
 
@@ -436,7 +431,7 @@ export function CardRectoFace({
               className={`uppercase tracking-wider block font-bold text-gray-300 ${
                 isStaff ? "text-amber-400" : "text-gray-300"
               } ${
-                isPrintVersion ? "text-[4.2pt]" : "text-[7.5px]"
+                isPrintVersion ? "text-[4.2pt] mb-[0.8mm]" : "text-[7.5px] mb-1.5"
               }`}
             >
               {isStaff ? (roleDef ? `★ ${roleDef.labelFr}` : "★ Cadre / Dirigeant") : "Adhérent(e)"}
@@ -550,6 +545,20 @@ export function CardRectoFace({
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Front Separator Line */}
+      <div
+        className={`relative z-10 ${
+          isPrintVersion ? "pt-1 border-t border-white/10" : "pt-1.5 border-t border-white/10"
+        } flex items-center justify-between text-gray-500 font-mono shrink-0`}
+      >
+        <span className={isPrintVersion ? "text-[3.2pt] tracking-widest uppercase" : "text-[6.5px] tracking-widest uppercase"}>
+          C.S.A ADD PARKOUR ORAN
+        </span>
+        <span className={isPrintVersion ? "text-[3.2pt] tracking-wider uppercase" : "text-[6.5px] tracking-wider uppercase"}>
+          CARTE OFFICIELLE
+        </span>
       </div>
     </div>
   );
@@ -694,7 +703,7 @@ export function CardVersoFace({
             {cardRef}
           </span>
           <span
-            className={`text-[#E52421] uppercase tracking-wider font-extrabold ${
+            className={`text-[#00D4FF] uppercase tracking-wider font-extrabold ${
               isPrintVersion ? "text-[3.8pt]" : "text-[7px]"
             }`}
           >
@@ -703,7 +712,7 @@ export function CardVersoFace({
         </div>
       </div>
 
-      {/* Verso Footer: Location on left and Website URL on right */}
+      {/* Verso Footer: Location, Instagram, and Website URL */}
       <div
         className={`pt-1 border-t border-white/10 flex items-center justify-between text-gray-400 font-mono ${
           isPrintVersion ? "text-[3.8pt]" : "text-[6.8px]"
@@ -713,6 +722,27 @@ export function CardVersoFace({
           <MapPin className="w-2 h-2 text-[#E52421] shrink-0" />
           <span className="font-semibold tracking-wide">Oran, Algérie</span>
         </div>
+
+        {/* Instagram with authentic purple color */}
+        <div className="flex items-center gap-1 text-[#C13584]">
+          <svg
+            viewBox="0 0 24 24"
+            width={isPrintVersion ? "6.5" : "8.5"}
+            height={isPrintVersion ? "6.5" : "8.5"}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="shrink-0"
+          >
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+          </svg>
+          <span className="font-bold tracking-wide">:add_club_oran</span>
+        </div>
+
         <div>
           <span className="text-[#00D4FF] font-bold tracking-wider hover:underline">
             www.addpkoran.com
