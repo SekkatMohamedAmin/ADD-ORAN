@@ -569,6 +569,26 @@ export default function ParticipantProfilePage({
         </div>
       )}
 
+      {/* Membership Card Modal */}
+      {showCardModal && member && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative bg-[#101015] border border-white/10 rounded-3xl p-6 max-w-xl w-full flex flex-col items-center shadow-2xl">
+            <MembershipCard
+              participant={member}
+              registration={member.registrations?.[0]}
+              photoDocId={
+                member.documents?.find((d) => d.type === "PHOTO")?.id ||
+                member.registrations?.[0]?.documents?.find((d) => d.type === "PHOTO")?.id ||
+                member.documents?.[0]?.id ||
+                member.registrations?.[0]?.documents?.[0]?.id ||
+                null
+              }
+              onClose={() => setShowCardModal(false)}
+            />
+          </div>
+        </div>
+      )}
+
       {/* Admin Reset Password Modal */}
       {member && (
         <ResetPasswordModal

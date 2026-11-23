@@ -92,6 +92,9 @@ export default function DashboardCardPage() {
               emergencyPhone: selectedParticipant.phone,
               membershipCardNumber:
                 selectedParticipant.membershipCardNumber || "ADD-CARD-2026",
+              clubRole: (selectedParticipant as any).clubRole,
+              isStaff: (selectedParticipant as any).isStaff,
+              rfidCardId: (selectedParticipant as any).rfidCardId,
             }}
             registration={{
               reference: activeRegistration.reference,
