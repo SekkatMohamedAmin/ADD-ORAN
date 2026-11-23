@@ -353,10 +353,10 @@ export function CardRectoFace({
         <div className="flex flex-col items-end gap-1">
           {isStaff && (
             <span
-              className={`bg-amber-500/20 border border-amber-400/50 text-amber-300 font-mono font-bold rounded-md uppercase tracking-wider flex items-center gap-1 ${
+              className={`bg-amber-500/20 border border-amber-400/50 text-amber-300 font-mono font-bold rounded-lg uppercase tracking-wider flex items-center gap-1 ${
                 isPrintVersion
-                  ? "px-[1.5mm] py-[0.3mm] text-[4.8pt]"
-                  : "px-2 py-0.5 text-[8px]"
+                  ? "px-[2.5mm] py-[0.8mm] text-[5pt]"
+                  : "px-3 py-1 text-[8.5px]"
               }`}
             >
               <Sparkles className="w-2.5 h-2.5 text-amber-300 shrink-0" />
@@ -364,10 +364,10 @@ export function CardRectoFace({
             </span>
           )}
           <span
-            className={`bg-[#E52421]/20 border border-[#E52421]/40 text-[#FFD21F] font-mono font-bold rounded-md uppercase tracking-wider ${
+            className={`bg-[#E52421]/20 border border-[#E52421]/40 text-[#FFD21F] font-mono font-bold rounded-lg uppercase tracking-wider inline-flex items-center justify-center ${
               isPrintVersion
-                ? "px-[1.5mm] py-[0.3mm] text-[4.8pt]"
-                : "px-2 py-0.5 text-[8px]"
+                ? "px-[2.5mm] py-[0.8mm] text-[5pt]"
+                : "px-3.5 py-1 text-[9px]"
             }`}
           >
             {seasonLabel}
@@ -376,7 +376,7 @@ export function CardRectoFace({
       </div>
 
       {/* CARD MIDDLE BODY: PHOTO + ATHLETE DETAILS */}
-      <div className="relative z-10 grid grid-cols-12 gap-2.5 items-center my-auto min-h-0 overflow-hidden">
+      <div className="relative z-10 grid grid-cols-12 gap-3 items-center my-auto min-h-0 overflow-hidden">
         {/* Photo Frame (4 cols) */}
         <div className="col-span-4 flex flex-col items-center justify-center">
           <div
@@ -429,12 +429,12 @@ export function CardRectoFace({
         </div>
 
         {/* Member Details (8 cols) */}
-        <div className={`col-span-8 ${isPrintVersion ? "space-y-1" : "space-y-1.5"} pl-1 min-w-0`}>
+        <div className={`col-span-8 ${isPrintVersion ? "space-y-1.5" : "space-y-2"} pl-1 min-w-0`}>
           {/* Member Full Name - displayed completely, wraps gracefully without truncation */}
           <div className="min-w-0">
             <span
-              className={`uppercase tracking-wider block font-semibold ${
-                isStaff ? "text-amber-400" : "text-gray-400"
+              className={`uppercase tracking-wider block font-bold text-gray-300 ${
+                isStaff ? "text-amber-400" : "text-gray-300"
               } ${
                 isPrintVersion ? "text-[4.2pt]" : "text-[7.5px]"
               }`}
@@ -442,7 +442,7 @@ export function CardRectoFace({
               {isStaff ? (roleDef ? `★ ${roleDef.labelFr}` : "★ Cadre / Dirigeant") : "Adhérent(e)"}
             </span>
             <div
-              className={`text-white font-bold uppercase tracking-tight break-words leading-tight ${
+              className={`text-white font-extrabold uppercase tracking-tight break-words leading-tight ${
                 fullName.length > 28
                   ? isPrintVersion ? "text-[4.8pt]" : "text-[8.5px]"
                   : fullName.length > 20
@@ -456,18 +456,19 @@ export function CardRectoFace({
           </div>
 
           {/* Details Grid: Birth Date, Blood Type, Phone */}
-          <div className={`grid grid-cols-2 gap-x-2 ${isPrintVersion ? "gap-y-0.5" : "gap-y-1"} pt-0.5`}>
+          {/* KEYS ARE BOLD, VALUES ARE SMALLER & NON-BOLD */}
+          <div className={`grid grid-cols-2 gap-x-2 ${isPrintVersion ? "gap-y-1" : "gap-y-1.5"} pt-0.5`}>
             <div>
               <span
-                className={`text-gray-400 uppercase font-medium tracking-wider block ${
-                  isPrintVersion ? "text-[3.8pt]" : "text-[7px]"
+                className={`text-gray-300 uppercase font-bold tracking-wider block ${
+                  isPrintVersion ? "text-[3.8pt]" : "text-[7.5px]"
                 }`}
               >
                 Né(e) le
               </span>
               <span
-                className={`text-gray-200 font-semibold tracking-wide ${
-                  isPrintVersion ? "text-[5.2pt]" : "text-[8.8px]"
+                className={`text-gray-300 font-normal tracking-normal ${
+                  isPrintVersion ? "text-[4.6pt]" : "text-[8px]"
                 }`}
               >
                 {birthDateFormatted}
@@ -476,15 +477,15 @@ export function CardRectoFace({
 
             <div>
               <span
-                className={`text-gray-400 uppercase font-medium tracking-wider block ${
-                  isPrintVersion ? "text-[3.8pt]" : "text-[7px]"
+                className={`text-gray-300 uppercase font-bold tracking-wider block ${
+                  isPrintVersion ? "text-[3.8pt]" : "text-[7.5px]"
                 }`}
               >
                 Groupe Sanguin
               </span>
               <span
-                className={`inline-flex items-center gap-1 font-bold text-red-400 tracking-wide ${
-                  isPrintVersion ? "text-[5.2pt]" : "text-[8.8px]"
+                className={`inline-flex items-center gap-1 font-normal text-red-400 tracking-normal ${
+                  isPrintVersion ? "text-[4.6pt]" : "text-[8px]"
                 }`}
               >
                 <Heart className="w-2 h-2 fill-red-500 text-red-500" />
@@ -494,15 +495,15 @@ export function CardRectoFace({
 
             <div className="col-span-2">
               <span
-                className={`text-gray-400 uppercase font-medium tracking-wider block ${
-                  isPrintVersion ? "text-[3.8pt]" : "text-[7px]"
+                className={`text-gray-300 uppercase font-bold tracking-wider block ${
+                  isPrintVersion ? "text-[3.8pt]" : "text-[7.5px]"
                 }`}
               >
                 Téléphone
               </span>
               <span
-                className={`text-gray-200 font-semibold tracking-wide ${
-                  isPrintVersion ? "text-[5.2pt]" : "text-[8.8px]"
+                className={`text-gray-300 font-normal tracking-normal ${
+                  isPrintVersion ? "text-[4.6pt]" : "text-[8px]"
                 }`}
               >
                 {participant.phone}
@@ -548,38 +549,6 @@ export function CardRectoFace({
               )}
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* CARD BOTTOM BAR: REAL CODE 128 BARCODE & OFFICIAL SECURITY SEAL */}
-      <div
-        className={`relative z-10 ${
-          isPrintVersion ? "pt-1 border-t border-white/10" : "pt-1.5 border-t border-white/10"
-        } flex items-center justify-between gap-2 shrink-0`}
-      >
-        {/* Real Functional Code 128 Barcode */}
-        <RealBarcodeCode128
-          value={registration?.reference || cardNumber}
-          isPrintVersion={isPrintVersion}
-        />
-
-        {/* Security / Verification Badge */}
-        <div className="flex flex-col items-end justify-center text-right">
-          <span
-            className={`font-bold tracking-wider uppercase flex items-center gap-1 text-emerald-400 ${
-              isPrintVersion ? "text-[4.2pt]" : "text-[7.5px]"
-            }`}
-          >
-            <ShieldCheck className="w-2.5 h-2.5 text-emerald-400 shrink-0" />
-            <span>Membre Officiel</span>
-          </span>
-          <span
-            className={`font-mono text-gray-400 font-medium ${
-              isPrintVersion ? "text-[3.8pt]" : "text-[6.8px]"
-            }`}
-          >
-            {cardNumber}
-          </span>
         </div>
       </div>
     </div>
@@ -725,8 +694,8 @@ export function CardVersoFace({
             {cardRef}
           </span>
           <span
-            className={`text-[#00D4FF] uppercase tracking-wider font-bold ${
-              isPrintVersion ? "text-[3.6pt]" : "text-[6.5px]"
+            className={`text-[#E52421] uppercase tracking-wider font-extrabold ${
+              isPrintVersion ? "text-[3.8pt]" : "text-[7px]"
             }`}
           >
             SCAN POUR VÉRIFIER
@@ -736,12 +705,12 @@ export function CardVersoFace({
 
       {/* Verso Footer: Location on left and Website URL on right */}
       <div
-        className={`pt-1.5 border-t border-white/10 flex items-center justify-between text-gray-400 font-mono ${
-          isPrintVersion ? "text-[5.5pt]" : "text-[9px]"
+        className={`pt-1 border-t border-white/10 flex items-center justify-between text-gray-400 font-mono ${
+          isPrintVersion ? "text-[3.8pt]" : "text-[6.8px]"
         }`}
       >
-        <div className="flex items-center gap-1.5 text-gray-300">
-          <MapPin className="w-2.5 h-2.5 text-[#E52421] shrink-0" />
+        <div className="flex items-center gap-1 text-gray-300">
+          <MapPin className="w-2 h-2 text-[#E52421] shrink-0" />
           <span className="font-semibold tracking-wide">Oran, Algérie</span>
         </div>
         <div>
