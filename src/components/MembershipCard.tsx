@@ -16,6 +16,7 @@ import {
   MapPin,
   Sparkles,
   ShieldCheck,
+  Globe,
 } from "lucide-react";
 
 export interface MembershipCardProps {
@@ -714,37 +715,38 @@ export function CardVersoFace({
 
       {/* Verso Footer: Location, Instagram, and Website URL */}
       <div
-        className={`pt-1 border-t border-white/10 flex items-center justify-between text-gray-400 font-mono ${
+        className={`pt-1.5 pb-0.5 border-t border-white/10 flex items-center justify-between text-gray-400 font-mono ${
           isPrintVersion ? "text-[3.8pt]" : "text-[6.8px]"
         }`}
       >
         <div className="flex items-center gap-1 text-gray-300">
-          <MapPin className="w-2 h-2 text-[#E52421] shrink-0" />
-          <span className="font-semibold tracking-wide">Oran, Algérie</span>
+          <MapPin className={isPrintVersion ? "w-[2.2mm] h-[2.2mm] text-[#E52421] shrink-0" : "w-2.5 h-2.5 text-[#E52421] shrink-0"} />
+          <span className="font-semibold tracking-wide translate-y-[0.5px]">Oran, Algérie</span>
         </div>
 
-        {/* Instagram with authentic purple color */}
-        <div className="flex items-center gap-1 text-[#C13584]">
+        {/* Instagram */}
+        <div className="flex items-center gap-1 text-gray-300">
           <svg
             viewBox="0 0 24 24"
-            width={isPrintVersion ? "6.5" : "8.5"}
-            height={isPrintVersion ? "6.5" : "8.5"}
+            width={isPrintVersion ? "8" : "10"}
+            height={isPrintVersion ? "8" : "10"}
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="shrink-0"
+            className="text-[#E1306C] shrink-0"
           >
             <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
             <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
             <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
           </svg>
-          <span className="font-bold tracking-wide">:add_club_oran</span>
+          <span className="text-gray-200 font-semibold tracking-wide translate-y-[0.5px]">@add_club_oran</span>
         </div>
 
-        <div>
-          <span className="text-[#00D4FF] font-bold tracking-wider hover:underline">
+        <div className="flex items-center gap-1">
+          <Globe className={isPrintVersion ? "w-[2.2mm] h-[2.2mm] text-[#00D4FF] shrink-0" : "w-2.5 h-2.5 text-[#00D4FF] shrink-0"} />
+          <span className="text-[#00D4FF] font-bold tracking-wider hover:underline translate-y-[0.5px]">
             www.addpkoran.com
           </span>
         </div>
