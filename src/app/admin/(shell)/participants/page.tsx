@@ -24,9 +24,21 @@ import {
   AlertTriangle as FiAlertTriangle,
   X as FiX,
   Key as FiKey,
+  ShieldCheck as FiShieldCheck,
+  FileSpreadsheet as FiFileSpreadsheet,
+  Download as FiDownload,
+  Loader2 as FiLoader2,
+  Check as FiCheck,
+  ExternalLink as FiExternalLink,
 } from "lucide-react";
 import { getStoredAdminSeason, setStoredAdminSeason } from "@/lib/adminSeason";
 import ResetPasswordModal from "@/components/admin/ResetPasswordModal";
+import {
+  downloadInsuranceExcelClient,
+  downloadInsurancePdfClient,
+  InsuranceAdherentRow,
+  InsuranceExportMetadata,
+} from "@/lib/insuranceExport";
 
 interface ParticipantItem {
   id: string;
@@ -89,7 +101,7 @@ export default function ParticipantsPage() {
   const { t, locale, isRtl } = useLanguage();
 
   const [participants, setParticipants] = useState<ParticipantItem[]>([]);
-  const [seasons, setSeasons] = useState<Array<{ id: string; name: string; code: string }>>([]);
+  const [seasons, setSeasons] = useState<Array<{ id: string; name?: string; label?: string; code: string }>>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCardParticipant, setSelectedCardParticipant] = useState<ParticipantItem | null>(null);
@@ -104,6 +116,60 @@ export default function ParticipantsPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
+
+  // Export Assurance Modal State
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [exportSeason, setExportSeason] = useState(() => getStoredAdminSeason() || "");
+  const [exportStatus, setExportStatus] = useState<"ACTIVE_PAID_ONLY" | "ALL">("ACTIVE_PAID_ONLY");
+  const [exportAgeCategory, setExportAgeCategory] = useState<"" | "minor" | "adult">("");
+  const [exportingFormat, setExportingFormat] = useState<"excel" | "pdf_download" | "pdf_print" | null>(null);
+  const [exportError, setExportError] = useState<string | null>(null);
+  const [exportSuccessMsg, setExportSuccessMsg] = useState<string | null>(null);
+
+  const handleExportInsurance = async (format: "excel" | "pdf_download" | "pdf_print") => {
+    try {
+      setExportingFormat(format);
+      setExportError(null);
+      setExportSuccessMsg(null);
+
+      const params = new URLSearchParams({
+        format: "json",
+        status: exportStatus,
+      });
+      if (exportSeason) params.append("season", exportSeason);
+      if (exportAgeCategory) params.append("ageCategory", exportAgeCategory);
+      if (search.trim()) params.append("search", search.trim());
+
+      const res = await fetch(`/api/admin/participants/export?${params.toString()}`);
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || "Erreur lors de la récupération des adhérents pour l'export.");
+      }
+
+      const data = await res.json();
+      const rows: InsuranceAdherentRow[] = data.rows || [];
+      const metadata: InsuranceExportMetadata = data.metadata;
+
+      if (!rows || rows.length === 0) {
+        throw new Error("Aucun adhérent ne correspond aux critères sélectionnés.");
+      }
+
+      if (format === "excel") {
+        downloadInsuranceExcelClient(rows, metadata);
+        setExportSuccessMsg(`Classeur Excel exporté avec succès (${rows.length} adhérents).`);
+      } else if (format === "pdf_download") {
+        downloadInsurancePdfClient(rows, metadata, "download");
+        setExportSuccessMsg(`Bordereau PDF téléchargé avec succès (${rows.length} adhérents).`);
+      } else if (format === "pdf_print") {
+        downloadInsurancePdfClient(rows, metadata, "print");
+        setExportSuccessMsg(`Aperçu d'impression A4 ouvert dans un nouvel onglet.`);
+      }
+    } catch (err: any) {
+      setExportError(err.message || "Erreur lors de l'exportation.");
+    } finally {
+      setExportingFormat(null);
+    }
+  };
 
   const fetchParticipants = async () => {
     try {
@@ -184,7 +250,21 @@ export default function ParticipantsPage() {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() => {
+              setExportSeason(selectedSeason || "");
+              setExportError(null);
+              setExportSuccessMsg(null);
+              setShowExportModal(true);
+            }}
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-mono font-bold shadow-md shadow-emerald-600/25 transition"
+            title="Exporter la liste nominative pour l'assurance (Excel & PDF)"
+          >
+            <FiShieldCheck className="w-4 h-4 text-emerald-100" />
+            <span>Export Assurance</span>
+          </button>
           <Link
             href="/admin/cards/batch"
             className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#E52421] hover:bg-[#ff2d2a] text-white rounded-xl text-xs font-mono font-bold shadow-md shadow-[#E52421]/20 transition"
@@ -570,6 +650,229 @@ export default function ParticipantsPage() {
           phone={selectedResetParticipant.phone}
           whatsapp={selectedResetParticipant.whatsapp}
         />
+      )}
+
+      {/* Export Assurance Modal */}
+      {showExportModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative bg-[#141419] border border-emerald-500/30 rounded-3xl p-6 sm:p-7 max-w-xl w-full shadow-2xl space-y-5 animate-in zoom-in-95">
+            {/* Modal Header */}
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                  <FiShieldCheck className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
+                    Bordereau & Export Assurance Sportive
+                  </h3>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    État nominatif officiel des adhérents pour la souscription en agence
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowExportModal(false)}
+                className="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/5 transition"
+              >
+                <FiX className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Options Panel */}
+            <div className="space-y-4 bg-[#101015] border border-white/5 rounded-2xl p-4 text-xs">
+              {/* Season Selection */}
+              <div>
+                <label className="block text-gray-300 font-medium mb-1.5">
+                  Saison sportive concernée
+                </label>
+                <select
+                  value={exportSeason}
+                  onChange={(e) => setExportSeason(e.target.value)}
+                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-emerald-500"
+                >
+                  <option value="">Saison en cours (Active)</option>
+                  <option value="ALL">Toutes les saisons</option>
+                  {seasons.map((s) => (
+                    <option key={s.id} value={s.code}>
+                      Saison {s.name || s.code}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Status Filter */}
+              <div>
+                <label className="block text-gray-300 font-medium mb-1.5">
+                  Statut des dossiers d&apos;inscription
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setExportStatus("ACTIVE_PAID_ONLY")}
+                    className={`flex items-start gap-2.5 p-3 rounded-xl border text-left transition ${
+                      exportStatus === "ACTIVE_PAID_ONLY"
+                        ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-300"
+                        : "bg-[#181820] border-white/5 text-gray-400 hover:bg-white/5"
+                    }`}
+                  >
+                    <div className="mt-0.5">
+                      {exportStatus === "ACTIVE_PAID_ONLY" ? (
+                        <FiCheckCircle className="w-4 h-4 text-emerald-400" />
+                      ) : (
+                        <div className="w-4 h-4 rounded-full border border-gray-600" />
+                      )}
+                    </div>
+                    <div>
+                      <span className="font-semibold block text-white">Validés & Payés (Recommandé)</span>
+                      <span className="text-[11px] text-gray-400">Athlètes ayant finalisé leur adhésion</span>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setExportStatus("ALL")}
+                    className={`flex items-start gap-2.5 p-3 rounded-xl border text-left transition ${
+                      exportStatus === "ALL"
+                        ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-300"
+                        : "bg-[#181820] border-white/5 text-gray-400 hover:bg-white/5"
+                    }`}
+                  >
+                    <div className="mt-0.5">
+                      {exportStatus === "ALL" ? (
+                        <FiCheckCircle className="w-4 h-4 text-emerald-400" />
+                      ) : (
+                        <div className="w-4 h-4 rounded-full border border-gray-600" />
+                      )}
+                    </div>
+                    <div>
+                      <span className="font-semibold block text-white">Tous les inscrits</span>
+                      <span className="text-[11px] text-gray-400">Inclut les dossiers en cours d&apos;examen</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              {/* Age Category Filter */}
+              <div>
+                <label className="block text-gray-300 font-medium mb-1.5">
+                  Catégorie d&apos;âge
+                </label>
+                <div className="grid grid-cols-3 gap-2 font-mono">
+                  {[
+                    { id: "", label: "Tous les âges" },
+                    { id: "minor", label: "Mineurs (< 18)" },
+                    { id: "adult", label: "Majeurs (18+)" },
+                  ].map((cat) => (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => setExportAgeCategory(cat.id as any)}
+                      className={`py-2 px-2.5 rounded-xl border text-center transition ${
+                        exportAgeCategory === cat.id
+                          ? "bg-white/10 border-white/20 text-white font-bold"
+                          : "bg-[#181820] border-white/5 text-gray-400 hover:text-white"
+                      }`}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Notifications */}
+            {exportError && (
+              <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-xs text-red-300 flex items-center gap-2">
+                <FiAlertTriangle className="w-4 h-4 shrink-0 text-red-400" />
+                <span>{exportError}</span>
+              </div>
+            )}
+            {exportSuccessMsg && (
+              <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-xs text-emerald-300 flex items-center gap-2">
+                <FiCheckCircle className="w-4 h-4 shrink-0 text-emerald-400" />
+                <span>{exportSuccessMsg}</span>
+              </div>
+            )}
+
+            {/* Export Actions Grid */}
+            <div className="space-y-2 pt-1">
+              <p className="text-[11px] text-gray-400 uppercase tracking-wider font-mono">
+                Choisissez le format d&apos;export :
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {/* Excel Option */}
+                <button
+                  type="button"
+                  onClick={() => handleExportInsurance("excel")}
+                  disabled={exportingFormat !== null}
+                  className="flex flex-col items-start gap-1 p-3.5 bg-emerald-600/15 hover:bg-emerald-600/25 border border-emerald-500/30 rounded-2xl text-left transition disabled:opacity-50 group"
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <span className="flex items-center gap-2 text-xs font-bold text-emerald-300">
+                      <FiFileSpreadsheet className="w-4 h-4" />
+                      Fichier Excel (.xlsx)
+                    </span>
+                    {exportingFormat === "excel" ? (
+                      <FiLoader2 className="w-4 h-4 animate-spin text-emerald-400" />
+                    ) : (
+                      <FiDownload className="w-3.5 h-3.5 text-emerald-400 group-hover:translate-y-0.5 transition" />
+                    )}
+                  </div>
+                  <span className="text-[11px] text-gray-400 mt-1">
+                    Avec colonnes de suivi : N° Police, prime, date d&apos;effet et quittance.
+                  </span>
+                </button>
+
+                {/* PDF Print Option */}
+                <button
+                  type="button"
+                  onClick={() => handleExportInsurance("pdf_print")}
+                  disabled={exportingFormat !== null}
+                  className="flex flex-col items-start gap-1 p-3.5 bg-sky-600/15 hover:bg-sky-600/25 border border-sky-500/30 rounded-2xl text-left transition disabled:opacity-50 group"
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <span className="flex items-center gap-2 text-xs font-bold text-sky-300">
+                      <FiPrinter className="w-4 h-4" />
+                      Bordereau PDF (Imprimer)
+                    </span>
+                    {exportingFormat === "pdf_print" ? (
+                      <FiLoader2 className="w-4 h-4 animate-spin text-sky-400" />
+                    ) : (
+                      <FiExternalLink className="w-3.5 h-3.5 text-sky-400 group-hover:translate-x-0.5 transition" />
+                    )}
+                  </div>
+                  <span className="text-[11px] text-gray-400 mt-1">
+                    Format officiel A4 Paysage prêt pour impression physique et cachet.
+                  </span>
+                </button>
+              </div>
+
+              {/* PDF Direct Download option */}
+              <div className="flex items-center justify-between pt-2">
+                <button
+                  type="button"
+                  onClick={() => handleExportInsurance("pdf_download")}
+                  disabled={exportingFormat !== null}
+                  className="text-xs text-gray-400 hover:text-white inline-flex items-center gap-1.5 transition disabled:opacity-50"
+                >
+                  <FiDownload className="w-3.5 h-3.5" />
+                  <span>Ou télécharger directement le PDF du Bordereau</span>
+                  {exportingFormat === "pdf_download" && <FiLoader2 className="w-3 h-3 animate-spin ml-1" />}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowExportModal(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition"
+                >
+                  Fermer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -5,6 +5,7 @@ import { ensureMembershipCardNumber } from "../src/lib/membershipCard";
 import { checkPossibleDuplicates } from "../src/lib/duplicates";
 import { storage } from "../src/lib/storage";
 import { CLUB_ROLES, CLUB_ROLES_LIST, getClubRoleDefinition } from "../src/lib/clubRoles";
+import { buildInsuranceRows, buildInsuranceExcelBuffer, generateInsurancePdf } from "../src/lib/insuranceExport";
 
 let passedCount = 0;
 let failedCount = 0;
@@ -89,6 +90,64 @@ async function runUnitTests() {
   const card2 = await generateMembershipCardNumber("2026");
   assert(/^ADD-CARD-2026-\d{4}$/.test(card1), `Generated card conforms to ADD-CARD-2026-0001 pattern (${card1})`);
   assert(card1 !== card2, `Sequential membership cards are strictly unique (${card1} vs ${card2})`);
+
+  // Sports Insurance Export Tests
+  const mockMembers = [
+    {
+      id: "p-test-1",
+      firstName: "amine",
+      lastName: "mansouri",
+      dateOfBirth: new Date("2010-06-15"),
+      placeOfBirth: "Oran",
+      isMinor: true,
+      bloodType: "B+",
+      phone: "0550112233",
+      membershipCardNumber: "ADD-CARD-2026-0099",
+      registrations: [
+        {
+          reference: "ADD-2026-000099",
+          status: "ACTIVE",
+          season: { code: "2026", label: "Saison 2025/2026" },
+          disciplines: [{ discipline: { nameFr: "Parkour" } }],
+        },
+      ],
+    },
+    {
+      id: "p-test-2",
+      firstName: "samira",
+      lastName: "dahmani",
+      dateOfBirth: new Date("1998-11-20"),
+      placeOfBirth: "Es Senia",
+      isMinor: false,
+      bloodType: "O+",
+      phone: "0660445566",
+      membershipCardNumber: "ADD-CARD-2026-0100",
+      registrations: [
+        {
+          reference: "ADD-2026-000100",
+          status: "PAID",
+          season: { code: "2026", label: "Saison 2025/2026" },
+          disciplines: [{ discipline: { nameFr: "Escalade & Sports de Montagne" } }],
+        },
+      ],
+    },
+  ];
+
+  const exportData = buildInsuranceRows(mockMembers, { seasonCode: "2026" });
+  assert(exportData.rows.length === 2, "Insurance export produces 2 rows");
+  assert(exportData.metadata.totalMinors === 1, "Insurance export counts 1 minor");
+  assert(exportData.metadata.totalAdults === 1, "Insurance export counts 1 adult");
+  assert(exportData.rows[0].lastName === "MANSOURI", "Insurance export capitalizes last name");
+  assert(exportData.rows[0].firstName === "Amine", "Insurance export titles first name");
+  assert(exportData.rows[0].disciplines === "Parkour", "Insurance export includes discipline");
+
+  const xlsxBuffer = buildInsuranceExcelBuffer(exportData.rows, exportData.metadata);
+  assert(Buffer.isBuffer(xlsxBuffer) && xlsxBuffer.length > 5000, "Insurance Excel buffer is generated (> 5KB)");
+
+  const pdfDoc = generateInsurancePdf(exportData.rows, exportData.metadata);
+  const pdfBytes = pdfDoc.output("arraybuffer");
+  assert(pdfBytes.byteLength > 2000, "Insurance PDF bordereau is generated (> 2KB)");
+  assert(pdfDoc.getNumberOfPages() >= 1, "Insurance PDF bordereau has at least 1 landscape page");
 }
 
 async function runIntegrationTests() {
