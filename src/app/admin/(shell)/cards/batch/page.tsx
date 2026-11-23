@@ -822,6 +822,8 @@ export default function BatchCardsPrintPage() {
           >
             <CardVersoFace
               participant={renderCardProps.participant}
+              registration={renderCardProps.registration}
+              cardNumber={renderCardProps.cardNumber}
               seasonLabel={renderCardProps.seasonLabel}
               isPrintVersion
             />

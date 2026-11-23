@@ -367,6 +367,8 @@ export default function CardPrintPage({
               >
                 <CardVersoFace
                   participant={participant}
+                  registration={registration}
+                  cardNumber={cardNumber}
                   seasonLabel={seasonLabel}
                   isPrintVersion
                 />
@@ -429,6 +431,8 @@ export default function CardPrintPage({
               >
                 <CardVersoFace
                   participant={participant}
+                  registration={registration}
+                  cardNumber={cardNumber}
                   seasonLabel={seasonLabel}
                   isPrintVersion
                 />
