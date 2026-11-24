@@ -124,8 +124,8 @@ export function CompositeDiamondEmblem() {
 
   return (
     <div className="relative flex flex-col items-center justify-center select-none py-2">
-      {/* Outer Glow Halo */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] sm:w-[480px] h-[380px] sm:h-[480px] rounded-full bg-[#E52421]/15 blur-[120px] pointer-events-none" />
+      {/* Outer Multi-Chromatic Radiant Halo (Casse le rouge avec Cyan & Or Solaire) */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] sm:w-[480px] h-[380px] sm:h-[480px] rounded-full bg-[radial-gradient(circle,rgba(6,182,212,0.18)_0%,rgba(255,210,31,0.14)_35%,rgba(229,36,33,0.12)_70%,transparent_100%)] blur-[110px] pointer-events-none" />
 
       {/* Main 5-Sector Kite Emblem Container */}
       <div

@@ -359,8 +359,10 @@ export function DisciplineBranchScroll() {
           (Bonded 5-discipline shape with 1-word side labels)
          ======================================================== */}
       <section className="relative pt-16 sm:pt-24 pb-14 sm:pb-20 flex flex-col items-center justify-center text-center px-4 overflow-hidden">
-        {/* Ambient Red Aura */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] sm:w-[680px] h-[480px] sm:h-[680px] bg-[#E52421]/15 rounded-full blur-[150px] pointer-events-none" />
+        {/* Ambient Multi-Chromatic Aura (Casse le rouge avec Cyan & Or Solaire) */}
+        <div className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[380px] sm:w-[540px] h-[380px] sm:h-[540px] bg-[#06B6D4]/12 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute top-1/2 right-1/3 translate-x-1/2 -translate-y-1/2 w-[360px] sm:w-[500px] h-[360px] sm:h-[500px] bg-[#FFD21F]/10 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] sm:w-[480px] h-[340px] sm:h-[480px] bg-[#E52421]/10 rounded-full blur-[130px] pointer-events-none" />
 
         {/* 5-Section Kite Emblem Component */}
         <CompositeDiamondEmblem />
@@ -424,11 +426,13 @@ export function DisciplineBranchScroll() {
         >
           <defs>
             <linearGradient id="zigzagProgressGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#E52421" stopOpacity="0.7" />
-              <stop offset="50%" stopColor="#FF3030" stopOpacity="1" />
-              <stop offset="100%" stopColor="#E52421" stopOpacity="0.85" />
+              <stop offset="0%" stopColor="#06B6D4" stopOpacity="0.85" />
+              <stop offset="25%" stopColor="#FFD21F" stopOpacity="0.95" />
+              <stop offset="50%" stopColor="#E52421" stopOpacity="1" />
+              <stop offset="75%" stopColor="#10B981" stopOpacity="0.9" />
+              <stop offset="100%" stopColor="#FF3030" stopOpacity="0.9" />
             </linearGradient>
-            <filter id="neonRedGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <filter id="neonRailGlow" x="-30%" y="-30%" width="160%" height="160%">
               <feGaussianBlur stdDeviation="5" result="blur" />
               <feMerge>
                 <feMergeNode in="blur" />
@@ -437,13 +441,13 @@ export function DisciplineBranchScroll() {
             </filter>
           </defs>
 
-          {/* Dormant / Guide Zigzag Track (Subtle Dashed Ambient Rail) */}
+          {/* Dormant / Guide Zigzag Track (Subtle Dashed Multi-Tone Rail) */}
           {pathData && (
             <path
               d={pathData}
               fill="none"
-              stroke="#E52421"
-              strokeOpacity="0.18"
+              stroke="url(#zigzagProgressGrad)"
+              strokeOpacity="0.22"
               strokeWidth="2"
               strokeDasharray="6 6"
             />
@@ -457,7 +461,7 @@ export function DisciplineBranchScroll() {
               fill="none"
               stroke="url(#zigzagProgressGrad)"
               strokeWidth="3.5"
-              filter="url(#neonRedGlow)"
+              filter="url(#neonRailGlow)"
               strokeDasharray={totalLength || 1000}
               strokeDashoffset={strokeOffset}
               strokeLinecap="round"
@@ -467,8 +471,8 @@ export function DisciplineBranchScroll() {
           {/* Kinetic Energy Head Particle riding the progressive tip */}
           {headPos && strokeOffset < totalLength && (
             <g transform={`translate(${headPos.x}, ${headPos.y})`}>
-              <circle r="9" fill="#E52421" opacity="0.3" className="animate-ping" />
-              <circle r="5" fill="#FFFFFF" stroke="#E52421" strokeWidth="2.5" />
+              <circle r="11" fill="#06B6D4" opacity="0.35" className="animate-ping" />
+              <circle r="5" fill="#FFFFFF" stroke="#FFD21F" strokeWidth="2" />
             </g>
           )}
         </svg>

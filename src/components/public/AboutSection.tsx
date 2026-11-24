@@ -219,9 +219,9 @@ export function AboutSection() {
       dir={isRtl ? "rtl" : "ltr"}
       className="relative py-28 sm:py-36 px-4 sm:px-6 lg:px-8 bg-[#000000] text-[#F5F5F2] overflow-hidden border-t border-white/10"
     >
-      {/* Ambient Red Glow Accents */}
-      <div className="absolute top-1/4 -left-48 w-96 h-96 rounded-full bg-[#E52421]/[0.08] blur-[150px] pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-48 w-96 h-96 rounded-full bg-[#E52421]/[0.06] blur-[150px] pointer-events-none" />
+      {/* Ambient Multi-Tone Glow Accents (Casse le rouge avec Cyan & Or Solaire) */}
+      <div className="absolute top-1/4 -left-48 w-96 h-96 rounded-full bg-[#06B6D4]/[0.08] blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-1/4 -right-48 w-96 h-96 rounded-full bg-[#FFD21F]/[0.06] blur-[150px] pointer-events-none" />
 
       <div className="max-w-6xl mx-auto relative z-10 space-y-16 sm:space-y-24">
         {/* ========================================================
