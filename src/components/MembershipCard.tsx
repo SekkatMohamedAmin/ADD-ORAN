@@ -325,6 +325,7 @@ export function CardRectoFace({
               alt="Logo Club ADD Oran"
               width={isPrintVersion ? 38 : 48}
               height={isPrintVersion ? 38 : 48}
+              style={{ width: "auto", height: "auto" }}
               className="object-contain"
               priority
               unoptimized
@@ -630,6 +631,7 @@ export function CardVersoFace({
                 alt="Club ADD Oran"
                 width={isPrintVersion ? 30 : 40}
                 height={isPrintVersion ? 30 : 40}
+                style={{ width: "auto", height: "auto" }}
                 className="object-contain"
                 priority
                 unoptimized

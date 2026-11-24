@@ -219,13 +219,13 @@ export function AdminLayoutClient({ children, adminUser }: AdminLayoutClientProp
         {/* Brand Header */}
         <div className="p-5 border-b border-white/[0.08] flex items-center justify-between bg-[#030306]">
           <Link href="/admin" className="flex items-center gap-3 group">
-            <div className="relative w-10 h-10 rounded-xl bg-white/5 border border-white/10 p-1.5 flex items-center justify-center shadow-lg group-hover:border-[#E52421]/50 transition-colors">
+            <div className="relative w-10 h-10 shrink-0 rounded-xl bg-white/5 border border-white/10 p-1.5 flex items-center justify-center shadow-lg group-hover:border-[#E52421]/50 transition-colors">
               <Image
                 src="/images/club/logo.svg"
                 alt="ADD Parkour Oran"
-                width={36}
-                height={36}
-                className="w-full h-full object-contain"
+                fill
+                sizes="40px"
+                className="object-contain p-1.5"
                 unoptimized
                 priority
               />

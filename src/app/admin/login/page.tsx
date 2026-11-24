@@ -119,13 +119,13 @@ export default function AdminLoginPage() {
       {/* Top utility bar */}
       <header className="relative z-10 border-b border-white/[0.08] px-6 py-4 flex items-center justify-between bg-[#040407]/80 backdrop-blur-xl">
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="relative w-9 h-9 rounded-xl bg-white/5 border border-white/10 p-1 flex items-center justify-center shadow-md">
+          <div className="relative w-9 h-9 shrink-0 rounded-xl bg-white/5 border border-white/10 p-1 flex items-center justify-center shadow-md">
             <Image
               src="/images/club/logo.svg"
               alt="ADD Parkour Oran"
-              width={32}
-              height={32}
-              className="w-full h-full object-contain"
+              fill
+              sizes="36px"
+              className="object-contain p-1"
               unoptimized
               priority
             />

@@ -82,13 +82,13 @@ export function Footer() {
            ======================================================== */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 pb-12 border-b border-white/10">
           <div className="flex items-center gap-4">
-            <div className="relative w-14 h-14 rounded-2xl bg-white p-2 flex items-center justify-center shadow-lg border border-white/90">
+            <div className="relative w-14 h-14 shrink-0 rounded-2xl bg-white p-2 flex items-center justify-center shadow-lg border border-white/90">
               <Image
                 src="/images/club/logo.svg"
                 alt="ADD Oran Logo"
-                width={48}
-                height={48}
-                className="w-full h-full object-contain"
+                fill
+                sizes="56px"
+                className="object-contain p-2"
                 unoptimized
               />
             </div>

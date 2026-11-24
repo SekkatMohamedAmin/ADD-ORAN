@@ -100,14 +100,13 @@ export function Navbar() {
           }`}
         >
           {/* Logo & Brand Mark */}
-          <Link href="/" className="flex items-center gap-3.5 group">
-            <div className="relative w-11 h-11 rounded overflow-hidden group-hover:scale-105 transition-transform duration-300 shadow-md">
+          <Link href="/" className="flex items-center gap-3.5 group shrink-0">
+            <div className="relative w-11 h-11 shrink-0 rounded overflow-hidden group-hover:scale-105 transition-transform duration-300 shadow-md">
               <Image
                 src="/images/club/logo.svg"
                 alt="ADD Parkour Oran"
-                width={44}
-                height={44}
-                style={{ width: "100%", height: "100%" }}
+                fill
+                sizes="44px"
                 className="object-contain"
                 unoptimized
                 priority

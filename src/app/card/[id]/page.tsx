@@ -131,13 +131,13 @@ export default function CardPublicVerificationPage({
       <header className="border-b border-white/10 bg-[#0E0E13]/80 backdrop-blur-md sticky top-0 z-30">
         <div className="max-w-5xl mx-auto px-4 py-3.5 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 p-1 flex items-center justify-center shrink-0">
+            <div className="relative w-9 h-9 shrink-0 rounded-xl bg-white/5 border border-white/10 p-1 flex items-center justify-center">
               <Image
                 src="/images/club/logo.svg"
                 alt="Logo ADD Oran"
-                width={30}
-                height={30}
-                className="object-contain"
+                fill
+                sizes="36px"
+                className="object-contain p-1"
                 priority
               />
             </div>
