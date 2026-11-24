@@ -736,7 +736,7 @@ function DisciplineKiteCard({ discipline }: { discipline: DisciplineData }) {
 }
 
 // ---------------------------------------------------------------------------
-// Sub-component: Text Details Card (Trilingual & RTL Aware)
+// Sub-component: Text Details Card in Frosted Glass Container (Trilingual & RTL Aware)
 // ---------------------------------------------------------------------------
 function DisciplineTextCard({
   discipline,
@@ -756,7 +756,7 @@ function DisciplineTextCard({
 
   return (
     <div
-      className={`space-y-4 max-w-md ${
+      className={`relative group/glass max-w-lg w-full rounded-3xl p-6 sm:p-8 lg:p-9 transition-all duration-500 overflow-hidden ${
         isRtl
           ? isLeft
             ? "lg:mr-auto lg:text-left text-right"
@@ -764,11 +764,34 @@ function DisciplineTextCard({
           : isLeft
           ? "lg:ml-auto lg:text-right text-left"
           : "lg:mr-auto lg:text-left text-left"
-      }`}
+      } bg-[#0A0A10]/55 hover:bg-[#0E0E18]/65 backdrop-blur-xl sm:backdrop-blur-2xl border border-white/[0.09] hover:border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.65),inset_0_1px_1px_rgba(255,255,255,0.12)] hover:shadow-[0_25px_60px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.2)]`}
     >
+      {/* Specular Top Rim Reflection (Crystalline Glass Effect) */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent pointer-events-none" />
+
+      {/* Ambient Corner Discipline Glow Accent on Glass */}
+      <div className="absolute -top-20 -right-20 w-44 h-44 rounded-full bg-white/[0.02] group-hover/glass:bg-[#E52421]/[0.08] blur-2xl transition-colors duration-700 pointer-events-none" />
+
+      {/* Discipline Number Pill */}
+      <div
+        className={`flex items-center gap-2 mb-3.5 ${
+          isRtl
+            ? isLeft
+              ? "lg:justify-start justify-end"
+              : "lg:justify-end justify-end"
+            : isLeft
+            ? "lg:justify-end justify-start"
+            : "lg:justify-start justify-start"
+        }`}
+      >
+        <span className="font-mono text-[10px] sm:text-[11px] font-semibold text-[#FFD21F] tracking-widest uppercase px-3 py-1 rounded-full bg-white/5 border border-white/10 shadow-sm backdrop-blur-md">
+          BRANCH {discipline.number}
+        </span>
+      </div>
+
       {/* Title */}
       <h3
-        className={`text-2xl sm:text-3xl lg:text-4xl text-white tracking-tight leading-tight group-hover:text-[#E52421] transition-colors ${
+        className={`text-2xl sm:text-3xl text-white tracking-tight leading-tight group-hover/glass:text-[#E52421] transition-colors ${
           isArabic ? "font-arabic font-black" : "font-display font-black uppercase"
         }`}
       >
@@ -777,7 +800,7 @@ function DisciplineTextCard({
 
       {/* Description */}
       <p
-        className={`text-sm sm:text-base text-[#9E9EA8] leading-relaxed ${
+        className={`text-sm sm:text-base text-[#B0B0BC] leading-relaxed pt-2 ${
           isArabic ? "font-arabic" : "font-body"
         }`}
       >
@@ -786,7 +809,7 @@ function DisciplineTextCard({
 
       {/* Athletic Tags */}
       <div
-        className={`flex flex-wrap gap-2 pt-1 ${
+        className={`flex flex-wrap gap-2 pt-4 ${
           isRtl
             ? isLeft
               ? "lg:justify-start justify-end"
@@ -799,7 +822,7 @@ function DisciplineTextCard({
         {tags.map((tag) => (
           <span
             key={tag}
-            className={`px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-[10px] text-white/80 uppercase tracking-wider ${
+            className={`px-3 py-1 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] border border-white/10 text-[10px] text-white/90 uppercase tracking-wider transition-colors ${
               isArabic ? "font-arabic font-bold" : "font-mono"
             }`}
           >
@@ -810,7 +833,7 @@ function DisciplineTextCard({
 
       {/* Sleek CTA Button */}
       <div
-        className={`pt-3 flex ${
+        className={`pt-5 flex ${
           isRtl
             ? isLeft
               ? "lg:justify-start justify-end"
@@ -822,7 +845,7 @@ function DisciplineTextCard({
       >
         <Link
           href={discipline.href}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white/10 hover:bg-[#E52421] text-white font-display font-bold text-xs uppercase tracking-wider transition-all duration-300 border border-white/15 hover:border-transparent shadow-lg group/btn hover:scale-105 active:scale-95"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/10 hover:bg-[#E52421] text-white font-display font-bold text-xs uppercase tracking-wider transition-all duration-300 border border-white/15 hover:border-transparent shadow-lg group/btn hover:scale-105 active:scale-95"
         >
           <span className={isArabic ? "font-arabic font-bold" : ""}>
             {joinLabel}
