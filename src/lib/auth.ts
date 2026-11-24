@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { cache } from "react";
 import crypto from "crypto";
 import { prisma } from "./prisma";
 
@@ -42,7 +43,7 @@ export async function createSession(userId: string): Promise<string> {
   return token;
 }
 
-export async function getSessionUser(): Promise<AuthUser | null> {
+export const getSessionUser = cache(async (): Promise<AuthUser | null> => {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
 
@@ -87,7 +88,7 @@ export async function getSessionUser(): Promise<AuthUser | null> {
     role: session.user.role,
     participant,
   };
-}
+});
 
 export async function destroySession(): Promise<void> {
   const cookieStore = await cookies();

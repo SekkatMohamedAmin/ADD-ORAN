@@ -44,8 +44,12 @@ export async function GET(request: NextRequest) {
     }
 
     const user = await getSessionUser();
-    // Authorization: if logged in as another user, forbid access
-    if (user && user.role !== "ADMIN" && registration.participant.userId !== user.id) {
+    if (!user) {
+      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    }
+
+    // Authorization: owner participant or admin only
+    if (user.role !== "ADMIN" && registration.participant.userId !== user.id) {
       return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
     }
 

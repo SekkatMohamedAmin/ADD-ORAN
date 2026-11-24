@@ -43,6 +43,15 @@ export async function POST(request: NextRequest) {
       data: { passwordHash: newHash },
     });
 
+    // Invalidate all previous sessions for this admin (except the current active session)
+    const currentToken = request.cookies.get("add_session_token")?.value;
+    await prisma.session.deleteMany({
+      where: {
+        userId: user.id,
+        ...(currentToken ? { token: { not: currentToken } } : {}),
+      },
+    });
+
     await logAudit({
       action: "PASSWORD_RESET",
       userId: admin.id,

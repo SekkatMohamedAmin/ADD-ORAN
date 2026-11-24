@@ -5,6 +5,9 @@ import { createSession } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
+// Pre-computed dummy hash to prevent timing attacks when user does not exist
+const DUMMY_HASH = "$2a$10$wN1qG8k2Y9b3eZ5f8mQ4y.7v8R0t1U2w3X4y5Z6a7B8c9D0e1F2g3";
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -53,15 +56,10 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    if (!user) {
-      return NextResponse.json(
-        { error: "Identifiants invalides. Vérifiez votre numéro de téléphone ou mot de passe." },
-        { status: 401 }
-      );
-    }
-
-    const passwordMatch = await bcrypt.compare(password, user.passwordHash);
-    if (!passwordMatch) {
+    // Always perform bcrypt compare to eliminate timing side-channels
+    const hashToCompare = user ? user.passwordHash : DUMMY_HASH;
+    const passwordMatch = await bcrypt.compare(password, hashToCompare);
+    if (!user || !passwordMatch) {
       return NextResponse.json(
         { error: "Identifiants invalides. Vérifiez votre numéro de téléphone ou mot de passe." },
         { status: 401 }
