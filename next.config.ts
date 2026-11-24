@@ -43,6 +43,15 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  async redirects() {
+    return [
+      {
+        source: "/auth/login",
+        destination: "/login",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

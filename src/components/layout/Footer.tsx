@@ -191,7 +191,7 @@ export function Footer() {
               <Link href="/register" className="hover:text-[#E52421] transition-colors font-semibold">
                 {strings.registerLink}
               </Link>
-              <Link href="/auth/login" className="hover:text-white transition-colors">
+              <Link href="/login" className="hover:text-white transition-colors">
                 {strings.memberLink}
               </Link>
             </div>
