@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="100%" height="100%">
+  <defs>
+    <!-- Intense Red Neon Glow Filter -->
+    <filter id="red-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur1" />
+      <feGaussianBlur stdDeviation="16" result="blur2" />
+      <feMerge>
+        <feMergeNode in="blur2" />
+        <feMergeNode in="blur1" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Intense Red Radial Background Gradient -->
+    <radialGradient id="center-red-aura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#E52421" stop-opacity="0.35" />
+      <stop offset="45%" stop-color="#E52421" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#0A0A0D" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Linear Gradients for Category Wedges -->
+    <linearGradient id="top-wedge-grad" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#E52421" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#121217" stop-opacity="0.6" />
+    </linearGradient>
+
+    <linearGradient id="left-wedge-grad" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#E52421" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#121217" stop-opacity="0.6" />
+    </linearGradient>
+
+    <linearGradient id="right-wedge-grad" x1="100%" y1="50%" x2="0%" y2="50%">
+      <stop offset="0%" stop-color="#E52421" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#121217" stop-opacity="0.6" />
+    </linearGradient>
+
+    <linearGradient id="bottom-wedge-grad" x1="50%" y1="100%" x2="50%" y2="0%">
+      <stop offset="0%" stop-color="#E52421" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#121217" stop-opacity="0.6" />
+    </linearGradient>
+  </defs>
+
+  <!-- Deep Stealth Black Canvas -->
+  <rect width="1000" height="1000" fill="#0A0A0D" rx="24"/>
+
+  <!-- Ambient Red Core Aura -->
+  <circle cx="500" cy="500" r="420" fill="url(#center-red-aura)" pointer-events="none"/>
+
+  <!-- Diamond Outer Glow Border -->
+  <polygon points="500,40 960,500 500,960 40,500" 
+           fill="none" 
+           stroke="#E52421" 
+           stroke-width="5" 
+           filter="url(#red-glow)" />
+
+  <!-- Diamond Inner Sharp Frame -->
+  <polygon points="500,56 944,500 500,944 56,500" 
+           fill="#0E0E12" 
+           stroke="#E52421" 
+           stroke-width="2" 
+           stroke-opacity="0.6" />
+
+  <!-- ==========================================
+       CATEGORY 1: TOP SECTOR (SLACKLINE / BALANCE)
+       ========================================== -->
+  <g id="sector-slackline" class="category-sector cursor-pointer">
+    <!-- Top Wedge Polygon -->
+    <polygon points="500,60 940,500 500,500 60,500" 
+             clip-path="url(#clip-top)" 
+             fill="url(#top-wedge-grad)" />
+    <!-- Slackline Wire -->
+    <path d="M 380,360 Q 500,380 620,350" stroke="#E52421" stroke-width="3" fill="none" filter="url(#red-glow)"/>
+    <!-- Silhouette / Graphic Preview -->
+    <image href="/images/club/category-slackline.png" x="350" y="80" width="300" height="300" preserveAspectRatio="xMidYMid meet" />
+  </g>
+
+  <!-- ==========================================
+       CATEGORY 2: LEFT SECTOR (ESCALADE / CLIMBING)
+       ========================================== -->
+  <g id="sector-climbing" class="category-sector cursor-pointer">
+    <!-- Left Wedge Polygon -->
+    <polygon points="56,500 500,60 500,500 500,944" 
+             clip-path="url(#clip-left)" 
+             fill="url(#left-wedge-grad)" />
+    <!-- Climbing Rope Line -->
+    <path d="M 280,260 Q 320,380 340,540" stroke="#E52421" stroke-width="2.5" stroke-dasharray="6,4" fill="none" filter="url(#red-glow)"/>
+    <!-- Silhouette / Graphic Preview -->
+    <image href="/images/club/category-climbing.png" x="100" y="320" width="320" height="320" preserveAspectRatio="xMidYMid meet" />
+  </g>
+
+  <!-- ==========================================
+       CATEGORY 3: RIGHT SECTOR (PARKOUR / FLIGHT)
+       ========================================== -->
+  <g id="sector-parkour" class="category-sector cursor-pointer">
+    <!-- Right Wedge Polygon -->
+    <polygon points="944,500 500,60 500,500 500,944" 
+             clip-path="url(#clip-right)" 
+             fill="url(#right-wedge-grad)" />
+    <!-- Kinetic trajectory arc -->
+    <path d="M 580,320 Q 720,340 840,460" stroke="#E52421" stroke-width="3" fill="none" filter="url(#red-glow)"/>
+    <!-- Silhouette / Graphic Preview -->
+    <image href="/images/club/category-parkour.png" x="580" y="320" width="320" height="320" preserveAspectRatio="xMidYMid meet" />
+  </g>
+
+  <!-- ==========================================
+       CATEGORY 4: BOTTOM SECTOR (HIKING / TREKKING)
+       ========================================== -->
+  <g id="sector-hiking" class="category-sector cursor-pointer">
+    <!-- Bottom Wedge Polygon -->
+    <polygon points="500,944 60,500 500,500 940,500" 
+             clip-path="url(#clip-bottom)" 
+             fill="url(#bottom-wedge-grad)" />
+    <!-- Trail Path Line -->
+    <path d="M 460,780 L 540,780 M 420,840 L 580,840" stroke="#E52421" stroke-width="2" stroke-opacity="0.7" fill="none"/>
+    <!-- Silhouette / Graphic Preview -->
+    <image href="/images/club/category-hiking.png" x="350" y="580" width="300" height="320" preserveAspectRatio="xMidYMid meet" />
+  </g>
+
+  <!-- ==========================================
+       RED DIVIDING LINES (SEPARATING THE CATEGORIES)
+       ========================================== -->
+  <!-- Diagonal X-Divider Line 1: Top-Left to Bottom-Right -->
+  <line x1="278" y1="278" x2="722" y2="722" 
+        stroke="#E52421" stroke-width="4" filter="url(#red-glow)"/>
+  
+  <!-- Diagonal X-Divider Line 2: Bottom-Left to Top-Right -->
+  <line x1="278" y1="722" x2="722" y2="278" 
+        stroke="#E52421" stroke-width="4" filter="url(#red-glow)"/>
+
+  <!-- Secondary Precision Technical Accents -->
+  <line x1="278" y1="278" x2="722" y2="722" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.8"/>
+  <line x1="278" y1="722" x2="722" y2="278" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.8"/>
+
+  <!-- ==========================================
+       CENTER CREST: HERALDIC RED SHIELD
+       ========================================== -->
+  <g id="center-crest" class="cursor-pointer">
+    <!-- Glowing Red Backplate -->
+    <circle cx="500" cy="500" r="95" fill="#141419" stroke="#E52421" stroke-width="3" filter="url(#red-glow)"/>
+    <circle cx="500" cy="500" r="82" fill="#E52421" fill-opacity="0.15" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.4"/>
+    
+    <!-- Central Shield Graphic -->
+    <image href="/images/club/category-crest.png" x="410" y="410" width="180" height="180" preserveAspectRatio="xMidYMid meet" />
+  </g>
+
+  <!-- Technical HUD Crosshairs at 4 Vertices -->
+  <g stroke="#E52421" stroke-width="2" opacity="0.9" filter="url(#red-glow)">
+    <!-- Top Vertex -->
+    <line x1="500" y1="25" x2="500" y2="55"/>
+    <!-- Bottom Vertex -->
+    <line x1="500" y1="945" x2="500" y2="975"/>
+    <!-- Left Vertex -->
+    <line x1="25" y1="500" x2="55" y2="500"/>
+    <!-- Right Vertex -->
+    <line x1="945" y1="500" x2="975" y2="500"/>
+  </g>
+</svg>

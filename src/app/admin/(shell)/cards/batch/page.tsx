@@ -12,6 +12,13 @@ import {
 } from "@/components/MembershipCard";
 import { getClubRoleDefinition } from "@/lib/clubRoles";
 import {
+  FlaticonAdminBatchPrint,
+  FlaticonAdminCards,
+  FlaticonAdminPdf,
+  FlaticonAdminZip,
+  FlaticonAdminNature,
+} from "@/components/admin/AdminFlaticons";
+import {
   Archive as FiArchive,
   ArrowLeft as FiArrowLeft,
   CheckSquare as FiCheckSquare,
@@ -379,7 +386,7 @@ export default function BatchCardsPrintPage() {
               <FiArrowLeft className="w-4 h-4" />
             </Link>
             <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-              <FiPrinter className="w-6 h-6 text-[#E52421]" />
+              <FlaticonAdminBatchPrint size={24} className="shrink-0 text-[#E52421]" />
               Impression Batch des Cartes PVC (CR-80)
             </h1>
           </div>
@@ -399,10 +406,10 @@ export default function BatchCardsPrintPage() {
             type="button"
             disabled={selectedCards.length === 0 || exportingMode !== null}
             onClick={() => handleBatchExport("merged_pdf")}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-semibold transition disabled:opacity-40 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-medium transition disabled:opacity-40 cursor-pointer"
             title="Toutes les cartes Recto/Verso à la suite dans un seul fichier PDF CR-80"
           >
-            <FiFileText className="w-4 h-4 text-[#FFD21F]" />
+            <FlaticonAdminPdf size={16} className="shrink-0 text-[#FFD21F]" />
             <span>PDF Unique ({selectedCards.length * 2} pages)</span>
           </button>
 
@@ -410,27 +417,27 @@ export default function BatchCardsPrintPage() {
             type="button"
             disabled={selectedCards.length === 0 || exportingMode !== null}
             onClick={() => handleBatchExport("zip")}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#E52421] hover:bg-[#ff2d2a] text-white text-xs font-semibold shadow-md shadow-[#E52421]/25 transition disabled:opacity-40 cursor-pointer active:scale-95"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#E52421] hover:bg-[#ff2d2a] text-white text-xs font-medium shadow-md shadow-[#E52421]/25 transition disabled:opacity-40 cursor-pointer active:scale-95"
             title="Télécharge un dossier compressé ZIP contenant un PDF CR-80 par personne"
           >
-            <FiArchive className="w-4 h-4" />
+            <FlaticonAdminZip size={16} className="shrink-0" />
             <span>Télécharger ZIP ({selectedCards.length} cartes)</span>
           </button>
         </div>
       </div>
 
       {/* Filters & Selection Summary Bar */}
-      <div className="bg-[#121216] border border-white/10 rounded-2xl p-4 space-y-4">
+      <div className="bg-[#06060A] border border-white/[0.08] rounded-2xl p-4 sm:p-5 space-y-4 shadow-xl">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {/* Season Filter */}
           <div>
-            <label className="block text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-1">
+            <label className="block text-[10px] font-mono uppercase tracking-wider text-white/40 mb-1 font-medium">
               Saison
             </label>
             <select
               value={seasonFilter}
               onChange={(e) => setSeasonFilter(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-[#0D0D10] border border-white/10 text-xs text-white focus:border-[#E52421] outline-none"
+              className="w-full px-3 py-2 rounded-xl bg-[#0B0B12] border border-white/10 text-xs text-white focus:border-[#E52421] outline-none font-mono"
             >
               <option value="current">Saison Active (Courante)</option>
               <option value="all">Toutes les saisons</option>
@@ -444,13 +451,13 @@ export default function BatchCardsPrintPage() {
 
           {/* Status Filter */}
           <div>
-            <label className="block text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-1">
+            <label className="block text-[10px] font-mono uppercase tracking-wider text-white/40 mb-1 font-medium">
               Statut d&apos;adhésion
             </label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-[#0D0D10] border border-white/10 text-xs text-white focus:border-[#E52421] outline-none"
+              className="w-full px-3 py-2 rounded-xl bg-[#0B0B12] border border-white/10 text-xs text-white focus:border-[#E52421] outline-none font-mono"
             >
               <option value="ACTIVE">Actifs / Validés uniquement (Recommandé)</option>
               <option value="all">Tous les statuts</option>
@@ -461,13 +468,13 @@ export default function BatchCardsPrintPage() {
 
           {/* Type Filter */}
           <div>
-            <label className="block text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-1">
+            <label className="block text-[10px] font-mono uppercase tracking-wider text-white/40 mb-1 font-medium">
               Catégorie
             </label>
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-[#0D0D10] border border-white/10 text-xs text-white focus:border-[#E52421] outline-none"
+              className="w-full px-3 py-2 rounded-xl bg-[#0B0B12] border border-white/10 text-xs text-white focus:border-[#E52421] outline-none font-mono"
             >
               <option value="all">Tous (Dirigeants & Adhérents)</option>
               <option value="STAFF">Dirigeants / Bureau / Coachs</option>
@@ -477,7 +484,7 @@ export default function BatchCardsPrintPage() {
 
           {/* Search */}
           <div>
-            <label className="block text-[10px] font-mono uppercase tracking-wider text-gray-400 mb-1">
+            <label className="block text-[10px] font-mono uppercase tracking-wider text-white/40 mb-1 font-medium">
               Recherche rapide
             </label>
             <div className="relative">
@@ -487,7 +494,7 @@ export default function BatchCardsPrintPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Nom, tél, N° carte..."
-                className="w-full pl-9 pr-3 py-2 rounded-xl bg-[#0D0D10] border border-white/10 text-xs text-white placeholder-gray-500 focus:border-[#E52421] outline-none"
+                className="w-full pl-9 pr-3 py-2 rounded-xl bg-[#0B0B12] border border-white/10 text-xs text-white placeholder-gray-500 focus:border-[#E52421] outline-none font-mono"
               />
             </div>
           </div>
@@ -499,7 +506,7 @@ export default function BatchCardsPrintPage() {
             <button
               type="button"
               onClick={toggleSelectAll}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold transition cursor-pointer"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium transition cursor-pointer"
             >
               {selectedIds.size === cards.length && cards.length > 0 ? (
                 <FiCheckSquare className="w-4 h-4 text-[#E52421]" />
@@ -515,16 +522,16 @@ export default function BatchCardsPrintPage() {
 
             <span className="font-mono text-gray-400">
               Sélection :{" "}
-              <strong className="text-white">{selectedCards.length}</strong> / {cards.length}
+              <strong className="text-white font-medium">{selectedCards.length}</strong> / {cards.length}
             </span>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 font-mono text-[11px] text-gray-400">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-300">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-300 font-medium">
               <FiFolder className="w-3.5 h-3.5" />
               Dirigeants/ ({staffCount})
             </span>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-gray-300">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-gray-300 font-normal">
               <FiFolder className="w-3.5 h-3.5" />
               Adherents/ ({memberCount})
             </span>
@@ -539,7 +546,7 @@ export default function BatchCardsPrintPage() {
         </div>
       )}
 
-      <div className="bg-[#121216] border border-white/10 rounded-2xl overflow-hidden">
+      <div className="bg-[#06060A] border border-white/[0.08] rounded-2xl overflow-hidden shadow-xl">
         {loading ? (
           <div className="p-12 flex flex-col items-center justify-center gap-3 text-gray-400">
             <FiLoader className="w-6 h-6 animate-spin text-[#E52421]" />
@@ -557,8 +564,8 @@ export default function BatchCardsPrintPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-white/10 bg-[#0D0D10] text-[10px] font-mono uppercase tracking-wider text-gray-400">
-                  <th className="py-3 px-4 w-10">
+                <tr className="border-b border-white/[0.08] bg-[#0B0B12] text-[10px] font-mono uppercase tracking-wider text-white/40 font-medium">
+                  <th className="py-2.5 px-4 w-10">
                     <button
                       type="button"
                       onClick={toggleSelectAll}
@@ -571,12 +578,12 @@ export default function BatchCardsPrintPage() {
                       )}
                     </button>
                   </th>
-                  <th className="py-3 px-4">Adhérent / Dirigeant</th>
-                  <th className="py-3 px-4">Type / Dossier ZIP</th>
-                  <th className="py-3 px-4">N° Carte & Référence</th>
-                  <th className="py-3 px-4">Disciplines</th>
-                  <th className="py-3 px-4">Statut</th>
-                  <th className="py-3 px-4 text-right">Aperçu</th>
+                  <th className="py-2.5 px-4">Adhérent / Dirigeant</th>
+                  <th className="py-2.5 px-4">Type / Dossier ZIP</th>
+                  <th className="py-2.5 px-4">N° Carte & Référence</th>
+                  <th className="py-2.5 px-4">Disciplines</th>
+                  <th className="py-2.5 px-4">Statut</th>
+                  <th className="py-2.5 px-4 text-right">Aperçu</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5 text-xs">
@@ -606,16 +613,16 @@ export default function BatchCardsPrintPage() {
                           : "hover:bg-white/[0.02] opacity-60"
                       }`}
                     >
-                      <td className="py-3 px-4">
+                      <td className="py-2.5 px-4">
                         {isSelected ? (
                           <FiCheckSquare className="w-4 h-4 text-[#E52421]" />
                         ) : (
                           <FiSquare className="w-4 h-4 text-gray-500" />
                         )}
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="py-2.5 px-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-lg overflow-hidden bg-[#1C1C24] border border-white/10 shrink-0 flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-lg overflow-hidden bg-[#0B0B12] border border-white/10 shrink-0 flex items-center justify-center">
                             {card.photoDocId ? (
                               <img
                                 src={`/api/documents/${card.photoDocId}`}
@@ -623,65 +630,65 @@ export default function BatchCardsPrintPage() {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              <span className="text-[11px] font-bold text-gray-400">
+                              <span className="text-[10px] font-medium text-gray-400">
                                 {card.participant.firstName.charAt(0)}
                                 {card.participant.lastName.charAt(0)}
                               </span>
                             )}
                           </div>
                           <div>
-                            <div className="font-bold text-white uppercase">
-                              {card.participant.lastName} {card.participant.firstName}
+                            <div className="font-medium text-xs text-white">
+                              {card.participant.firstName} {card.participant.lastName}
                             </div>
-                            <div className="text-[11px] font-mono text-gray-400">
+                            <div className="text-[10px] font-mono text-gray-400 font-normal">
                               {card.participant.phone}
                             </div>
                           </div>
                         </div>
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="py-2.5 px-4">
                         {isStaff ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-500/15 border border-amber-400/40 text-amber-300 font-mono text-[10px] font-bold">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-500/15 border border-amber-400/30 text-amber-300 font-mono text-[10px] font-medium">
                             <Sparkles className="w-3 h-3" />
                             Dirigeants/ ({roleDef?.labelFr || "Staff"})
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-gray-300 font-mono text-[10px]">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-gray-300 font-mono text-[10px] font-normal">
                             Adherents/
                           </span>
                         )}
                       </td>
-                      <td className="py-3 px-4 font-mono">
-                        <div className="text-[#FFD21F] font-bold text-[11px]">
+                      <td className="py-2.5 px-4 font-mono">
+                        <div className="text-amber-300/90 font-medium text-xs">
                           {card.participant.membershipCardNumber || "En attente N°"}
                         </div>
-                        <div className="text-[10px] text-gray-500">
+                        <div className="text-[10px] text-gray-500 font-normal">
                           {card.registration.reference}
                         </div>
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="py-2.5 px-4">
                         <div className="flex flex-wrap gap-1">
                           {isStaff ? (
-                            <span className="text-[10px] font-mono text-amber-300/80">
+                            <span className="text-[10px] font-mono text-amber-300/80 font-normal">
                               Accréditation Officielle
                             </span>
                           ) : condensed.length > 0 ? (
                             condensed.map((d) => (
                               <span
                                 key={d}
-                                className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] font-mono font-bold text-gray-200"
+                                className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] font-mono font-normal text-gray-300"
                               >
                                 {d}
                               </span>
                             ))
                           ) : (
-                            <span className="text-[10px] text-gray-500">—</span>
+                            <span className="text-[10px] text-gray-500 font-normal">—</span>
                           )}
                         </div>
                       </td>
-                      <td className="py-3 px-4">
+                      <td className="py-2.5 px-4">
                         <span
-                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium ${
                             card.registration.status === "ACTIVE"
                               ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
                               : "bg-amber-500/15 text-amber-300 border border-amber-500/30"
@@ -694,15 +701,15 @@ export default function BatchCardsPrintPage() {
                         </span>
                       </td>
                       <td
-                        className="py-3 px-4 text-right"
+                        className="py-2.5 px-4 text-right"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <Link
                           href={`/card/${card.participant.id}/print`}
                           target="_blank"
-                          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 text-[11px] font-mono transition"
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-[#E52421] text-gray-300 hover:text-white text-xs font-mono font-medium transition border border-white/10 hover:border-transparent"
                         >
-                          <FiPrinter className="w-3 h-3 text-[#FFD21F]" />
+                          <FiPrinter className="w-3.5 h-3.5 text-[#FFD21F]" />
                           <span>Ouvrir</span>
                         </Link>
                       </td>
@@ -718,7 +725,7 @@ export default function BatchCardsPrintPage() {
       {/* Progress Modal during Batch Generation */}
       {exportingMode && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[#141419] border border-white/15 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
+          <div className="bg-[#06060A] border border-white/15 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-[#E52421]/15 border border-[#E52421]/40 flex items-center justify-center">

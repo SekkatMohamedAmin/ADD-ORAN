@@ -6,10 +6,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/components/i18n/LanguageProvider";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
+import { AdminEnergyBackground } from "@/components/admin/AdminEnergyBackground";
 import { Shield, Lock, Phone, Eye, EyeOff, AlertCircle, ArrowRight } from "lucide-react";
 
 export default function AdminLoginPage() {
-  const { t, isRtl } = useLanguage();
+  const { t, isRtl, locale } = useLanguage();
+  const isArabic = locale === "ar";
   const router = useRouter();
 
   const [phone, setPhone] = useState("");
@@ -59,7 +61,11 @@ export default function AdminLoginPage() {
       setLoggedInParticipant(null);
       setError("");
     } catch {
-      setError("Erreur lors de la déconnexion.");
+      setError(
+        isArabic
+          ? "خطأ أثناء تسجيل الخروج."
+          : "Erreur lors de la déconnexion."
+      );
     } finally {
       setLoading(false);
     }
@@ -84,9 +90,12 @@ export default function AdminLoginPage() {
       }
 
       if (data.user?.role !== "ADMIN") {
-        // Disconnect immediately if not admin
         await fetch("/api/auth/logout", { method: "POST" });
-        throw new Error("Accès refusé. Ce compte ne dispose pas des privilèges d'administrateur.");
+        throw new Error(
+          isArabic
+            ? "تم رفض الدخول. هذا الحساب لا يملك صلاحيات المسؤول."
+            : "Accès refusé. Ce compte ne dispose pas des privilèges d'administrateur."
+        );
       }
 
       router.push("/admin");
@@ -99,43 +108,38 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0A0A0D] text-[#F5F5F2] selection:bg-[#E52421] selection:text-[#F5F5F2] relative overflow-hidden">
-      {/* Background Image Layer */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
-        <Image
-          src="/images/hero/hero-parkour.jpg"
-          alt="ADD Oran Hero"
-          fill
-          sizes="100vw"
-          className="object-cover object-center opacity-30 filter contrast-125"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0D] via-[#0A0A0D]/80 to-[#0A0A0D]/90" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,#0A0A0D_85%)]" />
-        <div className="absolute inset-0 sports-grid-pattern opacity-30" />
-      </div>
+    <div
+      className={`min-h-screen flex flex-col bg-[#000000] text-white selection:bg-[#E52421] selection:text-white relative overflow-hidden ${
+        isArabic ? "font-admin-arabic" : "font-admin"
+      }`}
+    >
+      {/* Nature HCD Background */}
+      <AdminEnergyBackground />
 
       {/* Top utility bar */}
-      <header className="relative z-10 border-b border-white/10 px-6 py-4 flex items-center justify-between bg-[#0A0A0D]/60 backdrop-blur-md">
+      <header className="relative z-10 border-b border-white/[0.08] px-6 py-4 flex items-center justify-between bg-[#040407]/80 backdrop-blur-xl">
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="relative w-9 h-9 rounded overflow-hidden shadow-md">
+          <div className="relative w-9 h-9 rounded-xl bg-white/5 border border-white/10 p-1 flex items-center justify-center shadow-md">
             <Image
               src="/images/club/logo.svg"
               alt="ADD Parkour Oran"
-              width={36}
-              height={36}
-              style={{ width: "100%", height: "100%" }}
-              className="object-contain"
+              width={32}
+              height={32}
+              className="w-full h-full object-contain"
               unoptimized
               priority
             />
           </div>
           <div className="flex flex-col">
-            <span className="font-display font-black text-sm tracking-wider text-[#F5F5F2] uppercase group-hover:text-[#FFD21F] transition-colors leading-none">
-              ADD ORAN
+            <span className="font-display font-black text-sm tracking-wider text-white uppercase group-hover:text-[#E52421] transition-colors leading-none">
+              ADD <span className="text-[#E52421]">ORAN</span>
             </span>
-            <span className="font-mono text-[9px] tracking-widest text-[#E52421] uppercase mt-0.5">
-              ADMINISTRATION
+            <span
+              className={`text-[9px] tracking-widest text-white/50 uppercase mt-0.5 font-semibold ${
+                isArabic ? "font-arabic" : "font-mono"
+              }`}
+            >
+              {isArabic ? "منصة الإدارة والتحكم" : "ADMINISTRATION"}
             </span>
           </div>
         </Link>
@@ -144,50 +148,48 @@ export default function AdminLoginPage() {
           <LanguageSwitcher />
           <Link
             href="/"
-            className="text-xs font-mono text-[#9E9EA8] hover:text-[#F5F5F2] transition-colors flex items-center gap-1"
+            className="text-xs font-mono text-white/60 hover:text-white transition-colors flex items-center gap-1 border border-white/5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10"
           >
             <span>{t.admin.viewPublicSite}</span>
-            <span>↗</span>
+            <span className={isRtl ? "rotate-[-90deg]" : ""}>↗</span>
           </Link>
         </div>
       </header>
 
       {/* Main Login Card */}
       <main className="flex-1 flex items-center justify-center p-4 sm:p-6 relative z-10">
-        <div className="max-w-md w-full bg-[#141419] border border-white/10 rounded-3xl p-8 sm:p-10 shadow-2xl space-y-6 relative overflow-hidden">
-          {/* Subtle accent glow */}
-          <div
-            className="absolute top-0 right-0 w-48 h-48 rounded-full bg-[#E52421]/10 blur-3xl pointer-events-none"
-            aria-hidden="true"
-          />
-
+        <div className="max-w-md w-full bg-[#06060A] border border-white/[0.08] rounded-3xl p-8 sm:p-10 shadow-2xl space-y-6 relative overflow-hidden before:absolute before:top-0 before:left-0 before:w-48 before:h-[2px] before:bg-gradient-to-r before:from-[#E52421] before:to-transparent before:shadow-[0_0_12px_#E52421]">
           {/* Header */}
           <div className="text-center space-y-3 relative z-10">
-            <div className="w-14 h-14 rounded-2xl bg-[#E52421]/15 border border-[#E52421]/30 text-[#E52421] flex items-center justify-center mx-auto shadow-lg">
+            <div className="w-14 h-14 rounded-2xl bg-[#E52421]/15 border border-[#E52421]/30 text-[#E52421] flex items-center justify-center mx-auto shadow-lg shadow-[#E52421]/20">
               <Shield className="w-7 h-7" />
             </div>
 
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFD21F]/10 border border-[#FFD21F]/30 text-[#FFD21F] text-[10px] font-mono font-bold uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFD21F]/10 border border-[#FFD21F]/30 text-[#FFD21F] text-[10px] font-mono font-medium uppercase tracking-wider">
               <span>{t.admin.login.badge}</span>
             </div>
 
-            <h1 className="font-display text-2xl sm:text-3xl font-black uppercase tracking-tight text-[#F5F5F2]">
+            <h1 className="font-display text-2xl font-bold uppercase tracking-tight text-white">
               {t.admin.login.title}
             </h1>
-            <p className="font-body text-xs text-[#9E9EA8] leading-relaxed">
+            <p className="text-xs text-white/60 leading-relaxed font-body">
               {t.admin.login.subtitle}
             </p>
           </div>
 
           {/* Participant Active Session Alert */}
           {loggedInParticipant && (
-            <div className="p-4 bg-[#FFD21F]/10 border border-[#FFD21F]/30 rounded-2xl space-y-3 animate-fade-in text-xs font-mono">
+            <div className="p-4 bg-[#FFD21F]/10 border border-[#FFD21F]/30 rounded-2xl space-y-3 animate-in fade-in text-xs font-mono">
               <div className="flex items-start gap-2.5 text-[#FFD21F]">
                 <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
                 <div>
-                  <strong className="font-bold block text-sm">Session Adhérent Active</strong>
+                  <strong className="font-bold block text-sm">
+                    {isArabic ? "جلسة منخرط نشطة" : "Session Adhérent Active"}
+                  </strong>
                   <p className="text-gray-300 mt-1 font-body">
-                    Vous êtes actuellement connecté en tant qu'adhérent :{" "}
+                    {isArabic
+                      ? "أنت متصل حالياً كمنخرط: "
+                      : "Vous êtes actuellement connecté en tant qu'adhérent : "}
                     <span className="font-bold text-white font-mono">
                       {loggedInParticipant.name || loggedInParticipant.phone}
                     </span>
@@ -200,15 +202,17 @@ export default function AdminLoginPage() {
                   type="button"
                   onClick={handleDisconnectParticipant}
                   disabled={loading}
-                  className="flex-1 py-2 px-3 bg-[#E52421] hover:bg-[#FF3030] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition text-center"
+                  className="flex-1 py-2 px-3 bg-[#E52421] hover:bg-[#FF3030] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition text-center cursor-pointer"
                 >
-                  {loading ? "Déconnexion..." : "Déconnecter et se connecter en tant qu'admin"}
+                  {loading
+                    ? isArabic ? "جارٍ الخروج..." : "Déconnexion..."
+                    : isArabic ? "تسجيل الخروج والدخول كمسؤول" : "Déconnecter et entrer en admin"}
                 </button>
                 <Link
                   href="/dashboard"
                   className="py-2 px-3 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white rounded-xl text-xs font-bold uppercase tracking-wider transition text-center border border-white/10"
                 >
-                  Espace adhérent ↗
+                  {isArabic ? "فضاء المنخرط ↗" : "Espace adhérent ↗"}
                 </Link>
               </div>
             </div>
@@ -216,7 +220,7 @@ export default function AdminLoginPage() {
 
           {/* Error Message */}
           {error && (
-            <div className="p-3.5 bg-[#E52421]/15 border border-[#E52421]/40 rounded-xl text-[#FF8585] text-xs font-mono flex items-start gap-2.5 animate-fade-in">
+            <div className="p-3.5 bg-[#E52421]/15 border border-[#E52421]/40 rounded-xl text-[#FF8585] text-xs font-mono flex items-start gap-2.5 animate-in fade-in">
               <AlertCircle className="w-4 h-4 text-[#E52421] shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
@@ -225,11 +229,19 @@ export default function AdminLoginPage() {
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
             <div>
-              <label className="block font-mono text-xs font-bold uppercase text-[#9E9EA8] mb-1.5">
+              <label
+                className={`block text-xs font-bold uppercase text-white/60 mb-1.5 ${
+                  isArabic ? "font-arabic" : "font-mono"
+                }`}
+              >
                 {t.admin.login.phoneLabel}
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#9E9EA8]">
+                <div
+                  className={`absolute inset-y-0 ${
+                    isRtl ? "right-0 pr-3.5" : "left-0 pl-3.5"
+                  } flex items-center pointer-events-none text-white/40`}
+                >
                   <Phone className="w-4 h-4" />
                 </div>
                 <input
@@ -238,18 +250,28 @@ export default function AdminLoginPage() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="0555000000"
-                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-[#F5F5F2] placeholder-[#9E9EA8]/40 focus:border-[#E52421] focus:outline-none focus:ring-1 focus:ring-[#E52421] transition-all font-mono"
+                  className={`w-full bg-[#0B0B12] border border-white/10 rounded-xl ${
+                    isRtl ? "pr-10 pl-4" : "pl-10 pr-4"
+                  } py-3 text-sm text-white placeholder-white/30 focus:border-[#E52421] focus:outline-none focus:ring-1 focus:ring-[#E52421] transition-all font-mono`}
                   dir="ltr"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block font-mono text-xs font-bold uppercase text-[#9E9EA8] mb-1.5">
+              <label
+                className={`block text-xs font-bold uppercase text-white/60 mb-1.5 ${
+                  isArabic ? "font-arabic" : "font-mono"
+                }`}
+              >
                 {t.admin.login.passwordLabel}
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#9E9EA8]">
+                <div
+                  className={`absolute inset-y-0 ${
+                    isRtl ? "right-0 pr-3.5" : "left-0 pl-3.5"
+                  } flex items-center pointer-events-none text-white/40`}
+                >
                   <Lock className="w-4 h-4" />
                 </div>
                 <input
@@ -258,14 +280,22 @@ export default function AdminLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl pl-10 pr-11 py-3 text-sm text-[#F5F5F2] placeholder-[#9E9EA8]/40 focus:border-[#E52421] focus:outline-none focus:ring-1 focus:ring-[#E52421] transition-all font-mono"
+                  className={`w-full bg-[#0B0B12] border border-white/10 rounded-xl ${
+                    isRtl ? "pr-10 pl-11" : "pl-10 pr-11"
+                  } py-3 text-sm text-white placeholder-white/30 focus:border-[#E52421] focus:outline-none focus:ring-1 focus:ring-[#E52421] transition-all font-mono`}
                   dir="ltr"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#9E9EA8] hover:text-[#F5F5F2] transition-colors"
-                  aria-label={showPassword ? t.admin.login.hidePassword : t.admin.login.showPassword}
+                  className={`absolute inset-y-0 ${
+                    isRtl ? "left-0 pl-3.5" : "right-0 pr-3.5"
+                  } flex items-center text-white/40 hover:text-white transition-colors cursor-pointer`}
+                  aria-label={
+                    showPassword
+                      ? t.admin.login.hidePassword
+                      : t.admin.login.showPassword
+                  }
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -275,16 +305,20 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 py-3.5 px-4 rounded-xl bg-[#E52421] hover:bg-[#FF3030] text-[#F5F5F2] font-display font-black text-sm uppercase tracking-wider transition-all shadow-lg hover:shadow-[#E52421]/20 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group"
+              className="w-full mt-2 py-3 px-4 rounded-xl bg-[#E52421] hover:bg-[#FF3030] text-white font-medium text-xs tracking-wider transition-all shadow-lg shadow-[#E52421]/20 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 group cursor-pointer"
             >
               <span>{loading ? t.admin.login.submitting : t.admin.login.submitButton}</span>
-              <ArrowRight className={`w-4 h-4 group-hover:translate-x-1 transition-transform ${isRtl ? "rtl-flip" : ""}`} />
+              <ArrowRight
+                className={`w-4 h-4 group-hover:translate-x-1 transition-transform ${
+                  isRtl ? "rotate-180" : ""
+                }`}
+              />
             </button>
           </form>
 
           {/* Security Notice */}
-          <div className="pt-2 border-t border-white/10 text-center">
-            <p className="font-mono text-[10px] text-[#9E9EA8]/70 leading-relaxed">
+          <div className="pt-2 border-t border-white/[0.08] text-center">
+            <p className="text-[10px] text-white/40 leading-relaxed font-body">
               {t.admin.login.securityNotice}
             </p>
           </div>
@@ -292,8 +326,8 @@ export default function AdminLoginPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 px-6 py-4 text-center font-mono text-[11px] text-[#9E9EA8]">
-        Club Art Du Déplacement Parkour Oran // Console d&apos;Administration v1.0
+      <footer className="border-t border-white/[0.08] px-6 py-4 text-center font-mono text-[11px] text-white/40 bg-[#040407]">
+        Club Art Du Déplacement Parkour Oran // Console d&apos;Administration
       </footer>
     </div>
   );

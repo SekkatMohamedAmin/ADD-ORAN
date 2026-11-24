@@ -131,7 +131,7 @@ export default function SettingsPage() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Section 1: Informations Générales */}
-        <div className="p-6 bg-[#141419] border border-white/5 rounded-2xl space-y-4">
+        <div className="p-6 bg-[#06060A] border border-white/5 rounded-2xl space-y-4">
           <h3 className="text-base font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
             <FiHome className="w-4 h-4 text-[#E52421]" />
             Identité & Coordonnées du Club
@@ -146,7 +146,7 @@ export default function SettingsPage() {
                 type="text"
                 value={settings.clubName}
                 onChange={(e) => setSettings({ ...settings, clubName: e.target.value })}
-                className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421]"
+                className="w-full bg-[#000000] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421]"
                 required
               />
             </div>
@@ -159,7 +159,7 @@ export default function SettingsPage() {
                 type="text"
                 value={settings.clubAddress}
                 onChange={(e) => setSettings({ ...settings, clubAddress: e.target.value })}
-                className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421]"
+                className="w-full bg-[#000000] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421]"
                 required
               />
             </div>
@@ -172,7 +172,7 @@ export default function SettingsPage() {
                 type="text"
                 value={settings.clubPhone}
                 onChange={(e) => setSettings({ ...settings, clubPhone: e.target.value })}
-                className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421] font-mono"
+                className="w-full bg-[#000000] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421] font-mono"
                 required
               />
             </div>
@@ -185,7 +185,7 @@ export default function SettingsPage() {
                 type="email"
                 value={settings.clubEmail}
                 onChange={(e) => setSettings({ ...settings, clubEmail: e.target.value })}
-                className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421]"
+                className="w-full bg-[#000000] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421]"
                 required
               />
             </div>
@@ -193,7 +193,7 @@ export default function SettingsPage() {
         </div>
 
         {/* Section 2: Cotisations & Finances */}
-        <div className="p-6 bg-[#141419] border border-white/5 rounded-2xl space-y-4">
+        <div className="p-6 bg-[#06060A] border border-white/5 rounded-2xl space-y-4">
           <h3 className="text-base font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
             <FiDollarSign className="w-4 h-4 text-[#FFD21F]" />
             Grille Tarifaire (Gestion Interne)
@@ -218,7 +218,7 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     setSettings({ ...settings, annualContributionDzd: parseFloat(e.target.value) })
                   }
-                  className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl p-3 text-sm font-mono font-bold text-white focus:outline-none focus:border-[#FFD21F]"
+                  className="w-full bg-[#000000] border border-white/10 rounded-xl p-3 text-sm font-mono font-bold text-white focus:outline-none focus:border-[#FFD21F]"
                   required
                 />
                 <span className="absolute right-3 top-3 text-xs font-bold text-gray-400">DZD</span>
@@ -240,7 +240,7 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     setSettings({ ...settings, monthlyContributionDzd: parseFloat(e.target.value) })
                   }
-                  className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl p-3 text-sm font-mono font-bold text-white focus:outline-none focus:border-[#FFD21F]"
+                  className="w-full bg-[#000000] border border-white/10 rounded-xl p-3 text-sm font-mono font-bold text-white focus:outline-none focus:border-[#FFD21F]"
                   required
                 />
                 <span className="absolute right-3 top-3 text-xs font-bold text-gray-400">DZD</span>
@@ -250,14 +250,14 @@ export default function SettingsPage() {
         </div>
 
         {/* Section 3: Inscriptions & Reçus */}
-        <div className="p-6 bg-[#141419] border border-white/5 rounded-2xl space-y-4">
+        <div className="p-6 bg-[#06060A] border border-white/5 rounded-2xl space-y-4">
           <h3 className="text-base font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
             <FiFileText className="w-4 h-4 text-emerald-400" />
             Campagne d'Inscription & Reçus
           </h3>
 
           <div className="space-y-4 text-sm">
-            <div className="flex items-center justify-between p-4 bg-[#1C1C24] rounded-xl border border-white/5">
+            <div className="flex items-center justify-between p-4 bg-[#0B0B12] rounded-xl border border-white/5">
               <div>
                 <span className="font-bold text-white block">
                   Ouverture des Inscriptions Publiques
@@ -298,7 +298,7 @@ export default function SettingsPage() {
                 type="text"
                 value={settings.receiptPrefix}
                 onChange={(e) => setSettings({ ...settings, receiptPrefix: e.target.value })}
-                className="w-full max-w-xs bg-[#0A0A0D] border border-white/10 rounded-xl p-3 text-xs font-mono font-bold text-white focus:outline-none focus:border-[#E52421]"
+                className="w-full max-w-xs bg-[#000000] border border-white/10 rounded-xl p-3 text-xs font-mono font-bold text-white focus:outline-none focus:border-[#E52421]"
                 required
               />
               <span className="text-[11px] text-gray-500 mt-1 block">

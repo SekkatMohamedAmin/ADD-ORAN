@@ -402,10 +402,14 @@ export default function PaymentsPage() {
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-3">
             <FiDollarSign className="w-6 h-6 text-[#FFD21F]" />
-            Caisse & Calendrier des Cotisations
+            {locale === "ar" ? "الخزينة وجدول الاشتراكات" : locale === "en" ? "Cash Register & Schedules" : "Caisse & Calendrier des Cotisations"}
           </h1>
           <p className="text-xs text-gray-400 mt-1">
-            Supervision mensuelle des règlements, calendrier des échéances, encaissement physique et reçus officiels.
+            {locale === "ar"
+              ? "المتابعة الشهرية للمدفوعات، جدول الاستحقاقات، التحصيل النقدي والوصولات الرسمية."
+              : locale === "en"
+              ? "Monthly payment monitoring, due schedules, cash collection, and official receipts."
+              : "Supervision mensuelle des règlements, calendrier des échéances, encaissement physique et reçus officiels."}
           </p>
         </div>
 
@@ -417,12 +421,12 @@ export default function PaymentsPage() {
             className="px-4 py-2.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-xs rounded-xl transition shadow-md shadow-emerald-500/25 flex items-center gap-2 cursor-pointer active:scale-95"
           >
             <FiPlus className="w-4 h-4" />
-            <span>Encaisser un paiement</span>
+            <span>{locale === "ar" ? "تحصيل دفعة جديدة" : locale === "en" ? "Record Payment" : "Encaisser un paiement"}</span>
           </button>
 
-          <div className="px-4 py-2 bg-[#141419] border border-white/5 rounded-2xl flex items-center gap-2.5">
+          <div className="px-4 py-2 bg-[#06060A] border border-white/5 rounded-2xl flex items-center gap-2.5">
             <span className="text-[10px] uppercase font-bold text-gray-400 block tracking-wider">
-              Recettes :
+              {locale === "ar" ? "المداخيل :" : locale === "en" ? "Revenue:" : "Recettes :"}
             </span>
             <strong className="text-sm font-bold text-[#FFD21F] font-mono">
               {(calendarStats.totalCollectedDzd || totalRevenue).toLocaleString()} DZD
@@ -438,12 +442,12 @@ export default function PaymentsPage() {
           onClick={() => setViewMode("CALENDAR")}
           className={`px-4 py-2.5 rounded-t-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer border-b-2 ${
             viewMode === "CALENDAR"
-              ? "bg-[#1C1C24] text-white border-[#E52421] shadow-lg"
+              ? "bg-[#0B0B12] text-white border-[#E52421] shadow-lg"
               : "text-gray-400 hover:text-white border-transparent hover:bg-white/5"
           }`}
         >
           <FiCalendar className="w-4 h-4 text-[#FFD21F]" />
-          <span>Calendrier des Paiements (Matrice Adhérents)</span>
+          <span>{locale === "ar" ? "جدول المدفوعات (مصفوفة المشتركين)" : locale === "en" ? "Payment Schedule (Members Matrix)" : "Calendrier des Paiements (Matrice Adhérents)"}</span>
           <span className="px-1.5 py-0.2 rounded bg-white/10 text-[10px] font-mono">
             {calendarStats.totalMembers}
           </span>
@@ -454,12 +458,12 @@ export default function PaymentsPage() {
           onClick={() => setViewMode("RECEIPTS")}
           className={`px-4 py-2.5 rounded-t-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer border-b-2 ${
             viewMode === "RECEIPTS"
-              ? "bg-[#1C1C24] text-white border-[#E52421] shadow-lg"
+              ? "bg-[#0B0B12] text-white border-[#E52421] shadow-lg"
               : "text-gray-400 hover:text-white border-transparent hover:bg-white/5"
           }`}
         >
           <FiFileText className="w-4 h-4 text-emerald-400" />
-          <span>Journal des Quittances & Reçus</span>
+          <span>{locale === "ar" ? "سجل وصولات الدفع" : locale === "en" ? "Receipts Log" : "Journal des Quittances & Reçus"}</span>
           <span className="px-1.5 py-0.2 rounded bg-white/10 text-[10px] font-mono">
             {totalCount}
           </span>
@@ -473,62 +477,62 @@ export default function PaymentsPage() {
         <div className="space-y-6">
           {/* Calendar Stats Summary Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3">
-            <div className="p-4 rounded-2xl bg-[#141419] border border-white/5 space-y-1">
-              <span className="text-[10px] font-mono uppercase text-gray-400 block">Total Inscrits</span>
+            <div className="p-4 rounded-2xl bg-[#06060A] border border-white/5 space-y-1">
+              <span className="text-[10px] font-mono uppercase text-gray-400 block">{locale === "ar" ? "إجمالي المسجلين" : locale === "en" ? "Total Enrolled" : "Total Inscrits"}</span>
               <span className="text-xl font-bold text-white block">
                 {calendarStats.totalMembers}
               </span>
-              <span className="text-[10px] text-gray-500">Adhérents & Dirigeants</span>
+              <span className="text-[10px] text-gray-500">{locale === "ar" ? "أعضاء ومؤطرون" : locale === "en" ? "Members & Staff" : "Adhérents & Dirigeants"}</span>
             </div>
 
             <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 space-y-1">
-              <span className="text-[10px] font-mono uppercase text-emerald-300 block">À jour</span>
+              <span className="text-[10px] font-mono uppercase text-emerald-300 block">{locale === "ar" ? "ملتزمون بالدفع" : locale === "en" ? "Up to date" : "À jour"}</span>
               <span className="text-xl font-bold text-emerald-400 block">
                 {calendarStats.upToDateCount}
               </span>
               <span className="text-[10px] text-emerald-300/80">
                 {calendarStats.totalMembers > 0
-                  ? `${Math.round((calendarStats.upToDateCount / calendarStats.totalMembers) * 100)}% de conformité`
+                  ? `${Math.round((calendarStats.upToDateCount / calendarStats.totalMembers) * 100)}% ${locale === "ar" ? "نسبة الالتزام" : "conformité"}`
                   : "0%"}
               </span>
             </div>
 
             <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 space-y-1">
-              <span className="text-[10px] font-mono uppercase text-red-300 block">En retard</span>
+              <span className="text-[10px] font-mono uppercase text-red-300 block">{locale === "ar" ? "متأخرون" : locale === "en" ? "Overdue" : "En retard"}</span>
               <span className="text-xl font-bold text-red-400 block">
                 {calendarStats.overdueCount}
               </span>
-              <span className="text-[10px] text-red-300/80">Mensualités impayées</span>
+              <span className="text-[10px] text-red-300/80">{locale === "ar" ? "اشتراكات غير مسددة" : locale === "en" ? "Unpaid dues" : "Mensualités impayées"}</span>
             </div>
 
             <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 space-y-1">
-              <span className="text-[10px] font-mono uppercase text-amber-300 block">1er versement en attente</span>
+              <span className="text-[10px] font-mono uppercase text-amber-300 block">{locale === "ar" ? "في انتظار الدفعة الأولى" : locale === "en" ? "Pending 1st Pay" : "1er versement en attente"}</span>
               <span className="text-xl font-bold text-amber-400 block">
                 {calendarStats.pendingCount}
               </span>
-              <span className="text-[10px] text-amber-300/80">Non encore encaissé</span>
+              <span className="text-[10px] text-amber-300/80">{locale === "ar" ? "لم يُحصل بعد" : locale === "en" ? "Not collected" : "Non encore encaissé"}</span>
             </div>
 
             <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 space-y-1 col-span-2 sm:col-span-1">
-              <span className="text-[10px] font-mono uppercase text-gray-400 block">Membres Staff</span>
+              <span className="text-[10px] font-mono uppercase text-gray-400 block">{locale === "ar" ? "أعضاء الطاقم" : locale === "en" ? "Staff Members" : "Membres Staff"}</span>
               <span className="text-xl font-bold text-[#FFD21F] block">
                 {calendarStats.exemptStaffCount}
               </span>
-              <span className="text-[10px] text-gray-500">Exonérés de cotisation</span>
+              <span className="text-[10px] text-gray-500">{locale === "ar" ? "معفون من الاشتراك" : locale === "en" ? "Exempt from dues" : "Exonérés de cotisation"}</span>
             </div>
           </div>
 
           {/* Calendar Filter Toolbar */}
-          <div className="p-4 bg-[#141419]/90 border border-white/10 rounded-2xl flex flex-wrap items-center justify-between gap-4">
+          <div className="p-4 bg-[#06060A]/90 border border-white/10 rounded-2xl flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-3 flex-1 min-w-[280px]">
               <div className="relative flex-1 max-w-md">
-                <FiSearch className="absolute left-3.5 top-3 text-gray-500 w-4 h-4" />
+                <FiSearch className={`absolute top-3 text-gray-500 w-4 h-4 ${isRtl ? "right-3.5" : "left-3.5"}`} />
                 <input
                   type="text"
                   value={calendarSearch}
                   onChange={(e) => setCalendarSearch(e.target.value)}
-                  placeholder="Rechercher par nom, téléphone, référence..."
-                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#E52421] font-mono"
+                  placeholder={locale === "ar" ? "البحث بالاسم، الهاتف، المرجع..." : locale === "en" ? "Search by name, phone, ref..." : "Rechercher par nom, téléphone, référence..."}
+                  className={`w-full bg-[#0B0B12] border border-white/10 rounded-xl py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#E52421] font-mono ${isRtl ? "pr-10 pl-4" : "pl-10 pr-4"}`}
                 />
               </div>
 
@@ -538,12 +542,12 @@ export default function PaymentsPage() {
                   setSelectedSeason(e.target.value);
                   setStoredAdminSeason(e.target.value);
                 }}
-                className="bg-[#1C1C24] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#E52421] font-mono"
+                className="bg-[#0B0B12] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#E52421] font-mono"
               >
-                <option value="ALL">Toutes les saisons</option>
+                <option value="ALL">{locale === "ar" ? "جميع المواسم" : locale === "en" ? "All Seasons" : "Toutes les saisons"}</option>
                 {seasons.map((s) => (
                   <option key={s.id} value={s.code}>
-                    {s.label || `Saison ${s.code}`}
+                    {locale === "ar" ? `الموسم ${s.code}` : (s.label || `Saison ${s.code}`)}
                   </option>
                 ))}
               </select>
@@ -557,10 +561,10 @@ export default function PaymentsPage() {
                 className={`px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${
                   calendarStateFilter === "ALL"
                     ? "bg-white/20 text-white font-bold"
-                    : "bg-[#1C1C24] text-gray-400 hover:text-white"
+                    : "bg-[#0B0B12] text-gray-400 hover:text-white"
                 }`}
               >
-                Tous ({calendarStats.totalMembers})
+                {locale === "ar" ? "الكل" : locale === "en" ? "All" : "Tous"} ({calendarStats.totalMembers})
               </button>
 
               <button
@@ -573,7 +577,7 @@ export default function PaymentsPage() {
                 }`}
               >
                 <FiAlertTriangle className="w-3.5 h-3.5" />
-                <span>En retard ({calendarStats.overdueCount})</span>
+                <span>{locale === "ar" ? "متأخر" : locale === "en" ? "Overdue" : "En retard"} ({calendarStats.overdueCount})</span>
               </button>
 
               <button
@@ -586,7 +590,7 @@ export default function PaymentsPage() {
                 }`}
               >
                 <FiCheck className="w-3.5 h-3.5" />
-                <span>À jour ({calendarStats.upToDateCount})</span>
+                <span>{locale === "ar" ? "ملتزم" : locale === "en" ? "Up to date" : "À jour"} ({calendarStats.upToDateCount})</span>
               </button>
 
               <button
@@ -598,7 +602,7 @@ export default function PaymentsPage() {
                     : "bg-amber-500/10 text-amber-300 hover:bg-amber-500/20"
                 }`}
               >
-                En attente ({calendarStats.pendingCount})
+                {locale === "ar" ? "في الانتظار" : locale === "en" ? "Pending" : "En attente"} ({calendarStats.pendingCount})
               </button>
 
               <button
@@ -616,19 +620,19 @@ export default function PaymentsPage() {
           </div>
 
           {/* Adherent Payment Calendar Matrix Table */}
-          <div className="relative overflow-x-auto bg-[#141419]/90 border border-white/10 rounded-2xl shadow-2xl">
+          <div className="relative overflow-x-auto bg-[#06060A]/90 border border-white/10 rounded-2xl shadow-2xl">
             <table className="w-full text-left text-xs text-gray-300 border-collapse">
-              <thead className="bg-[#1C1C24] text-[11px] uppercase tracking-wider text-[#9E9EA8] font-mono border-b border-white/10">
+              <thead className="bg-[#0B0B12] text-[10px] uppercase tracking-wider text-white/40 font-medium font-mono border-b border-white/[0.08]">
                 <tr>
-                  <th className="py-3 px-4 sticky left-0 bg-[#1C1C24] z-20 min-w-[200px]">Adhérent</th>
-                  <th className="py-3 px-3 min-w-[110px]">État Financier</th>
-                  <th className="py-3 px-3 text-right min-w-[90px]">Total Réglé</th>
+                  <th className="py-2.5 px-4 sticky left-0 bg-[#0B0B12] z-20 min-w-[200px]">Adhérent</th>
+                  <th className="py-2.5 px-3 min-w-[110px]">État Financier</th>
+                  <th className="py-2.5 px-3 text-right min-w-[90px]">Total Réglé</th>
                   {calendarMonths.map((m) => (
-                    <th key={m.id} className="py-3 px-2 text-center min-w-[75px]">
+                    <th key={m.id} className="py-2.5 px-2 text-center min-w-[75px]">
                       {m.labelFr ? m.labelFr.split(" ")[0].slice(0, 4) : m.id}
                     </th>
                   ))}
-                  <th className="py-3 px-4 text-right sticky right-0 bg-[#1C1C24] z-20 min-w-[110px]">Action</th>
+                  <th className="py-2.5 px-4 text-right sticky right-0 bg-[#0B0B12] z-20 min-w-[110px]">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5 font-mono">
@@ -649,39 +653,39 @@ export default function PaymentsPage() {
                   calendarAdherents.map((item) => (
                     <tr key={item.registrationId} className="hover:bg-white/[0.02] transition-colors group">
                       {/* Adherent Info (Sticky Col) */}
-                      <td className="py-3 px-4 sticky left-0 bg-[#141419] group-hover:bg-[#181820] z-10">
-                        <div className="font-semibold text-white text-sm tracking-tight flex items-center gap-1.5">
+                      <td className="py-2.5 px-4 sticky left-0 bg-[#06060A] group-hover:bg-[#181820] z-10">
+                        <div className="font-medium text-xs text-white tracking-tight flex items-center gap-1.5">
                           <span>{item.fullName}</span>
                           {item.isStaff && (
-                            <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[9px] font-mono font-bold uppercase">
+                            <span className="px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-400/30 text-[9px] font-mono font-medium uppercase">
                               ★ {item.clubRole || "Staff"}
                             </span>
                           )}
                         </div>
-                        <div className="text-[11px] text-gray-400 font-mono flex items-center gap-2 mt-0.5">
+                        <div className="text-[10px] text-gray-400 font-mono flex items-center gap-2 mt-0.5 font-normal">
                           <span>{item.phone}</span>
                           <span>•</span>
-                          <span className="text-[#FFD21F] font-bold">{item.reference}</span>
+                          <span className="text-amber-300/90 font-medium">{item.reference}</span>
                         </div>
                       </td>
 
                       {/* State Badge */}
-                      <td className="py-3 px-3">
+                      <td className="py-2.5 px-3">
                         {item.userState === "EXEMPT_STAFF" ? (
-                          <span className="px-2 py-0.5 rounded-md bg-amber-500/15 border border-amber-400/30 text-amber-300 text-[10px] font-bold">
+                          <span className="px-2 py-0.5 rounded-md bg-amber-500/15 border border-amber-400/30 text-amber-300 text-[10px] font-medium">
                             ★ Exonéré (Staff)
                           </span>
                         ) : item.userState === "OVERDUE" ? (
-                          <span className="px-2 py-0.5 rounded-md bg-red-500/20 border border-red-500/40 text-red-300 text-[10px] font-bold flex items-center gap-1">
+                          <span className="px-2 py-0.5 rounded-md bg-red-500/20 border border-red-500/40 text-red-300 text-[10px] font-medium flex items-center gap-1">
                             <FiAlertTriangle className="w-3 h-3 text-red-400 shrink-0" />
                             <span>Retard ({item.overdueMonths.length})</span>
                           </span>
                         ) : item.userState === "PENDING_INITIAL" ? (
-                          <span className="px-2 py-0.5 rounded-md bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[10px] font-bold">
+                          <span className="px-2 py-0.5 rounded-md bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[10px] font-medium">
                             En attente
                           </span>
                         ) : (
-                          <span className="px-2 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold flex items-center gap-1">
+                          <span className="px-2 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-medium flex items-center gap-1">
                             <FiCheck className="w-3 h-3 text-emerald-400 shrink-0" />
                             <span>À jour</span>
                           </span>
@@ -689,11 +693,11 @@ export default function PaymentsPage() {
                       </td>
 
                       {/* Total Paid */}
-                      <td className="py-3 px-3 text-right">
-                        <span className="font-bold text-white text-xs">
+                      <td className="py-2.5 px-3 text-right">
+                        <span className="font-medium text-white text-xs">
                           {item.totalPaidDzd.toLocaleString()} DA
                         </span>
-                        <span className="block text-[10px] text-gray-500 font-sans">
+                        <span className="block text-[10px] text-gray-500 font-sans font-normal">
                           {item.paymentsCount} reçu(s)
                         </span>
                       </td>
@@ -711,7 +715,7 @@ export default function PaymentsPage() {
                                   }
                                 }}
                                 title={m.receiptNumber ? `Payé • Reçu ${m.receiptNumber}` : "Cotisation validée"}
-                                className="w-full py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold flex items-center justify-center gap-0.5 transition cursor-pointer"
+                                className="w-full py-1 rounded bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-[10px] font-medium flex items-center justify-center gap-0.5 transition cursor-pointer"
                               >
                                 <FiCheck className="w-3 h-3" />
                                 <span>OK</span>
@@ -744,7 +748,7 @@ export default function PaymentsPage() {
                       })}
 
                       {/* Row Action (Sticky Right) */}
-                      <td className="py-3 px-4 text-right sticky right-0 bg-[#141419] group-hover:bg-[#181820] z-10">
+                      <td className="py-3 px-4 text-right sticky right-0 bg-[#06060A] group-hover:bg-[#181820] z-10">
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             type="button"
@@ -772,7 +776,7 @@ export default function PaymentsPage() {
       {viewMode === "RECEIPTS" && (
         <div className="space-y-4">
           {/* Filters Toolbar */}
-          <div className="p-4 bg-[#141419]/85 border border-white/10 rounded-2xl flex flex-wrap items-center gap-3">
+          <div className="p-4 bg-[#06060A]/85 border border-white/10 rounded-2xl flex flex-wrap items-center gap-3">
             <div className="relative flex-1 min-w-[260px]">
               <FiSearch className="absolute left-3.5 top-3.5 text-gray-500 w-4 h-4" />
               <input
@@ -783,7 +787,7 @@ export default function PaymentsPage() {
                   setPage(1);
                 }}
                 placeholder="Rechercher par N° de reçu, participant, référence..."
-                className="w-full bg-[#1C1C24] border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#E52421] font-mono"
+                className="w-full bg-[#0B0B12] border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#E52421] font-mono"
               />
             </div>
 
@@ -794,7 +798,7 @@ export default function PaymentsPage() {
                 setStoredAdminSeason(e.target.value);
                 setPage(1);
               }}
-              className="bg-[#1C1C24] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#E52421] font-mono"
+              className="bg-[#0B0B12] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#E52421] font-mono"
             >
               <option value="ALL">Toutes les saisons</option>
               {seasons.map((s) => (
@@ -806,17 +810,17 @@ export default function PaymentsPage() {
           </div>
 
           {/* Payments Table */}
-          <div className="relative overflow-x-auto bg-[#141419]/80 border border-white/10 rounded-2xl shadow-xl">
-            <table className="w-full text-left text-sm text-gray-300">
-              <thead className="bg-[#1C1C24]/90 text-xs uppercase tracking-wider text-[#9E9EA8] font-mono border-b border-white/10">
+          <div className="relative overflow-x-auto bg-[#06060A]/80 border border-white/10 rounded-2xl shadow-xl">
+            <table className="w-full text-left text-xs text-gray-300">
+              <thead className="bg-[#0B0B12]/90 text-[10px] uppercase tracking-wider text-white/40 font-medium font-mono border-b border-white/[0.08]">
                 <tr>
-                  <th className="py-3.5 px-6">N° Reçu</th>
-                  <th className="py-3.5 px-6">Participant</th>
-                  <th className="py-3.5 px-6">Réf. Inscription</th>
-                  <th className="py-3.5 px-6">Motif</th>
-                  <th className="py-3.5 px-6">Montant perçu</th>
-                  <th className="py-3.5 px-6">Date</th>
-                  <th className="py-3.5 px-6 text-right">Actions</th>
+                  <th className="py-3 px-5">N° Reçu</th>
+                  <th className="py-3 px-5">Participant</th>
+                  <th className="py-3 px-5">Réf. Inscription</th>
+                  <th className="py-3 px-5">Motif</th>
+                  <th className="py-3 px-5">Montant perçu</th>
+                  <th className="py-3 px-5">Date</th>
+                  <th className="py-3 px-5 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5 font-mono text-xs">
@@ -835,30 +839,30 @@ export default function PaymentsPage() {
                 ) : (
                   payments.map((pay) => (
                     <tr key={pay.id} className="hover:bg-white/[0.02] transition-colors">
-                      <td className="py-3.5 px-6 font-bold text-[#FFD21F]">
+                      <td className="py-3 px-5 font-mono font-medium text-xs text-[#FFD21F]/90">
                         {pay.receiptNumber}
                       </td>
-                      <td className="py-3.5 px-6 font-sans">
-                        <div className="font-bold text-white text-sm">
+                      <td className="py-3 px-5 font-sans">
+                        <div className="font-medium text-white text-xs">
                           {pay.registration?.participant?.firstName} {pay.registration?.participant?.lastName}
                         </div>
-                        <div className="text-[11px] text-gray-400 font-mono">
+                        <div className="text-[10px] text-gray-400 font-mono font-normal">
                           {pay.registration?.participant?.phone}
                         </div>
                       </td>
-                      <td className="py-3.5 px-6 text-gray-300">
+                      <td className="py-3 px-5 text-gray-400 font-mono text-xs font-normal">
                         {pay.registration?.reference}
                       </td>
-                      <td className="py-3.5 px-6 font-sans text-gray-300">
+                      <td className="py-3 px-5 font-sans text-gray-300 text-xs font-normal">
                         {pay.paymentPurpose}
                       </td>
-                      <td className="py-3.5 px-6 font-bold text-emerald-400 text-sm">
+                      <td className="py-3 px-5 font-mono font-medium text-emerald-400 text-xs">
                         {pay.amount.toLocaleString()} DZD
                       </td>
-                      <td className="py-3.5 px-6 text-gray-400">
+                      <td className="py-3 px-5 text-gray-400 font-normal text-[11px]">
                         {new Date(pay.paidAt || pay.createdAt).toLocaleDateString("fr-FR")}
                       </td>
-                      <td className="py-3.5 px-6 text-right">
+                      <td className="py-3 px-5 text-right">
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             type="button"
@@ -903,14 +907,14 @@ export default function PaymentsPage() {
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page <= 1}
-                  className="p-2 bg-[#141419] hover:bg-[#1C1C24] rounded-lg disabled:opacity-30 transition"
+                  className="p-2 bg-[#06060A] hover:bg-[#0B0B12] rounded-lg disabled:opacity-30 transition"
                 >
                   <FiChevronLeft className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   disabled={page >= totalPages}
-                  className="p-2 bg-[#141419] hover:bg-[#1C1C24] rounded-lg disabled:opacity-30 transition"
+                  className="p-2 bg-[#06060A] hover:bg-[#0B0B12] rounded-lg disabled:opacity-30 transition"
                 >
                   <FiChevronRight className="w-4 h-4" />
                 </button>
@@ -925,7 +929,7 @@ export default function PaymentsPage() {
       {/* ========================================================================= */}
       {showEncaisseModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-[#141419] border border-emerald-500/40 rounded-3xl p-6 sm:p-8 max-w-xl w-full shadow-2xl space-y-6 animate-in zoom-in-95 max-h-[92vh] overflow-y-auto">
+          <div className="bg-[#06060A] border border-emerald-500/40 rounded-3xl p-6 sm:p-8 max-w-xl w-full shadow-2xl space-y-6 animate-in zoom-in-95 max-h-[92vh] overflow-y-auto">
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-4 border-b border-white/10">
               <div className="flex items-center gap-3">
@@ -968,7 +972,7 @@ export default function PaymentsPage() {
                   </p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-[#1C1C24] border border-white/10 font-mono text-center space-y-1 max-w-sm mx-auto">
+                <div className="p-4 rounded-2xl bg-[#0B0B12] border border-white/10 font-mono text-center space-y-1 max-w-sm mx-auto">
                   <span className="text-[10px] text-gray-400 uppercase block">Numéro de Reçu Officiel</span>
                   <strong className="text-lg text-[#FFD21F] block">{encaisseSuccessReceipt.receiptNumber}</strong>
                   <span className="text-xs text-emerald-400 font-bold block">{encaisseSuccessReceipt.amount} DZD (Espèces)</span>
@@ -1013,13 +1017,13 @@ export default function PaymentsPage() {
                         setSelectedAdherentForEncaisse(null);
                       }}
                       placeholder="Tapez le nom, téléphone ou référence..."
-                      className="w-full bg-[#1C1C24] border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 font-mono"
+                      className="w-full bg-[#0B0B12] border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 font-mono"
                     />
                   </div>
 
                   {/* Dropdown Candidate list when searching and not selected */}
                   {!selectedAdherentForEncaisse && encaisseAdherentSearch.trim().length > 0 && (
-                    <div className="max-h-48 overflow-y-auto bg-[#1C1C24] border border-white/15 rounded-xl divide-y divide-white/5 shadow-2xl">
+                    <div className="max-h-48 overflow-y-auto bg-[#0B0B12] border border-white/15 rounded-xl divide-y divide-white/5 shadow-2xl">
                       {filteredCandidates.slice(0, 8).map((cand) => (
                         <button
                           key={cand.registrationId}
@@ -1102,7 +1106,7 @@ export default function PaymentsPage() {
                               ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
                               : m.isLate
                               ? "bg-red-500/15 border-red-500/30 text-red-300 hover:bg-red-500/25"
-                              : "bg-[#1C1C24] border-white/5 text-gray-300 hover:bg-white/10"
+                              : "bg-[#0B0B12] border-white/5 text-gray-300 hover:bg-white/10"
                           }`}
                         >
                           <span className="block font-bold text-[11px]">{m.label.split(" ")[0]}</span>
@@ -1162,7 +1166,7 @@ export default function PaymentsPage() {
                       value={encaisseForm.amount}
                       onChange={(e) => setEncaisseForm({ ...encaisseForm, amount: e.target.value })}
                       placeholder="Ex : 1500"
-                      className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:border-emerald-500 focus:outline-none"
+                      className="w-full bg-[#0B0B12] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:border-emerald-500 focus:outline-none"
                     />
                   </div>
 
@@ -1175,7 +1179,7 @@ export default function PaymentsPage() {
                       required
                       value={encaisseForm.paidAt}
                       onChange={(e) => setEncaisseForm({ ...encaisseForm, paidAt: e.target.value })}
-                      className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white font-mono focus:border-emerald-500 focus:outline-none"
+                      className="w-full bg-[#0B0B12] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white font-mono focus:border-emerald-500 focus:outline-none"
                     />
                   </div>
                 </div>
@@ -1190,7 +1194,7 @@ export default function PaymentsPage() {
                     value={encaisseForm.paymentPurpose}
                     onChange={(e) => setEncaisseForm({ ...encaisseForm, paymentPurpose: e.target.value })}
                     placeholder="Ex : Mensualité Mars 2026"
-                    className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none font-mono"
+                    className="w-full bg-[#0B0B12] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none font-mono"
                   />
                 </div>
 
@@ -1203,7 +1207,7 @@ export default function PaymentsPage() {
                     value={encaisseForm.notes}
                     onChange={(e) => setEncaisseForm({ ...encaisseForm, notes: e.target.value })}
                     placeholder="Ex : Règlement reçu en espèces par le trésorier..."
-                    className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-4 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                    className="w-full bg-[#0B0B12] border border-white/10 rounded-xl px-4 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"
                   />
                 </div>
 
@@ -1237,7 +1241,7 @@ export default function PaymentsPage() {
       {/* ========================================================================= */}
       {selectedReceipt && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm print:p-0 print:bg-white print:fixed print:inset-0">
-          <div className="bg-[#141419] border border-white/10 rounded-2xl max-w-2xl w-full p-8 space-y-6 text-white print:bg-white print:text-black print:border-none print:w-full print:max-w-none">
+          <div className="bg-[#06060A] border border-white/10 rounded-2xl max-w-2xl w-full p-8 space-y-6 text-white print:bg-white print:text-black print:border-none print:w-full print:max-w-none">
             {/* Screen Controls */}
             <div className="flex items-center justify-between border-b border-white/10 pb-4 print:hidden">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
@@ -1361,7 +1365,7 @@ export default function PaymentsPage() {
       {/* ========================================================================= */}
       {paymentToEdit && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-[#141419] border border-blue-500/30 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6 animate-in zoom-in-95">
+          <div className="bg-[#06060A] border border-blue-500/30 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6 animate-in zoom-in-95">
             <div className="flex items-center justify-between pb-4 border-b border-white/10">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
@@ -1385,7 +1389,7 @@ export default function PaymentsPage() {
               </button>
             </div>
 
-            <div className="bg-[#1C1C24] p-3.5 rounded-xl border border-white/5 space-y-1 text-xs">
+            <div className="bg-[#0B0B12] p-3.5 rounded-xl border border-white/5 space-y-1 text-xs">
               <div className="text-gray-400">
                 Adhérent :{" "}
                 <strong className="text-white">
@@ -1420,7 +1424,7 @@ export default function PaymentsPage() {
                   value={editForm.amount}
                   onChange={(e) => setEditForm({ ...editForm, amount: e.target.value })}
                   placeholder="Ex : 4500"
-                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:border-blue-500 focus:outline-none"
+                  className="w-full bg-[#0B0B12] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:border-blue-500 focus:outline-none"
                 />
               </div>
 
@@ -1434,7 +1438,7 @@ export default function PaymentsPage() {
                   value={editForm.paymentPurpose}
                   onChange={(e) => setEditForm({ ...editForm, paymentPurpose: e.target.value })}
                   placeholder="Ex : Cotisation annuelle, assurance & 1er mois"
-                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full bg-[#0B0B12] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:border-blue-500 focus:outline-none"
                 />
               </div>
 
@@ -1447,7 +1451,7 @@ export default function PaymentsPage() {
                   required
                   value={editForm.paidAt}
                   onChange={(e) => setEditForm({ ...editForm, paidAt: e.target.value })}
-                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white font-mono focus:border-blue-500 focus:outline-none"
+                  className="w-full bg-[#0B0B12] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white font-mono focus:border-blue-500 focus:outline-none"
                 />
               </div>
 
@@ -1460,7 +1464,7 @@ export default function PaymentsPage() {
                   value={editForm.notes}
                   onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
                   placeholder="Remarques éventuelles sur la correction ou le mode..."
-                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full bg-[#0B0B12] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:border-blue-500 focus:outline-none"
                 />
               </div>
 
@@ -1492,7 +1496,7 @@ export default function PaymentsPage() {
       {/* ========================================================================= */}
       {paymentToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-[#141419] border border-red-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
+          <div className="bg-[#06060A] border border-red-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
             <div className="w-12 h-12 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center text-red-400">
               <FiAlertTriangle className="w-6 h-6" />
             </div>

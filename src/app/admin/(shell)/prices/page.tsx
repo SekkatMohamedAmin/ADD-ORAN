@@ -146,7 +146,7 @@ export default function AdminPricesPage() {
   return (
     <div className="space-y-8 max-w-6xl mx-auto pb-16">
       {/* Top Banner */}
-      <div className="relative rounded-3xl overflow-hidden border border-white/10 p-6 sm:p-8 bg-[#141419] shadow-xl">
+      <div className="relative rounded-3xl overflow-hidden border border-white/10 p-6 sm:p-8 bg-[#06060A] shadow-xl">
         <div className="relative z-10 flex flex-wrap items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-3">
@@ -199,7 +199,7 @@ export default function AdminPricesPage() {
 
       <form onSubmit={handleSave} className="space-y-8">
         {/* Section 1: Assurance & Frais d'Adhésion Club */}
-        <div className="p-6 sm:p-8 bg-[#141419] border border-white/5 rounded-3xl space-y-6 shadow-xl">
+        <div className="p-6 sm:p-8 bg-[#06060A] border border-white/5 rounded-3xl space-y-6 shadow-xl">
           <div className="flex items-start justify-between border-b border-white/5 pb-4">
             <div>
               <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2.5">
@@ -240,7 +240,7 @@ export default function AdminPricesPage() {
                     insurance: { ...pricing.insurance, name: e.target.value },
                   })
                 }
-                className="w-full bg-[#1C1C24] border border-white/10 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-emerald-400"
+                className="w-full bg-[#0B0B12] border border-white/10 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-emerald-400"
                 required
               />
             </div>
@@ -264,7 +264,7 @@ export default function AdminPricesPage() {
                       },
                     })
                   }
-                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl p-3 pr-12 text-sm font-mono font-bold text-emerald-400 focus:outline-none focus:border-emerald-400"
+                  className="w-full bg-[#0B0B12] border border-white/10 rounded-xl p-3 pr-12 text-sm font-mono font-bold text-emerald-400 focus:outline-none focus:border-emerald-400"
                   required
                 />
                 <span className="absolute right-3.5 top-3.5 text-xs font-mono font-bold text-gray-400">
@@ -289,7 +289,7 @@ export default function AdminPricesPage() {
                   className={`p-4 rounded-2xl border text-left flex items-start gap-3 transition cursor-pointer ${
                     pricing.insurance.frequency === "annual"
                       ? "bg-emerald-500/15 border-emerald-500/50 text-white shadow-lg shadow-emerald-500/10"
-                      : "bg-[#1C1C24] border-white/5 text-gray-400 hover:border-white/10 hover:text-white"
+                      : "bg-[#0B0B12] border-white/5 text-gray-400 hover:border-white/10 hover:text-white"
                   }`}
                 >
                   <Calendar className="w-5 h-5 text-emerald-400 mt-0.5 shrink-0" />
@@ -312,7 +312,7 @@ export default function AdminPricesPage() {
                   className={`p-4 rounded-2xl border text-left flex items-start gap-3 transition cursor-pointer ${
                     pricing.insurance.frequency === "monthly"
                       ? "bg-emerald-500/15 border-emerald-500/50 text-white shadow-lg shadow-emerald-500/10"
-                      : "bg-[#1C1C24] border-white/5 text-gray-400 hover:border-white/10 hover:text-white"
+                      : "bg-[#0B0B12] border-white/5 text-gray-400 hover:border-white/10 hover:text-white"
                   }`}
                 >
                   <Clock className="w-5 h-5 text-emerald-400 mt-0.5 shrink-0" />
@@ -329,7 +329,7 @@ export default function AdminPricesPage() {
         </div>
 
         {/* Section 2: Tarifs par Discipline / Sport */}
-        <div className="p-6 sm:p-8 bg-[#141419] border border-white/5 rounded-3xl space-y-6 shadow-xl">
+        <div className="p-6 sm:p-8 bg-[#06060A] border border-white/5 rounded-3xl space-y-6 shadow-xl">
           <div className="border-b border-white/5 pb-4">
             <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2.5">
               <Activity className="w-5 h-5 text-[#E52421]" />
@@ -350,8 +350,8 @@ export default function AdminPricesPage() {
                   key={slug}
                   className={`p-6 rounded-2xl border transition space-y-5 ${
                     disc.enabled
-                      ? "bg-[#1C1C24] border-white/10 hover:border-white/20"
-                      : "bg-[#141419] border-white/5 opacity-60"
+                      ? "bg-[#0B0B12] border-white/10 hover:border-white/20"
+                      : "bg-[#06060A] border-white/5 opacity-60"
                   }`}
                 >
                   <div className="flex items-center justify-between">
@@ -388,7 +388,7 @@ export default function AdminPricesPage() {
                             parseFloat(e.target.value) || 0
                           )
                         }
-                        className="w-full bg-[#141419] border border-white/10 rounded-xl p-3 pr-12 text-sm font-mono font-bold text-[#FFD21F] focus:outline-none focus:border-[#FFD21F]"
+                        className="w-full bg-[#06060A] border border-white/10 rounded-xl p-3 pr-12 text-sm font-mono font-bold text-[#FFD21F] focus:outline-none focus:border-[#FFD21F]"
                         required
                       />
                       <span className="absolute right-3 top-3 text-xs font-mono font-bold text-gray-400">
@@ -409,7 +409,7 @@ export default function AdminPricesPage() {
                         className={`py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
                           isMonthly
                             ? "bg-[#E52421]/20 border border-[#E52421] text-white shadow-sm"
-                            : "bg-[#141419] border border-white/5 text-gray-400 hover:text-white"
+                            : "bg-[#06060A] border border-white/5 text-gray-400 hover:text-white"
                         }`}
                       >
                         <Clock className="w-3.5 h-3.5" />
@@ -422,7 +422,7 @@ export default function AdminPricesPage() {
                         className={`py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
                           !isMonthly
                             ? "bg-[#FFD21F]/20 border border-[#FFD21F] text-[#FFD21F] shadow-sm"
-                            : "bg-[#141419] border border-white/5 text-gray-400 hover:text-white"
+                            : "bg-[#06060A] border border-white/5 text-gray-400 hover:text-white"
                         }`}
                       >
                         <Calendar className="w-3.5 h-3.5" />
@@ -449,7 +449,7 @@ export default function AdminPricesPage() {
         </div>
 
         {/* Section 3: Calendrier & Règle d'Alerte de Retard */}
-        <div className="p-6 sm:p-8 bg-[#141419] border border-white/5 rounded-3xl space-y-6 shadow-xl">
+        <div className="p-6 sm:p-8 bg-[#06060A] border border-white/5 rounded-3xl space-y-6 shadow-xl">
           <div className="border-b border-white/5 pb-4">
             <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2.5">
               <Calendar className="w-5 h-5 text-[#FFD21F]" />
@@ -477,7 +477,7 @@ export default function AdminPricesPage() {
                       paymentDeadlineDay: parseInt(e.target.value, 10) || 5,
                     })
                   }
-                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl p-3 pr-20 text-sm font-mono font-bold text-white focus:outline-none focus:border-[#FFD21F]"
+                  className="w-full bg-[#0B0B12] border border-white/10 rounded-xl p-3 pr-20 text-sm font-mono font-bold text-white focus:outline-none focus:border-[#FFD21F]"
                   required
                 />
                 <span className="absolute right-3.5 top-3.5 text-xs text-gray-400 font-mono">
@@ -493,11 +493,11 @@ export default function AdminPricesPage() {
               <label className="text-xs font-semibold text-gray-300 block">
                 Mois inclus dans la saison sportive ({pricing.seasonMonths.length} mois)
               </label>
-              <div className="flex flex-wrap gap-1.5 p-3 rounded-2xl bg-[#1C1C24] border border-white/5 max-h-36 overflow-y-auto">
+              <div className="flex flex-wrap gap-1.5 p-3 rounded-2xl bg-[#0B0B12] border border-white/5 max-h-36 overflow-y-auto">
                 {pricing.seasonMonths.map((m) => (
                   <span
                     key={m.id}
-                    className="px-2.5 py-1 bg-[#141419] border border-white/10 rounded-lg text-xs font-mono text-gray-200"
+                    className="px-2.5 py-1 bg-[#06060A] border border-white/10 rounded-lg text-xs font-mono text-gray-200"
                   >
                     {m.labelFr}
                   </span>
@@ -551,7 +551,7 @@ export default function AdminPricesPage() {
             {simBreakdown.map((child, index) => (
               <div
                 key={child.id}
-                className="p-5 bg-[#141419] border border-white/10 rounded-2xl space-y-3 relative"
+                className="p-5 bg-[#06060A] border border-white/10 rounded-2xl space-y-3 relative"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-bold text-white flex items-center gap-2">
@@ -599,7 +599,7 @@ export default function AdminPricesPage() {
                           className={`px-3 py-1 rounded-lg text-xs font-medium border transition cursor-pointer ${
                             isSelected
                               ? "bg-[#E52421]/20 border-[#E52421] text-white"
-                              : "bg-[#1C1C24] border-white/5 text-gray-400 hover:text-white"
+                              : "bg-[#0B0B12] border-white/5 text-gray-400 hover:text-white"
                           }`}
                         >
                           {pricing.disciplines[slug]?.name || slug}

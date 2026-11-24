@@ -173,7 +173,7 @@ export default function ParticipantProfilePage({
         <p className="text-sm text-gray-400">{error || "Cet adhérent n'existe pas."}</p>
         <Link
           href="/admin/participants"
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1C1C24] text-white hover:bg-[#252530] rounded-xl text-sm font-medium transition"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0B0B12] text-white hover:bg-white/10 rounded-xl text-sm font-medium transition"
         >
           <FiArrowLeft className="w-4 h-4" />
           Retour au répertoire
@@ -190,7 +190,7 @@ export default function ParticipantProfilePage({
   return (
     <div className="space-y-8 max-w-7xl mx-auto pb-16">
       {/* Top Profile Banner with Background Image */}
-      <div className="relative rounded-3xl overflow-hidden border border-white/10 p-6 sm:p-8 bg-[#141419] shadow-xl">
+      <div className="relative rounded-3xl overflow-hidden border border-white/10 p-6 sm:p-8 bg-[#06060A] shadow-xl">
         <div className="absolute inset-0 pointer-events-none z-0" aria-hidden="true">
           <Image
             src="/images/hero/hero-trail.jpg"
@@ -208,7 +208,7 @@ export default function ParticipantProfilePage({
           <div className="flex items-center gap-4">
             <Link
               href="/admin/participants"
-              className="p-3 bg-[#1C1C24]/80 hover:bg-[#252530] text-gray-400 hover:text-white rounded-2xl border border-white/10 transition flex items-center justify-center backdrop-blur-sm"
+              className="p-3 bg-[#0B0B12]/80 hover:bg-white/10 text-gray-400 hover:text-white rounded-2xl border border-white/10 transition flex items-center justify-center backdrop-blur-sm"
               title="Retour au répertoire"
             >
               <FiArrowLeft className="w-5 h-5" />
@@ -270,7 +270,7 @@ export default function ParticipantProfilePage({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Identity & Card Info */}
         <div className="space-y-6">
-          <div className="p-6 bg-[#141419] border border-white/5 rounded-2xl space-y-6">
+          <div className="p-6 bg-[#06060A] border border-white/5 rounded-2xl space-y-6">
             <h3 className="text-base font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
               <FiUser className="w-4 h-4 text-[#E52421]" />
               Fiche Individuelle
@@ -361,7 +361,7 @@ export default function ParticipantProfilePage({
           </div>
 
           {/* Club Card / RFID Badge */}
-          <div className="p-6 bg-[#141419] border border-white/5 rounded-2xl space-y-4">
+          <div className="p-6 bg-[#06060A] border border-white/5 rounded-2xl space-y-4">
             <h3 className="text-base font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
               <FiCreditCard className="w-4 h-4 text-[#FFD21F]" />
               Carte Club & Accès
@@ -394,7 +394,7 @@ export default function ParticipantProfilePage({
           </div>
 
           {/* User Account & Security */}
-          <div className="p-6 bg-[#141419] border border-white/5 rounded-2xl space-y-4">
+          <div className="p-6 bg-[#06060A] border border-white/5 rounded-2xl space-y-4">
             <h3 className="text-base font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
               <FiKey className="w-4 h-4 text-amber-400" />
               Compte Utilisateur & Accès
@@ -439,7 +439,7 @@ export default function ParticipantProfilePage({
 
         {/* Right Columns: Multi-Season Registration History */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="p-6 bg-[#141419] border border-white/5 rounded-2xl space-y-6">
+          <div className="p-6 bg-[#06060A] border border-white/5 rounded-2xl space-y-6">
             <div className="flex items-center justify-between border-b border-white/5 pb-4">
               <div>
                 <h3 className="text-base font-bold text-white flex items-center gap-2">
@@ -456,7 +456,7 @@ export default function ParticipantProfilePage({
               {member.registrations.map((reg) => (
                 <div
                   key={reg.id}
-                  className="p-5 bg-[#1C1C24] border border-white/5 rounded-2xl space-y-4 hover:border-white/10 transition"
+                  className="p-5 bg-[#0B0B12] border border-white/5 rounded-2xl space-y-4 hover:border-white/10 transition"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
@@ -473,7 +473,7 @@ export default function ParticipantProfilePage({
 
                     <Link
                       href={`/admin/registrations/${reg.id}`}
-                      className="px-3.5 py-1.5 bg-[#252530] hover:bg-[#303040] text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 transition"
+                      className="px-3.5 py-1.5 bg-white/10 hover:bg-[#303040] text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 transition"
                     >
                       Ouvrir dossier <FiExternalLink className="w-3.5 h-3.5" />
                     </Link>
@@ -486,7 +486,7 @@ export default function ParticipantProfilePage({
                       {reg.disciplines.map((d: any) => (
                         <span
                           key={d.discipline.id}
-                          className="px-2.5 py-1 bg-[#141419] text-gray-200 text-xs font-medium rounded-lg border border-white/5"
+                          className="px-2.5 py-1 bg-[#06060A] text-gray-200 text-xs font-medium rounded-lg border border-white/5"
                         >
                           {d.discipline.nameFr || d.discipline.slug}
                         </span>
@@ -527,7 +527,7 @@ export default function ParticipantProfilePage({
       {/* Delete Confirmation Modal */}
       {showDeleteModal && member && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-[#141419] border border-amber-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
+          <div className="bg-[#06060A] border border-amber-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
             <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400">
               <FiAlertTriangle className="w-6 h-6" />
             </div>

@@ -123,7 +123,7 @@ export default function AdminProfilePage() {
       </div>
 
       {/* Account Info Card */}
-      <div className="p-6 bg-[#141419] border border-white/5 rounded-2xl space-y-4">
+      <div className="p-6 bg-[#06060A] border border-white/5 rounded-2xl space-y-4">
         <h3 className="text-base font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
           <FiShield className="w-4 h-4 text-emerald-400" />
           Informations de Connexion
@@ -168,7 +168,7 @@ export default function AdminProfilePage() {
       </div>
 
       {/* Change Password Form */}
-      <div className="p-6 bg-[#141419] border border-white/5 rounded-2xl space-y-4">
+      <div className="p-6 bg-[#06060A] border border-white/5 rounded-2xl space-y-4">
         <h3 className="text-base font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
           <FiLock className="w-4 h-4 text-[#FFD21F]" />
           Modifier le mot de passe
@@ -199,7 +199,7 @@ export default function AdminProfilePage() {
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 placeholder="Votre mot de passe actuel"
-                className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl p-3 pr-10 text-xs text-white focus:outline-none focus:border-[#E52421]"
+                className="w-full bg-[#000000] border border-white/10 rounded-xl p-3 pr-10 text-xs text-white focus:outline-none focus:border-[#E52421]"
                 required
               />
               <button
@@ -223,7 +223,7 @@ export default function AdminProfilePage() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Minimum 8 caractères"
-                  className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl p-3 pr-10 text-xs text-white focus:outline-none focus:border-[#E52421]"
+                  className="w-full bg-[#000000] border border-white/10 rounded-xl p-3 pr-10 text-xs text-white focus:outline-none focus:border-[#E52421]"
                   required
                 />
                 <button
@@ -245,7 +245,7 @@ export default function AdminProfilePage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Répétez le mot de passe"
-                className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421]"
+                className="w-full bg-[#000000] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421]"
                 required
               />
             </div>

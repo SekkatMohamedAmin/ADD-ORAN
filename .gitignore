@@ -47,3 +47,4 @@ old/
 *.zip
 *.bak
 /dev.db
+scratch/

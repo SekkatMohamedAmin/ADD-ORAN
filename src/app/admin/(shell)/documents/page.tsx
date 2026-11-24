@@ -170,23 +170,23 @@ export default function DocumentsPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="p-4 bg-[#141419] border border-white/5 rounded-2xl">
+        <div className="p-4 bg-[#06060A] border border-white/5 rounded-2xl">
           <span className="text-xs text-gray-400 block mb-1">Total Pièces</span>
           <strong className="text-xl font-bold text-white font-mono">{stats.total}</strong>
         </div>
-        <div className="p-4 bg-[#141419] border border-white/5 rounded-2xl">
+        <div className="p-4 bg-[#06060A] border border-white/5 rounded-2xl">
           <span className="text-xs text-gray-400 block mb-1 flex items-center gap-1.5">
             <FiClock className="w-3.5 h-3.5 text-[#FFD21F]" /> En Attente
           </span>
           <strong className="text-xl font-bold text-[#FFD21F] font-mono">{stats.pending}</strong>
         </div>
-        <div className="p-4 bg-[#141419] border border-white/5 rounded-2xl">
+        <div className="p-4 bg-[#06060A] border border-white/5 rounded-2xl">
           <span className="text-xs text-gray-400 block mb-1 flex items-center gap-1.5">
             <FiCheckCircle className="w-3.5 h-3.5 text-emerald-400" /> Validées
           </span>
           <strong className="text-xl font-bold text-emerald-400 font-mono">{stats.valid}</strong>
         </div>
-        <div className="p-4 bg-[#141419] border border-white/5 rounded-2xl">
+        <div className="p-4 bg-[#06060A] border border-white/5 rounded-2xl">
           <span className="text-xs text-gray-400 block mb-1 flex items-center gap-1.5">
             <FiXCircle className="w-3.5 h-3.5 text-[#E52421]" /> Rejetées
           </span>
@@ -195,7 +195,7 @@ export default function DocumentsPage() {
       </div>
 
       {/* Filters Toolbar */}
-      <div className="p-4 bg-[#141419] border border-white/5 rounded-2xl space-y-3">
+      <div className="p-4 bg-[#06060A] border border-white/5 rounded-2xl space-y-3">
         <form onSubmit={handleSearchSubmit} className="flex flex-wrap items-center gap-3">
           <div className="relative flex-1 min-w-[260px]">
             <FiSearch className="absolute left-3.5 top-3.5 text-gray-500 w-4 h-4" />
@@ -207,7 +207,7 @@ export default function DocumentsPage() {
                 setPage(1);
               }}
               placeholder="Rechercher par adhérent, téléphone, référence dossier..."
-              className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#E52421]"
+              className="w-full bg-[#000000] border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#E52421]"
             />
           </div>
 
@@ -217,7 +217,7 @@ export default function DocumentsPage() {
               setStatusFilter(e.target.value);
               setPage(1);
             }}
-            className="bg-[#0A0A0D] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#E52421]"
+            className="bg-[#000000] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#E52421]"
           >
             <option value="">Tous les statuts</option>
             <option value="PENDING">En attente de vérification</option>
@@ -231,7 +231,7 @@ export default function DocumentsPage() {
               setTypeFilter(e.target.value);
               setPage(1);
             }}
-            className="bg-[#0A0A0D] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#E52421]"
+            className="bg-[#000000] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#E52421]"
           >
             <option value="">Tous les types de pièces</option>
             <option value="PHOTO">Photo d'identité</option>
@@ -247,7 +247,7 @@ export default function DocumentsPage() {
               setStoredAdminSeason(e.target.value);
               setPage(1);
             }}
-            className="bg-[#0A0A0D] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#E52421]"
+            className="bg-[#000000] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#E52421]"
           >
             <option value="ALL">Toutes les saisons</option>
             {seasons.map((s) => (
@@ -284,9 +284,9 @@ export default function DocumentsPage() {
       </div>
 
       {/* Documents Table */}
-      <div className="overflow-x-auto bg-[#141419] border border-white/5 rounded-2xl shadow-sm">
+      <div className="overflow-x-auto bg-[#06060A] border border-white/5 rounded-2xl shadow-sm">
         <table className="w-full text-left text-sm text-gray-300">
-          <thead className="bg-[#0A0A0D] text-xs uppercase tracking-wider text-gray-400 border-b border-white/5">
+          <thead className="bg-[#000000] text-xs uppercase tracking-wider text-gray-400 border-b border-white/5">
             <tr>
               <th className="py-3.5 px-6">Adhérent(e)</th>
               <th className="py-3.5 px-6">Dossier / Réf</th>
@@ -381,7 +381,7 @@ export default function DocumentsPage() {
                           href={docUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="px-2.5 py-1.5 bg-[#1C1C24] hover:bg-[#252530] text-gray-200 rounded-lg text-xs font-semibold flex items-center gap-1 transition"
+                          className="px-2.5 py-1.5 bg-[#0B0B12] hover:bg-white/10 text-gray-200 rounded-lg text-xs font-semibold flex items-center gap-1 transition"
                           title="Aperçu sécurisé"
                         >
                           <FiEye className="w-3.5 h-3.5" />
@@ -437,14 +437,14 @@ export default function DocumentsPage() {
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="p-2 bg-[#141419] hover:bg-[#1C1C24] rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition"
+              className="p-2 bg-[#06060A] hover:bg-[#0B0B12] rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition"
             >
               <FiChevronLeft className="w-4 h-4" />
             </button>
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages}
-              className="p-2 bg-[#141419] hover:bg-[#1C1C24] rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition"
+              className="p-2 bg-[#06060A] hover:bg-[#0B0B12] rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition"
             >
               <FiChevronRight className="w-4 h-4" />
             </button>

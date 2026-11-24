@@ -279,7 +279,7 @@ export default function AdminTrashPage() {
             type="button"
             onClick={fetchTrash}
             disabled={loading}
-            className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-[#141419] border border-white/10 hover:border-white/20 text-[#F5F5F2] font-mono text-xs font-bold transition-all disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-[#06060A] border border-white/10 hover:border-white/20 text-[#F5F5F2] font-mono text-xs font-bold transition-all disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin text-[#E52421]" : ""}`} />
             <span>Actualiser</span>
@@ -313,7 +313,7 @@ export default function AdminTrashPage() {
       )}
 
       {/* Reassurance Banner */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-[#141419]/90 border border-white/10 flex items-start gap-3.5">
+      <div className="p-4 sm:p-5 rounded-2xl bg-[#06060A]/90 border border-white/10 flex items-start gap-3.5">
         <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
         <div className="text-xs space-y-1">
           <p className="font-bold text-[#F5F5F2]">
@@ -330,7 +330,7 @@ export default function AdminTrashPage() {
       {/* Tabs & Search */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         {/* Tabs */}
-        <div className="flex items-center gap-2 bg-[#141419] p-1 rounded-xl border border-white/10 w-fit">
+        <div className="flex items-center gap-2 bg-[#06060A] p-1 rounded-xl border border-white/10 w-fit">
           <button
             type="button"
             onClick={() => setActiveTab("all")}
@@ -374,7 +374,7 @@ export default function AdminTrashPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Filtrer la corbeille..."
-            className="w-full bg-[#141419] border border-white/10 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-gray-500 font-mono focus:outline-none focus:border-[#E52421]"
+            className="w-full bg-[#06060A] border border-white/10 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-gray-500 font-mono focus:outline-none focus:border-[#E52421]"
           />
         </div>
       </div>
@@ -386,7 +386,7 @@ export default function AdminTrashPage() {
           <span>Chargement de la corbeille...</span>
         </div>
       ) : totalInTrash === 0 ? (
-        <div className="py-20 rounded-3xl bg-[#141419]/50 border border-white/5 text-center flex flex-col items-center gap-3">
+        <div className="py-20 rounded-3xl bg-[#06060A]/50 border border-white/5 text-center flex flex-col items-center gap-3">
           <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
             <CheckCircle2 className="w-6 h-6" />
           </div>
@@ -412,7 +412,7 @@ export default function AdminTrashPage() {
               </div>
 
               {filteredParticipants.length === 0 ? (
-                <div className="p-6 rounded-2xl bg-[#141419]/40 border border-white/5 text-center text-xs font-mono text-gray-500">
+                <div className="p-6 rounded-2xl bg-[#06060A]/40 border border-white/5 text-center text-xs font-mono text-gray-500">
                   Aucun adhérent ne correspond à la recherche.
                 </div>
               ) : (
@@ -431,7 +431,7 @@ export default function AdminTrashPage() {
                     return (
                       <div
                         key={p.id}
-                        className="p-5 rounded-2xl bg-[#141419] border border-white/10 hover:border-amber-500/30 transition shadow-lg space-y-4"
+                        className="p-5 rounded-2xl bg-[#06060A] border border-white/10 hover:border-amber-500/30 transition shadow-lg space-y-4"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex items-center gap-3">
@@ -525,7 +525,7 @@ export default function AdminTrashPage() {
               </div>
 
               {filteredRegistrations.length === 0 ? (
-                <div className="p-6 rounded-2xl bg-[#141419]/40 border border-white/5 text-center text-xs font-mono text-gray-500">
+                <div className="p-6 rounded-2xl bg-[#06060A]/40 border border-white/5 text-center text-xs font-mono text-gray-500">
                   Aucune candidature ne correspond à la recherche.
                 </div>
               ) : (
@@ -544,7 +544,7 @@ export default function AdminTrashPage() {
                     return (
                       <div
                         key={r.id}
-                        className="p-5 rounded-2xl bg-[#141419] border border-white/10 hover:border-amber-500/30 transition shadow-lg space-y-4"
+                        className="p-5 rounded-2xl bg-[#06060A] border border-white/10 hover:border-amber-500/30 transition shadow-lg space-y-4"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div>
@@ -612,7 +612,7 @@ export default function AdminTrashPage() {
       {/* Purge Single Item Modal */}
       {itemToPurge && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-[#141419] border border-red-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
+          <div className="bg-[#06060A] border border-red-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
             <div className="w-12 h-12 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center text-red-400">
               <AlertTriangle className="w-6 h-6" />
             </div>
@@ -654,7 +654,7 @@ export default function AdminTrashPage() {
       {/* Empty Trash Modal */}
       {showEmptyTrashModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-[#141419] border border-red-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
+          <div className="bg-[#06060A] border border-red-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
             <div className="w-12 h-12 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center text-red-400">
               <AlertTriangle className="w-6 h-6" />
             </div>

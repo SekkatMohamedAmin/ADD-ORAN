@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useLanguage } from "@/components/i18n/LanguageProvider";
 import {
   Clock,
   Search,
@@ -10,6 +11,8 @@ import {
   CreditCard,
   Check,
   ShieldCheck,
+  Archive,
+  FileEdit,
 } from "lucide-react";
 
 export type RegistrationStatus =
@@ -21,6 +24,8 @@ export type RegistrationStatus =
   | "PAYMENT_PENDING"
   | "PAID"
   | "ACTIVE"
+  | "ARCHIVED"
+  | "DRAFT"
   | string;
 
 interface StatusBadgeProps {
@@ -30,93 +35,92 @@ interface StatusBadgeProps {
 }
 
 export function StatusBadge({ status, label, size = "md" }: StatusBadgeProps) {
+  const { t, locale } = useLanguage();
+  const isArabic = locale === "ar";
+
   let badgeStyle = "status-submitted";
   let Icon = Clock;
-  let defaultLabel = status;
 
   switch (status) {
     case "SUBMITTED":
       badgeStyle = "status-submitted";
       Icon = Clock;
-      defaultLabel = "Dossier Soumis";
       break;
 
     case "UNDER_REVIEW":
       badgeStyle = "status-under-review";
       Icon = Search;
-      defaultLabel = "En cours d'examen";
       break;
 
     case "NEEDS_CORRECTION":
       badgeStyle = "status-needs-correction";
       Icon = AlertTriangle;
-      defaultLabel = "Correction requise";
       break;
 
     case "ACCEPTED":
       badgeStyle = "status-accepted";
       Icon = CheckCircle2;
-      defaultLabel = "Dossier Validé";
       break;
 
     case "REJECTED":
       badgeStyle = "status-rejected";
       Icon = XCircle;
-      defaultLabel = "Dossier Refusé";
       break;
 
     case "PAYMENT_PENDING":
       badgeStyle = "status-payment-pending";
       Icon = CreditCard;
-      defaultLabel = "Paiement en attente";
       break;
 
     case "PAID":
       badgeStyle = "status-paid";
       Icon = Check;
-      defaultLabel = "Cotisation Réglée";
       break;
 
     case "ACTIVE":
       badgeStyle = "status-active";
       Icon = ShieldCheck;
-      defaultLabel = "Adhérent Actif";
       break;
 
     case "ARCHIVED":
       badgeStyle = "bg-white/5 text-[#9E9EA8] border border-white/15";
-      Icon = Clock;
-      defaultLabel = "Dossier Archivé";
+      Icon = Archive;
       break;
 
     case "DRAFT":
       badgeStyle = "bg-white/5 text-[#9E9EA8] border border-white/10";
-      Icon = Clock;
-      defaultLabel = "Brouillon";
+      Icon = FileEdit;
       break;
 
     default:
       badgeStyle = "bg-white/5 text-[#9E9EA8] border border-white/10";
       Icon = Clock;
-      defaultLabel = status;
       break;
   }
 
+  // Localized label lookup from dictionary
+  const translatedStatus =
+    t.statuses?.[status as keyof typeof t.statuses] || status;
+  const displayLabel = label || translatedStatus;
+
   const sizeClasses =
     size === "sm"
-      ? "text-[10px] px-2 py-0.5 gap-1"
+      ? "text-[10px] px-2.5 py-0.5 gap-1.5"
       : size === "lg"
       ? "text-sm px-4 py-2 gap-2"
       : "text-xs px-3 py-1 gap-1.5";
 
-  const iconSizes = size === "sm" ? "w-3 h-3" : size === "lg" ? "w-4 h-4" : "w-3.5 h-3.5";
+  const iconSizes =
+    size === "sm" ? "w-3 h-3" : size === "lg" ? "w-4 h-4" : "w-3.5 h-3.5";
 
   return (
     <span
-      className={`inline-flex items-center font-mono font-bold uppercase tracking-wider rounded-full ${badgeStyle} ${sizeClasses}`}
+      className={`inline-flex items-center font-medium tracking-wide rounded-full shadow-sm transition-colors ${
+        isArabic ? "font-arabic text-[11px]" : "font-mono uppercase text-[10px]"
+      } ${badgeStyle} ${sizeClasses}`}
     >
       <Icon className={`${iconSizes} shrink-0`} />
-      <span>{label || defaultLabel}</span>
+      <span className="leading-none">{displayLabel}</span>
     </span>
   );
 }

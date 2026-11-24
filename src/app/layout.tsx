@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Syne, DM_Serif_Display, Plus_Jakarta_Sans, Space_Mono } from "next/font/google";
+import { Syne, DM_Serif_Display, Plus_Jakarta_Sans, Space_Mono, Inter, Cairo } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/components/i18n/LanguageProvider";
 
@@ -42,6 +42,20 @@ const fontMono = Space_Mono({
   display: "swap",
 });
 
+const fontAdmin = Inter({
+  subsets: ["latin"],
+  variable: "--font-admin",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+const fontAdminArabic = Cairo({
+  subsets: ["arabic", "latin"],
+  variable: "--font-admin-arabic",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "ADD PARKOUR ORAN — MOVE DIFFERENT // DEFY GRAVITY",
   description:
@@ -76,7 +90,7 @@ export default function RootLayout({
     <html
       lang="fr"
       dir="ltr"
-      className={`${fontDisplay.variable} ${fontEditorial.variable} ${fontBody.variable} ${fontMono.variable} h-full bg-[#0A0A0D] text-[#F5F5F2]`}
+      className={`${fontDisplay.variable} ${fontEditorial.variable} ${fontBody.variable} ${fontMono.variable} ${fontAdmin.variable} ${fontAdminArabic.variable} h-full bg-[#0A0A0D] text-[#F5F5F2]`}
     >
       <body className="min-h-full flex flex-col bg-[#0A0A0D] text-[#F5F5F2] font-body selection:bg-[#E52421] selection:text-[#F5F5F2]">
         <LanguageProvider>

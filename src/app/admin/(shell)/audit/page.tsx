@@ -141,13 +141,13 @@ export default function AuditPage() {
           </p>
         </div>
 
-        <div className="px-3.5 py-1.5 bg-[#141419] border border-white/5 rounded-xl text-xs font-semibold text-gray-300">
+        <div className="px-3.5 py-1.5 bg-[#06060A] border border-white/5 rounded-xl text-xs font-semibold text-gray-300">
           Total : <strong className="text-white font-mono">{totalCount}</strong> événements audités
         </div>
       </div>
 
       {/* Filters Toolbar */}
-      <div className="p-4 bg-[#141419] border border-white/5 rounded-2xl space-y-3">
+      <div className="p-4 bg-[#06060A] border border-white/5 rounded-2xl space-y-3">
         <form onSubmit={handleSearchSubmit} className="flex flex-wrap items-center gap-3">
           <div className="relative flex-1 min-w-[260px]">
             <FiSearch className="absolute left-3.5 top-3.5 text-gray-500 w-4 h-4" />
@@ -156,7 +156,7 @@ export default function AuditPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Rechercher par référence, participant, administrateur, détails..."
-              className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#E52421]"
+              className="w-full bg-[#000000] border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#E52421]"
             />
           </div>
 
@@ -166,7 +166,7 @@ export default function AuditPage() {
               setSelectedAction(e.target.value);
               setPage(1);
             }}
-            className="bg-[#0A0A0D] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#E52421]"
+            className="bg-[#000000] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#E52421]"
           >
             <option value="">Toutes les actions</option>
             {distinctActions.map((act) => (
@@ -200,9 +200,9 @@ export default function AuditPage() {
       </div>
 
       {/* Audit Table */}
-      <div className="overflow-x-auto bg-[#141419] border border-white/5 rounded-2xl shadow-sm">
+      <div className="overflow-x-auto bg-[#06060A] border border-white/5 rounded-2xl shadow-sm">
         <table className="w-full text-left text-sm text-gray-300">
-          <thead className="bg-[#0A0A0D] text-xs uppercase tracking-wider text-gray-400 border-b border-white/5">
+          <thead className="bg-[#000000] text-xs uppercase tracking-wider text-gray-400 border-b border-white/5">
             <tr>
               <th className="py-3.5 px-6">Horodatage</th>
               <th className="py-3.5 px-6">Action Réalisée</th>
@@ -272,7 +272,7 @@ export default function AuditPage() {
 
                     <td className="py-4 px-6 text-xs font-mono text-gray-400 max-w-md">
                       {parsedDetails ? (
-                        <div className="bg-[#0A0A0D] p-2 rounded-lg border border-white/5 truncate max-w-sm" title={JSON.stringify(parsedDetails, null, 2)}>
+                        <div className="bg-[#000000] p-2 rounded-lg border border-white/5 truncate max-w-sm" title={JSON.stringify(parsedDetails, null, 2)}>
                           {Object.entries(parsedDetails).map(([k, v]) => (
                             <span key={k} className="inline-block mr-2">
                               <strong className="text-gray-300">{k}:</strong>{" "}
@@ -313,14 +313,14 @@ export default function AuditPage() {
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="p-2 bg-[#141419] hover:bg-[#1C1C24] rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition"
+              className="p-2 bg-[#06060A] hover:bg-[#0B0B12] rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition"
             >
               <FiChevronLeft className="w-4 h-4" />
             </button>
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages}
-              className="p-2 bg-[#141419] hover:bg-[#1C1C24] rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition"
+              className="p-2 bg-[#06060A] hover:bg-[#0B0B12] rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition"
             >
               <FiChevronRight className="w-4 h-4" />
             </button>

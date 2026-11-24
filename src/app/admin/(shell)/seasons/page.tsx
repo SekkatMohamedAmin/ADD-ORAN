@@ -191,13 +191,13 @@ export default function SeasonsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
           Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-64 bg-[#141419] border border-white/5 rounded-2xl animate-pulse" />
+            <div key={i} className="h-64 bg-[#06060A] border border-white/5 rounded-2xl animate-pulse" />
           ))
         ) : seasons.length > 0 ? (
           seasons.map((season) => (
             <div
               key={season.id}
-              className={`p-6 bg-[#141419] border rounded-2xl flex flex-col justify-between transition ${
+              className={`p-6 bg-[#06060A] border rounded-2xl flex flex-col justify-between transition ${
                 season.isActive
                   ? "border-[#E52421] shadow-lg shadow-[#E52421]/5"
                   : "border-white/5 hover:border-white/10"
@@ -206,7 +206,7 @@ export default function SeasonsPage() {
               <div className="space-y-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <span className="px-2.5 py-1 bg-[#1C1C24] text-gray-300 font-mono text-xs font-bold rounded-md">
+                    <span className="px-2.5 py-1 bg-[#0B0B12] text-gray-300 font-mono text-xs font-bold rounded-md">
                       CODE {season.code}
                     </span>
                     <h3 className="text-base font-bold text-white mt-2">{season.label}</h3>
@@ -239,19 +239,19 @@ export default function SeasonsPage() {
 
                 {/* Key Metrics */}
                 <div className="grid grid-cols-2 gap-3 pt-3 border-t border-white/5">
-                  <div className="p-3 bg-[#1C1C24] rounded-xl">
+                  <div className="p-3 bg-[#0B0B12] rounded-xl">
                     <span className="text-[11px] text-gray-400 block">Inscriptions</span>
                     <strong className="text-base font-bold text-white font-mono">
                       {season._count?.registrations || 0}
                     </strong>
                   </div>
-                  <div className="p-3 bg-[#1C1C24] rounded-xl">
+                  <div className="p-3 bg-[#0B0B12] rounded-xl">
                     <span className="text-[11px] text-gray-400 block">Adhérents Actifs</span>
                     <strong className="text-base font-bold text-emerald-400 font-mono">
                       {season.activeMembersCount || 0}
                     </strong>
                   </div>
-                  <div className="col-span-2 p-3 bg-[#1C1C24] rounded-xl">
+                  <div className="col-span-2 p-3 bg-[#0B0B12] rounded-xl">
                     <span className="text-[11px] text-gray-400 block">Cotisations perçues</span>
                     <strong className="text-base font-bold text-[#FFD21F] font-mono">
                       {(season.totalRevenue || 0).toLocaleString()} DZD
@@ -273,7 +273,7 @@ export default function SeasonsPage() {
                   {!season.isActive && (
                     <button
                       onClick={() => handleSetActive(season.id)}
-                      className="px-3 py-1.5 bg-[#1C1C24] hover:bg-[#252530] text-gray-300 hover:text-white rounded-lg text-xs font-semibold transition"
+                      className="px-3 py-1.5 bg-[#0B0B12] hover:bg-white/10 text-gray-300 hover:text-white rounded-lg text-xs font-semibold transition"
                     >
                       Activer
                     </button>
@@ -297,7 +297,7 @@ export default function SeasonsPage() {
             </div>
           ))
         ) : (
-          <div className="col-span-3 p-12 bg-[#141419] border border-white/5 rounded-2xl text-center text-gray-400">
+          <div className="col-span-3 p-12 bg-[#06060A] border border-white/5 rounded-2xl text-center text-gray-400">
             <FiCalendar className="w-12 h-12 text-gray-600 mx-auto mb-3" />
             <h4 className="text-base font-bold text-white">Aucune saison enregistrée</h4>
             <p className="text-xs text-gray-500 mt-1">Créez votre première saison sportive pour ouvrir les inscriptions.</p>
@@ -310,7 +310,7 @@ export default function SeasonsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
           <form
             onSubmit={handleCreateSeason}
-            className="bg-[#141419] border border-white/10 rounded-2xl max-w-md w-full p-6 space-y-5"
+            className="bg-[#06060A] border border-white/10 rounded-2xl max-w-md w-full p-6 space-y-5"
           >
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-[#E52421]/10 text-[#E52421] rounded-xl flex items-center justify-center">
@@ -332,7 +332,7 @@ export default function SeasonsPage() {
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
                   placeholder="Ex : 2027"
-                  className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421] font-mono"
+                  className="w-full bg-[#000000] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421] font-mono"
                   required
                 />
               </div>
@@ -346,7 +346,7 @@ export default function SeasonsPage() {
                   value={label}
                   onChange={(e) => setLabel(e.target.value)}
                   placeholder="Ex : Saison 2026–2027"
-                  className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421]"
+                  className="w-full bg-[#000000] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421]"
                   required
                 />
               </div>
@@ -358,7 +358,7 @@ export default function SeasonsPage() {
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-[#E52421]"
+                    className="w-full bg-[#000000] border border-white/10 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-[#E52421]"
                   />
                 </div>
                 <div>
@@ -367,12 +367,12 @@ export default function SeasonsPage() {
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-[#E52421]"
+                    className="w-full bg-[#000000] border border-white/10 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-[#E52421]"
                   />
                 </div>
               </div>
 
-              <label className="flex items-center gap-2.5 p-3 bg-[#1C1C24] rounded-xl cursor-pointer hover:bg-[#252530]">
+              <label className="flex items-center gap-2.5 p-3 bg-[#0B0B12] rounded-xl cursor-pointer hover:bg-white/10">
                 <input
                   type="checkbox"
                   checked={isActive}
@@ -411,7 +411,7 @@ export default function SeasonsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
           <form
             onSubmit={handleDeleteSeason}
-            className="bg-[#141419] border border-white/10 rounded-2xl max-w-md w-full p-6 space-y-5"
+            className="bg-[#06060A] border border-white/10 rounded-2xl max-w-md w-full p-6 space-y-5"
           >
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-red-950/50 text-[#E52421] rounded-xl flex items-center justify-center border border-[#E52421]/20">
@@ -454,7 +454,7 @@ export default function SeasonsPage() {
                 value={deleteConfirmText}
                 onChange={(e) => setDeleteConfirmText(e.target.value)}
                 placeholder={seasonToDelete.code}
-                className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421] font-mono"
+                className="w-full bg-[#000000] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421] font-mono"
                 required
               />
             </div>

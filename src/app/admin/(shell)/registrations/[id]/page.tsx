@@ -385,7 +385,7 @@ export default function RegistrationDetailPage({
         <p className="text-sm text-gray-400">{error || "Ce dossier n'existe pas ou a été supprimé."}</p>
         <Link
           href="/admin/registrations"
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#1C1C24] text-white hover:bg-[#252530] rounded-xl text-sm font-medium transition"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0B0B12] text-white hover:bg-white/10 rounded-xl text-sm font-medium transition"
         >
           <FiArrowLeft className="w-4 h-4" />
           Retour aux inscriptions
@@ -407,7 +407,7 @@ export default function RegistrationDetailPage({
         <div className="flex items-center gap-3">
           <Link
             href="/admin/registrations"
-            className="p-2.5 bg-[#141419] hover:bg-[#1C1C24] text-gray-400 hover:text-white rounded-xl border border-white/5 transition flex items-center justify-center"
+            className="p-2.5 bg-[#06060A] hover:bg-[#0B0B12] text-gray-400 hover:text-white rounded-xl border border-white/5 transition flex items-center justify-center"
             title="Retour à la liste"
           >
             <FiArrowLeft className="w-5 h-5" />
@@ -499,7 +499,7 @@ export default function RegistrationDetailPage({
             <>
               <button
                 onClick={() => setActionModal("PAYMENT")}
-                className="px-4 py-2.5 bg-[#1C1C24] hover:bg-[#252530] text-gray-200 border border-white/10 text-xs font-bold uppercase tracking-wider rounded-xl transition flex items-center gap-2"
+                className="px-4 py-2.5 bg-[#0B0B12] hover:bg-white/10 text-gray-200 border border-white/10 text-xs font-bold uppercase tracking-wider rounded-xl transition flex items-center gap-2"
               >
                 <FiDollarSign className="w-4 h-4 text-[#FFD21F]" />
                 Enregistrer un versement
@@ -546,7 +546,7 @@ export default function RegistrationDetailPage({
             className={`px-3 py-2.5 text-xs font-semibold rounded-xl border transition flex items-center gap-1.5 ${
               registration.isMarkedDuplicate
                 ? "bg-amber-500/10 text-amber-300 border-amber-500/30 hover:bg-amber-500/20"
-                : "bg-[#141419] text-gray-400 border-white/5 hover:text-white hover:bg-[#1C1C24]"
+                : "bg-[#06060A] text-gray-400 border-white/5 hover:text-white hover:bg-[#0B0B12]"
             }`}
           >
             <FiShield className="w-4 h-4" />
@@ -645,7 +645,7 @@ export default function RegistrationDetailPage({
           {/* Main Info Column */}
           <div className="lg:col-span-2 space-y-6">
             {/* Identity Card */}
-            <div className="p-6 bg-[#141419] border border-white/5 rounded-2xl space-y-6">
+            <div className="p-6 bg-[#06060A] border border-white/5 rounded-2xl space-y-6">
               <h3 className="text-base font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
                 <FiUser className="w-4 h-4 text-[#E52421]" />
                 État Civil & Coordonnées
@@ -692,7 +692,7 @@ export default function RegistrationDetailPage({
                 </div>
                 <div>
                   <span className="text-xs text-gray-400 block mb-0.5">Groupe Sanguin</span>
-                  <span className="text-gray-200 font-bold px-2 py-0.5 bg-[#1C1C24] rounded-md inline-block">
+                  <span className="text-gray-200 font-bold px-2 py-0.5 bg-[#0B0B12] rounded-md inline-block">
                     {p.bloodType || "Non renseigné"}
                   </span>
                 </div>
@@ -741,7 +741,7 @@ export default function RegistrationDetailPage({
               </div>
 
               {p.hasEmergencyContact && (
-                <div className="mt-4 pt-4 border-t border-white/5 bg-[#1C1C24]/50 p-4 rounded-xl">
+                <div className="mt-4 pt-4 border-t border-white/5 bg-[#0B0B12]/50 p-4 rounded-xl">
                   <h4 className="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2">
                     Contact d'urgence déclaré
                   </h4>
@@ -764,7 +764,7 @@ export default function RegistrationDetailPage({
             </div>
 
             {/* Disciplines Card */}
-            <div className="p-6 bg-[#141419] border border-white/5 rounded-2xl space-y-4">
+            <div className="p-6 bg-[#06060A] border border-white/5 rounded-2xl space-y-4">
               <h3 className="text-base font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
                 <FiActivity className="w-4 h-4 text-[#FFD21F]" />
                 Disciplines Choisies ({registration.disciplines.length})
@@ -773,7 +773,7 @@ export default function RegistrationDetailPage({
                 {registration.disciplines.map((d) => (
                   <div
                     key={d.id}
-                    className="p-3.5 bg-[#1C1C24] border border-white/5 rounded-xl flex items-center justify-between"
+                    className="p-3.5 bg-[#0B0B12] border border-white/5 rounded-xl flex items-center justify-between"
                   >
                     <div>
                       <span className="font-bold text-white text-sm block">{(d.discipline as any).nameFr || (d.discipline as any).name}</span>
@@ -792,7 +792,7 @@ export default function RegistrationDetailPage({
           <div className="space-y-6">
             {/* Parental Authorization if Minor */}
             {isMinor ? (
-              <div className="p-6 bg-[#141419] border border-white/5 rounded-2xl space-y-4">
+              <div className="p-6 bg-[#06060A] border border-white/5 rounded-2xl space-y-4">
                 <h3 className="text-base font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
                   <FiShield className="w-4 h-4 text-amber-400" />
                   Autorisation Parentale (Mineur)
@@ -821,7 +821,7 @@ export default function RegistrationDetailPage({
                 </div>
               </div>
             ) : (
-              <div className="p-6 bg-[#141419] border border-white/5 rounded-2xl">
+              <div className="p-6 bg-[#06060A] border border-white/5 rounded-2xl">
                 <h3 className="text-base font-bold text-white flex items-center gap-2 mb-2">
                   <FiShield className="w-4 h-4 text-emerald-400" />
                   Statut Majeur
@@ -833,7 +833,7 @@ export default function RegistrationDetailPage({
             )}
 
             {/* Engagement & Disclaimers */}
-            <div className="p-6 bg-[#141419] border border-white/5 rounded-2xl space-y-3">
+            <div className="p-6 bg-[#06060A] border border-white/5 rounded-2xl space-y-3">
               <h3 className="text-base font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
                 <FiCheckCircle className="w-4 h-4 text-emerald-400" />
                 Engagement & Règlements
@@ -857,11 +857,11 @@ export default function RegistrationDetailPage({
             </div>
 
             {/* Quick Actions to Participant Directory */}
-            <div className="p-5 bg-[#1C1C24] border border-white/5 rounded-2xl text-center space-y-3">
+            <div className="p-5 bg-[#0B0B12] border border-white/5 rounded-2xl text-center space-y-3">
               <p className="text-xs text-gray-400">Consulter la fiche adhérent complète et son historique pluriannuel</p>
               <Link
                 href={`/admin/participants/${p.id}`}
-                className="w-full py-2.5 px-4 bg-[#252530] hover:bg-[#303040] text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition"
+                className="w-full py-2.5 px-4 bg-white/10 hover:bg-[#303040] text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition"
               >
                 <FiUser className="w-4 h-4" /> Voir profil adhérent
               </Link>
@@ -889,7 +889,7 @@ export default function RegistrationDetailPage({
               return (
                 <div
                   key={doc.id}
-                  className="p-5 bg-[#141419] border border-white/5 rounded-2xl space-y-4 flex flex-col justify-between"
+                  className="p-5 bg-[#06060A] border border-white/5 rounded-2xl space-y-4 flex flex-col justify-between"
                 >
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-3">
@@ -919,7 +919,7 @@ export default function RegistrationDetailPage({
                     </div>
 
                     {/* Preview box */}
-                    <div className="h-48 w-full bg-[#0A0A0D] rounded-xl overflow-hidden border border-white/5 relative flex items-center justify-center">
+                    <div className="h-48 w-full bg-[#000000] rounded-xl overflow-hidden border border-white/5 relative flex items-center justify-center">
                       {isImage ? (
                         <img
                           src={docUrl}
@@ -950,7 +950,7 @@ export default function RegistrationDetailPage({
                       href={docUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="px-3 py-2 bg-[#1C1C24] hover:bg-[#252530] text-gray-200 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition"
+                      className="px-3 py-2 bg-[#0B0B12] hover:bg-white/10 text-gray-200 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition"
                     >
                       <FiEye className="w-3.5 h-3.5" /> Ouvrir en grand
                     </a>
@@ -977,7 +977,7 @@ export default function RegistrationDetailPage({
             })}
 
             {registration.documents.length === 0 && (
-              <div className="col-span-2 p-12 bg-[#141419] border border-white/5 rounded-2xl text-center text-gray-400">
+              <div className="col-span-2 p-12 bg-[#06060A] border border-white/5 rounded-2xl text-center text-gray-400">
                 <FiFileText className="w-12 h-12 text-gray-600 mx-auto mb-3" />
                 <h4 className="text-base font-bold text-white">Aucun document joint</h4>
                 <p className="text-xs text-gray-500 mt-1">Le participant n'a pas encore téléversé ses pièces justificatives.</p>
@@ -1006,9 +1006,9 @@ export default function RegistrationDetailPage({
             </button>
           </div>
 
-          <div className="overflow-x-auto bg-[#141419] border border-white/5 rounded-2xl">
+          <div className="overflow-x-auto bg-[#06060A] border border-white/5 rounded-2xl">
             <table className="w-full text-left text-sm text-gray-300">
-              <thead className="bg-[#0A0A0D] text-xs uppercase tracking-wider text-gray-400 border-b border-white/5">
+              <thead className="bg-[#000000] text-xs uppercase tracking-wider text-gray-400 border-b border-white/5">
                 <tr>
                   <th className="py-3.5 px-6">N° Reçu</th>
                   <th className="py-3.5 px-6">Date</th>
@@ -1051,7 +1051,7 @@ export default function RegistrationDetailPage({
                         <button
                           onClick={() => setSelectedReceipt(pay)}
                           title="Imprimer le reçu"
-                          className="px-2.5 py-1.5 bg-[#1C1C24] hover:bg-[#252530] text-gray-200 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 transition border border-white/5"
+                          className="px-2.5 py-1.5 bg-[#0B0B12] hover:bg-white/10 text-gray-200 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 transition border border-white/5"
                         >
                           <FiPrinter className="w-3.5 h-3.5 text-[#FFD21F]" />
                           <span className="hidden sm:inline">Imprimer</span>
@@ -1096,7 +1096,7 @@ export default function RegistrationDetailPage({
             <span className="text-xs text-gray-400">Traçabilité complète des actions administratives</span>
           </div>
 
-          <div className="bg-[#141419] border border-white/5 rounded-2xl divide-y divide-white/5">
+          <div className="bg-[#06060A] border border-white/5 rounded-2xl divide-y divide-white/5">
             {registration.auditLogs.map((log) => {
               let parsedDetails = null;
               try {
@@ -1138,7 +1138,7 @@ export default function RegistrationDetailPage({
       {/* MODAL: ACCEPT */}
       {actionModal === "ACCEPT" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-[#141419] border border-white/10 rounded-2xl max-w-md w-full p-6 space-y-5">
+          <div className="bg-[#06060A] border border-white/10 rounded-2xl max-w-md w-full p-6 space-y-5">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-emerald-500/10 text-emerald-400 rounded-xl flex items-center justify-center">
                 <FiCheckCircle className="w-5 h-5" />
@@ -1175,7 +1175,7 @@ export default function RegistrationDetailPage({
       {/* MODAL: REQUEST CORRECTION */}
       {actionModal === "REQUEST_CORRECTION" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-[#141419] border border-white/10 rounded-2xl max-w-md w-full p-6 space-y-5">
+          <div className="bg-[#06060A] border border-white/10 rounded-2xl max-w-md w-full p-6 space-y-5">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-[#FFD21F]/10 text-[#FFD21F] rounded-xl flex items-center justify-center">
                 <FiAlertCircle className="w-5 h-5" />
@@ -1201,7 +1201,7 @@ export default function RegistrationDetailPage({
                   ].map((item) => (
                     <label
                       key={item.key}
-                      className="flex items-center gap-2.5 p-2 bg-[#1C1C24] rounded-lg cursor-pointer hover:bg-[#252530]"
+                      className="flex items-center gap-2.5 p-2 bg-[#0B0B12] rounded-lg cursor-pointer hover:bg-white/10"
                     >
                       <input
                         type="checkbox"
@@ -1227,7 +1227,7 @@ export default function RegistrationDetailPage({
                   onChange={(e) => setCorrectionReason(e.target.value)}
                   placeholder="Ex : Merci de fournir un certificat médical daté de moins de 3 mois..."
                   rows={3}
-                  className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#FFD21F]"
+                  className="w-full bg-[#000000] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#FFD21F]"
                   required
                 />
               </div>
@@ -1262,7 +1262,7 @@ export default function RegistrationDetailPage({
       {/* MODAL: REJECT */}
       {actionModal === "REJECT" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-[#141419] border border-white/10 rounded-2xl max-w-md w-full p-6 space-y-5">
+          <div className="bg-[#06060A] border border-white/10 rounded-2xl max-w-md w-full p-6 space-y-5">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-[#E52421]/10 text-[#E52421] rounded-xl flex items-center justify-center">
                 <FiXCircle className="w-5 h-5" />
@@ -1280,7 +1280,7 @@ export default function RegistrationDetailPage({
                 onChange={(e) => setRejectReason(e.target.value)}
                 placeholder="Ex : Capacité d'accueil atteinte pour la discipline choisie..."
                 rows={3}
-                className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421]"
+                className="w-full bg-[#000000] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421]"
                 required
               />
             </div>
@@ -1311,7 +1311,7 @@ export default function RegistrationDetailPage({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
           <form
             onSubmit={handleRecordPayment}
-            className="bg-[#141419] border border-white/10 rounded-2xl max-w-md w-full p-6 space-y-5"
+            className="bg-[#06060A] border border-white/10 rounded-2xl max-w-md w-full p-6 space-y-5"
           >
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-emerald-500/10 text-emerald-400 rounded-xl flex items-center justify-center">
@@ -1333,7 +1333,7 @@ export default function RegistrationDetailPage({
                     min="100"
                     value={paymentAmount}
                     onChange={(e) => setPaymentAmount(e.target.value)}
-                    className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl p-3 text-lg font-mono font-bold text-white focus:outline-none focus:border-[#E52421]"
+                    className="w-full bg-[#000000] border border-white/10 rounded-xl p-3 text-lg font-mono font-bold text-white focus:outline-none focus:border-[#E52421]"
                     required
                   />
                   <span className="absolute right-3 top-3.5 text-xs font-bold text-gray-400">DZD</span>
@@ -1346,7 +1346,7 @@ export default function RegistrationDetailPage({
                   type="text"
                   value={paymentPurpose}
                   onChange={(e) => setPaymentPurpose(e.target.value)}
-                  className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421]"
+                  className="w-full bg-[#000000] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421]"
                   required
                 />
               </div>
@@ -1358,11 +1358,11 @@ export default function RegistrationDetailPage({
                   value={paymentNotes}
                   onChange={(e) => setPaymentNotes(e.target.value)}
                   placeholder="Optionnel"
-                  className="w-full bg-[#0A0A0D] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421]"
+                  className="w-full bg-[#000000] border border-white/10 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-[#E52421]"
                 />
               </div>
 
-              <div className="p-3 bg-[#1C1C24] rounded-xl text-xs text-gray-300 border border-white/5 space-y-1">
+              <div className="p-3 bg-[#0B0B12] rounded-xl text-xs text-gray-300 border border-white/5 space-y-1">
                 <span className="font-semibold text-[#FFD21F] block">Rappel financier :</span>
                 <p>Ce versement passe automatiquement le dossier à l'état <strong>ACTIF</strong>.</p>
               </div>
@@ -1391,7 +1391,7 @@ export default function RegistrationDetailPage({
       {/* MODAL: ARCHIVE */}
       {actionModal === "ARCHIVE" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-[#141419] border border-white/10 rounded-2xl max-w-md w-full p-6 space-y-5">
+          <div className="bg-[#06060A] border border-white/10 rounded-2xl max-w-md w-full p-6 space-y-5">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-amber-500/10 text-amber-400 rounded-xl flex items-center justify-center">
                 <FiArchive className="w-5 h-5" />
@@ -1434,7 +1434,7 @@ export default function RegistrationDetailPage({
       {/* MODAL: PRINTABLE RECEIPT */}
       {selectedReceipt && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm print:p-0 print:bg-white print:fixed print:inset-0">
-          <div className="bg-[#141419] border border-white/10 rounded-2xl max-w-2xl w-full p-8 space-y-6 text-white print:bg-white print:text-black print:border-none print:w-full print:max-w-none">
+          <div className="bg-[#06060A] border border-white/10 rounded-2xl max-w-2xl w-full p-8 space-y-6 text-white print:bg-white print:text-black print:border-none print:w-full print:max-w-none">
             {/* Screen Controls */}
             <div className="flex items-center justify-between border-b border-white/10 pb-4 print:hidden">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
@@ -1553,7 +1553,7 @@ export default function RegistrationDetailPage({
       {/* Delete Candidate Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-[#141419] border border-amber-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
+          <div className="bg-[#06060A] border border-amber-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
             <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400">
               <FiAlertTriangle className="w-6 h-6" />
             </div>
@@ -1602,7 +1602,7 @@ export default function RegistrationDetailPage({
       {/* Edit Payment Modal */}
       {paymentToEdit && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-[#141419] border border-blue-500/30 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6 animate-in zoom-in-95">
+          <div className="bg-[#06060A] border border-blue-500/30 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6 animate-in zoom-in-95">
             <div className="flex items-center justify-between pb-4 border-b border-white/10">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
@@ -1639,7 +1639,7 @@ export default function RegistrationDetailPage({
                   value={editPaymentForm.amount}
                   onChange={(e) => setEditPaymentForm({ ...editPaymentForm, amount: e.target.value })}
                   placeholder="Ex : 4500"
-                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:border-blue-500 focus:outline-none"
+                  className="w-full bg-[#0B0B12] border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:border-blue-500 focus:outline-none"
                 />
               </div>
 
@@ -1653,7 +1653,7 @@ export default function RegistrationDetailPage({
                   value={editPaymentForm.paymentPurpose}
                   onChange={(e) => setEditPaymentForm({ ...editPaymentForm, paymentPurpose: e.target.value })}
                   placeholder="Ex : Cotisation annuelle, assurance & 1er mois"
-                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full bg-[#0B0B12] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:border-blue-500 focus:outline-none"
                 />
               </div>
 
@@ -1666,7 +1666,7 @@ export default function RegistrationDetailPage({
                   required
                   value={editPaymentForm.paidAt}
                   onChange={(e) => setEditPaymentForm({ ...editPaymentForm, paidAt: e.target.value })}
-                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white font-mono focus:border-blue-500 focus:outline-none"
+                  className="w-full bg-[#0B0B12] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white font-mono focus:border-blue-500 focus:outline-none"
                 />
               </div>
 
@@ -1679,7 +1679,7 @@ export default function RegistrationDetailPage({
                   value={editPaymentForm.notes}
                   onChange={(e) => setEditPaymentForm({ ...editPaymentForm, notes: e.target.value })}
                   placeholder="Observations sur la correction..."
-                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full bg-[#0B0B12] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:border-blue-500 focus:outline-none"
                 />
               </div>
 
@@ -1709,7 +1709,7 @@ export default function RegistrationDetailPage({
       {/* Delete Payment Modal */}
       {paymentToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-[#141419] border border-red-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
+          <div className="bg-[#06060A] border border-red-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
             <div className="w-12 h-12 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center text-red-400">
               <FiAlertTriangle className="w-6 h-6" />
             </div>

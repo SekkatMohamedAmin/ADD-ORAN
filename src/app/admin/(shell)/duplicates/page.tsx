@@ -133,7 +133,7 @@ export default function DuplicatesPage() {
           <select
             value={selectedSeason}
             onChange={(e) => setSelectedSeason(e.target.value)}
-            className="bg-[#141419] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#E52421]"
+            className="bg-[#06060A] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#E52421]"
           >
             <option value="">Toutes les saisons</option>
             {seasons.map((s) => (
@@ -149,7 +149,7 @@ export default function DuplicatesPage() {
       <div className="space-y-4">
         {loading ? (
           Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-44 bg-[#141419] border border-white/5 rounded-2xl animate-pulse" />
+            <div key={i} className="h-44 bg-[#06060A] border border-white/5 rounded-2xl animate-pulse" />
           ))
         ) : cases.length > 0 ? (
           cases.map((c) => {
@@ -159,7 +159,7 @@ export default function DuplicatesPage() {
             return (
               <div
                 key={reg.id}
-                className="p-6 bg-[#141419] border border-amber-500/20 rounded-2xl space-y-5 shadow-sm"
+                className="p-6 bg-[#06060A] border border-amber-500/20 rounded-2xl space-y-5 shadow-sm"
               >
                 <div className="flex flex-wrap items-start justify-between gap-4 border-b border-white/5 pb-4">
                   <div className="flex items-center gap-3">
@@ -190,7 +190,7 @@ export default function DuplicatesPage() {
                   <div className="flex items-center gap-2">
                     <Link
                       href={`/admin/registrations/${reg.id}`}
-                      className="px-3 py-2 bg-[#1C1C24] hover:bg-[#252530] text-gray-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition"
+                      className="px-3 py-2 bg-[#0B0B12] hover:bg-white/10 text-gray-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition"
                     >
                       Examiner le dossier <FiExternalLink className="w-3.5 h-3.5" />
                     </Link>
@@ -216,7 +216,7 @@ export default function DuplicatesPage() {
                       {c.conflicts.map((conf) => (
                         <div
                           key={conf.id}
-                          className="p-3.5 bg-[#1C1C24] border border-white/5 rounded-xl flex items-center justify-between gap-3 text-xs"
+                          className="p-3.5 bg-[#0B0B12] border border-white/5 rounded-xl flex items-center justify-between gap-3 text-xs"
                         >
                           <div>
                             <span className="font-bold text-white block">
@@ -258,7 +258,7 @@ export default function DuplicatesPage() {
             );
           })
         ) : (
-          <div className="p-12 bg-[#141419] border border-white/5 rounded-2xl text-center text-gray-400">
+          <div className="p-12 bg-[#06060A] border border-white/5 rounded-2xl text-center text-gray-400">
             <FiCheckCircle className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
             <h4 className="text-base font-bold text-white">Aucun doublon signalé</h4>
             <p className="text-xs text-gray-500 mt-1">

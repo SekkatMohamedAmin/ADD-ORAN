@@ -243,10 +243,14 @@ export default function ParticipantsPage() {
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-3">
             <FiUsers className="w-6 h-6 text-[#E52421]" />
-            Répertoire des Adhérents
+            {t.admin.nav.participants}
           </h1>
           <p className="text-xs text-gray-400 mt-1">
-            Fichier centralisé et permanent des membres du club, suivi pluriannuel et coordonnées.
+            {locale === "ar"
+              ? "السجل المركزي والدائم لأعضاء النادي، المتابعة السنوية والمعلومات."
+              : locale === "en"
+              ? "Centralized directory of club members, multi-year tracking and contacts."
+              : "Fichier centralisé et permanent des membres du club, suivi pluriannuel et coordonnées."}
           </p>
         </div>
 
@@ -259,38 +263,38 @@ export default function ParticipantsPage() {
               setExportSuccessMsg(null);
               setShowExportModal(true);
             }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-mono font-bold shadow-md shadow-emerald-600/25 transition"
-            title="Exporter la liste nominative pour l'assurance (Excel & PDF)"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-mono font-medium shadow-md shadow-emerald-600/25 transition"
+            title={locale === "ar" ? "تصدير القائمة للتأمين (Excel & PDF)" : "Exporter la liste nominative pour l'assurance (Excel & PDF)"}
           >
             <FiShieldCheck className="w-4 h-4 text-emerald-100" />
-            <span>Export Assurance</span>
+            <span>{locale === "ar" ? "تصدير التأمين" : locale === "en" ? "Insurance Export" : "Export Assurance"}</span>
           </button>
           <Link
             href="/admin/cards/batch"
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#E52421] hover:bg-[#ff2d2a] text-white rounded-xl text-xs font-mono font-bold shadow-md shadow-[#E52421]/20 transition"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#E52421] hover:bg-[#ff2d2a] text-white rounded-xl text-xs font-mono font-medium shadow-md shadow-[#E52421]/20 transition"
           >
             <FiPrinter className="w-3.5 h-3.5" />
-            <span>Impression Batch (ZIP / PDF)</span>
+            <span>{locale === "ar" ? "طباعة مجمعة" : locale === "en" ? "Batch Print" : "Impression Batch"}</span>
           </Link>
           <Link
             href="/admin/trash"
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-xl text-xs font-mono font-bold transition"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-xl text-xs font-mono font-medium transition"
           >
             <FiTrash2 className="w-3.5 h-3.5" />
-            <span>Corbeille</span>
+            <span>{t.admin.nav.trash}</span>
           </Link>
-          <span className="px-3.5 py-1.5 bg-[#141419] border border-white/5 rounded-xl text-xs font-semibold text-gray-300">
-            Total : <strong className="text-white font-mono">{totalCount}</strong> adhérents
+          <span className="px-3.5 py-1.5 bg-[#06060A] border border-white/5 rounded-xl text-xs font-medium text-gray-300">
+            {locale === "ar" ? "المجموع :" : locale === "en" ? "Total:" : "Total :"} <strong className="text-white font-mono">{totalCount}</strong> {locale === "ar" ? "مشترك" : locale === "en" ? "members" : "adhérents"}
           </span>
         </div>
       </div>
 
       {/* Filters & Search Toolbar with Red Energy Accent */}
-      <div className="relative p-4 sm:p-5 bg-[#141419]/85 backdrop-blur-md border border-white/10 rounded-2xl space-y-3 overflow-hidden before:absolute before:top-0 before:left-0 before:right-0 before:h-[2px] before:bg-gradient-to-r before:from-transparent before:via-[#E52421] before:to-transparent shadow-lg">
+      <div className="relative p-4 sm:p-5 bg-[#06060A]/85 backdrop-blur-md border border-white/10 rounded-2xl space-y-3 overflow-hidden before:absolute before:top-0 before:left-0 before:right-0 before:h-[2px] before:bg-gradient-to-r before:from-transparent before:via-[#E52421] before:to-transparent shadow-lg">
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#E52421]/[0.08] rounded-full blur-2xl pointer-events-none" />
         <form onSubmit={handleSearchSubmit} className="flex flex-wrap items-center gap-3 relative z-10">
           <div className="relative flex-1 min-w-[260px]">
-            <FiSearch className="absolute left-3.5 top-3.5 text-gray-500 w-4 h-4" />
+            <FiSearch className={`absolute top-3.5 text-gray-500 w-4 h-4 ${isRtl ? "right-3.5" : "left-3.5"}`} />
             <input
               type="text"
               value={search}
@@ -298,8 +302,8 @@ export default function ParticipantsPage() {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              placeholder="Rechercher par nom, prénom, téléphone, référence..."
-              className="w-full bg-[#1C1C24] border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#E52421] font-mono"
+              placeholder={locale === "ar" ? "البحث بالاسم، اللقب، الهاتف، المرجع..." : locale === "en" ? "Search by name, phone, reference..." : "Rechercher par nom, prénom, téléphone, référence..."}
+              className={`w-full bg-[#0B0B12] border border-white/10 rounded-xl py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#E52421] font-mono ${isRtl ? "pr-10 pl-4" : "pl-10 pr-4"}`}
             />
           </div>
 
@@ -312,13 +316,13 @@ export default function ParticipantsPage() {
               setStoredAdminSeason(val);
               setPage(1);
             }}
-            className="bg-[#1C1C24] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#E52421] font-mono"
+            className="bg-[#0B0B12] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#E52421] font-mono"
           >
-            <option value="">Saison en cours (Active)</option>
-            <option value="ALL">Toutes les saisons</option>
+            <option value="">{locale === "ar" ? "الموسم الحالي (النشط)" : locale === "en" ? "Active Season" : "Saison en cours (Active)"}</option>
+            <option value="ALL">{locale === "ar" ? "جميع المواسم" : locale === "en" ? "All Seasons" : "Toutes les saisons"}</option>
             {seasons.map((s) => (
               <option key={s.id} value={s.code}>
-                Saison {s.name || s.code}
+                {locale === "ar" ? `الموسم ${s.name || s.code}` : `Saison ${s.name || s.code}`}
               </option>
             ))}
           </select>
@@ -330,18 +334,18 @@ export default function ParticipantsPage() {
               setAgeCategory(e.target.value);
               setPage(1);
             }}
-            className="bg-[#1C1C24] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#E52421] font-mono"
+            className="bg-[#0B0B12] border border-white/10 text-xs text-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#E52421] font-mono"
           >
-            <option value="">Tous les âges (Mineurs & Majeurs)</option>
-            <option value="minor">Mineurs uniquement (&lt; 18 ans)</option>
-            <option value="adult">Majeurs uniquement (18+ ans)</option>
+            <option value="">{locale === "ar" ? "جميع الفئات العمرية" : locale === "en" ? "All ages" : "Tous les âges (Mineurs & Majeurs)"}</option>
+            <option value="minor">{locale === "ar" ? "القصر فقط (< 18 سنة)" : locale === "en" ? "Minors only (< 18 yo)" : "Mineurs uniquement (< 18 ans)"}</option>
+            <option value="adult">{locale === "ar" ? "البالغون فقط (18+ سنة)" : locale === "en" ? "Adults only (18+ yo)" : "Majeurs uniquement (18+ ans)"}</option>
           </select>
 
           <button
             type="submit"
             className="px-5 py-2.5 bg-[#E52421] hover:bg-[#FF3030] text-white text-xs font-semibold rounded-xl transition shadow-md shadow-[#E52421]/20"
           >
-            Filtrer
+            {locale === "ar" ? "تصفية" : locale === "en" ? "Filter" : "Filtrer"}
           </button>
 
           {(search || selectedSeason || ageCategory) && (
@@ -353,26 +357,26 @@ export default function ParticipantsPage() {
                 setAgeCategory("");
                 setPage(1);
               }}
-              className="px-3 py-2.5 bg-[#1C1C24] hover:bg-white/10 text-gray-400 hover:text-white text-xs rounded-xl transition font-mono"
+              className="px-3 py-2.5 bg-[#0B0B12] hover:bg-white/10 text-gray-400 hover:text-white text-xs rounded-xl transition font-mono"
             >
-              Effacer
+              {locale === "ar" ? "مسح" : locale === "en" ? "Clear" : "Effacer"}
             </button>
           )}
         </form>
       </div>
 
       {/* Participants Table with Red Energy Accents */}
-      <div className="relative overflow-x-auto bg-[#141419]/80 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl before:absolute before:top-0 before:left-0 before:w-48 before:h-[2px] before:bg-gradient-to-r before:from-[#E52421] before:to-transparent before:shadow-[0_0_12px_#E52421]">
-        <table className="w-full text-left text-sm text-gray-300">
-          <thead className="bg-[#1C1C24]/90 text-xs uppercase tracking-wider text-[#9E9EA8] font-mono border-b border-white/10">
+      <div className="relative overflow-x-auto bg-[#06060A]/80 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl before:absolute before:top-0 before:left-0 before:w-48 before:h-[2px] before:bg-gradient-to-r before:from-[#E52421] before:to-transparent before:shadow-[0_0_12px_#E52421]">
+        <table className="w-full text-start text-xs text-gray-300">
+          <thead className="bg-[#0B0B12]/90 text-[10px] uppercase tracking-wider text-white/40 font-medium font-mono border-b border-white/[0.08]">
             <tr>
-              <th className="py-3.5 px-6">Adhérent(e)</th>
-              <th className="py-3.5 px-6">Âge / Catégorie</th>
-              <th className="py-3.5 px-6">Dernière Inscription</th>
-              <th className="py-3.5 px-6">Disciplines</th>
-              <th className="py-3.5 px-6">Statut Adhésion</th>
-              <th className="py-3.5 px-6">Fidélité</th>
-              <th className="py-3.5 px-6 text-right">Actions</th>
+              <th className="py-3 px-5 text-start">{locale === "ar" ? "المشترك(ة)" : locale === "en" ? "Member" : "Adhérent(e)"}</th>
+              <th className="py-3 px-5 text-start">{locale === "ar" ? "العمر / الفئة" : locale === "en" ? "Age / Category" : "Âge / Catégorie"}</th>
+              <th className="py-3 px-5 text-start">{locale === "ar" ? "آخر تسجيل" : locale === "en" ? "Latest Reg." : "Dernière Inscription"}</th>
+              <th className="py-3 px-5 text-start">{locale === "ar" ? "التخصصات" : locale === "en" ? "Disciplines" : "Disciplines"}</th>
+              <th className="py-3 px-5 text-start">{locale === "ar" ? "حالة الانخراط" : locale === "en" ? "Membership Status" : "Statut Adhésion"}</th>
+              <th className="py-3 px-5 text-start">{locale === "ar" ? "الأقدمية" : locale === "en" ? "Loyalty" : "Fidélité"}</th>
+              <th className="py-3 px-5 text-end">{locale === "ar" ? "إجراءات" : locale === "en" ? "Actions" : "Actions"}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
@@ -403,7 +407,7 @@ export default function ParticipantsPage() {
                     {/* Identity & Phone */}
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl overflow-hidden bg-[#1C1C24] border border-white/10 shrink-0 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-xl overflow-hidden bg-[#0B0B12] border border-white/10 shrink-0 flex items-center justify-center">
                           {photoDocId ? (
                             <img
                               src={`/api/documents/${photoDocId}`}
@@ -411,23 +415,23 @@ export default function ParticipantsPage() {
                               className="w-full h-full object-cover"
                             />
                           ) : (
-                            <span className="font-bold text-white text-xs">
+                            <span className="font-medium text-white text-xs">
                               {member.firstName.charAt(0)}
                               {member.lastName.charAt(0)}
                             </span>
                           )}
                         </div>
                         <div>
-                          <div className="font-bold text-white text-sm flex items-center gap-1.5 flex-wrap">
+                          <div className="font-medium text-xs text-white flex items-center gap-1.5 flex-wrap">
                             <span>{member.firstName} {member.lastName}</span>
                             {isStaff && (
-                              <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/40 text-[9px] font-mono font-bold uppercase">
+                              <span className="px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-400/30 text-[9px] font-mono font-medium uppercase">
                                 ★ {roleDef ? roleDef.labelFr : "Staff"}
                               </span>
                             )}
                           </div>
-                          <div className="text-xs text-gray-400 font-mono flex items-center gap-1.5 mt-0.5">
-                            <FiPhone className="w-3 h-3" />
+                          <div className="text-[11px] text-gray-400 font-mono flex items-center gap-1.5 mt-0.5 font-normal">
+                            <FiPhone className="w-3 h-3 text-white/40" />
                             {member.phone}
                           </div>
                         </div>
@@ -435,42 +439,42 @@ export default function ParticipantsPage() {
                     </td>
 
                     {/* Age & Profile */}
-                    <td className="py-4 px-6 text-xs text-gray-300">
-                      <span className="font-bold text-white text-sm">{age} ans</span>
-                      <span className="block text-[11px] text-gray-400">
+                    <td className="py-3 px-5 text-xs text-gray-300">
+                      <span className="font-medium text-white text-xs">{age} ans</span>
+                      <span className="block text-[10px] text-gray-400 font-normal">
                         {isStaff ? (
-                          <span className="text-amber-300 font-bold">{roleDef?.cardHeaderBadge || "Direction"}</span>
+                          <span className="text-amber-300 font-medium">{roleDef?.cardHeaderBadge || "Direction"}</span>
                         ) : member.isMinor ? (
-                          <span className="text-amber-400 font-medium">Mineur (Tuteur requis)</span>
+                          <span className="text-amber-400/90 font-normal">Mineur</span>
                         ) : (
-                          <span className="text-emerald-400 font-medium">Majeur</span>
+                          <span className="text-emerald-400/90 font-normal">Majeur</span>
                         )}
                       </span>
                     </td>
 
                     {/* Latest Registration */}
-                    <td className="py-4 px-6 text-xs">
+                    <td className="py-3 px-5 text-xs">
                       {latestReg ? (
                         <div>
-                          <span className="font-mono font-bold text-gray-200 block">
+                          <span className="font-mono font-medium text-xs text-white/90 block">
                             {latestReg.reference}
                           </span>
-                          <span className="text-gray-400 text-[11px]">
+                          <span className="text-gray-400 text-[10px] font-normal">
                             Saison {latestReg.season.name || latestReg.season.code}
                           </span>
                         </div>
                       ) : (
-                        <span className="text-gray-500 italic">Aucune</span>
+                        <span className="text-gray-500 italic text-[11px]">Aucune</span>
                       )}
                     </td>
 
                     {/* Disciplines */}
-                    <td className="py-4 px-6 text-xs">
+                    <td className="py-3 px-5 text-xs">
                       <div className="flex flex-wrap gap-1 max-w-xs">
                         {latestReg?.disciplines?.map((d: any) => (
                           <span
                             key={d.discipline.id}
-                            className="px-2 py-0.5 bg-[#1C1C24] text-gray-300 rounded text-[11px] font-medium border border-white/5"
+                            className="px-2 py-0.5 bg-[#0B0B12] text-gray-300 rounded text-[10px] font-normal border border-white/5"
                           >
                             {d.discipline.nameFr || d.discipline.slug}
                           </span>
@@ -479,25 +483,25 @@ export default function ParticipantsPage() {
                     </td>
 
                     {/* Membership Status */}
-                    <td className="py-4 px-6">
+                    <td className="py-3 px-5">
                       {latestReg ? (
-                        <StatusBadge status={latestReg.status} />
+                        <StatusBadge status={latestReg.status} size="sm" />
                       ) : (
-                        <span className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-gray-800 text-gray-400">
+                        <span className="px-2 py-0.5 text-[10px] font-medium rounded-md bg-gray-800/60 text-gray-400 border border-white/5">
                           Non inscrit
                         </span>
                       )}
                     </td>
 
                     {/* Loyalty / Seasons count */}
-                    <td className="py-4 px-6 text-xs text-gray-400">
-                      <span className="px-2 py-1 bg-white/5 text-gray-300 rounded-md font-mono font-semibold">
+                    <td className="py-3 px-5 text-xs text-gray-400">
+                      <span className="px-2 py-0.5 bg-white/5 text-gray-300 rounded-md font-mono text-[11px] font-normal">
                         {member._count?.registrations || 1} saison(s)
                       </span>
                     </td>
 
                     {/* Actions */}
-                    <td className="py-4 px-6 text-right">
+                    <td className="py-3 px-5 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <button
                           type="button"
@@ -518,7 +522,7 @@ export default function ParticipantsPage() {
                         </button>
                         <Link
                           href={`/admin/participants/${member.id}`}
-                          className="px-3.5 py-1.5 bg-[#1C1C24] hover:bg-[#252530] text-gray-200 hover:text-white rounded-xl text-xs font-semibold inline-flex items-center gap-1.5 transition border border-white/5"
+                          className="px-3.5 py-1.5 bg-[#0B0B12] hover:bg-white/10 text-gray-200 hover:text-white rounded-xl text-xs font-semibold inline-flex items-center gap-1.5 transition border border-white/5"
                         >
                           Profil
                           <FiArrowRight className="w-3.5 h-3.5 text-[#E52421]" />
@@ -562,14 +566,14 @@ export default function ParticipantsPage() {
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="p-2 bg-[#141419] hover:bg-[#1C1C24] rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition"
+              className="p-2 bg-[#06060A] hover:bg-[#0B0B12] rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition"
             >
               <FiChevronLeft className="w-4 h-4" />
             </button>
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages}
-              className="p-2 bg-[#141419] hover:bg-[#1C1C24] rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition"
+              className="p-2 bg-[#06060A] hover:bg-[#0B0B12] rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition"
             >
               <FiChevronRight className="w-4 h-4" />
             </button>
@@ -598,7 +602,7 @@ export default function ParticipantsPage() {
       {/* Delete Confirmation Modal */}
       {memberToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-[#141419] border border-amber-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
+          <div className="bg-[#06060A] border border-amber-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 animate-in zoom-in-95">
             <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400">
               <FiAlertTriangle className="w-6 h-6" />
             </div>
@@ -655,7 +659,7 @@ export default function ParticipantsPage() {
       {/* Export Assurance Modal */}
       {showExportModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="relative bg-[#141419] border border-emerald-500/30 rounded-3xl p-6 sm:p-7 max-w-xl w-full shadow-2xl space-y-5 animate-in zoom-in-95">
+          <div className="relative bg-[#06060A] border border-emerald-500/30 rounded-3xl p-6 sm:p-7 max-w-xl w-full shadow-2xl space-y-5 animate-in zoom-in-95">
             {/* Modal Header */}
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-center gap-3">
@@ -690,7 +694,7 @@ export default function ParticipantsPage() {
                 <select
                   value={exportSeason}
                   onChange={(e) => setExportSeason(e.target.value)}
-                  className="w-full bg-[#1C1C24] border border-white/10 rounded-xl px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-[#0B0B12] border border-white/10 rounded-xl px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-emerald-500"
                 >
                   <option value="">Saison en cours (Active)</option>
                   <option value="ALL">Toutes les saisons</option>
